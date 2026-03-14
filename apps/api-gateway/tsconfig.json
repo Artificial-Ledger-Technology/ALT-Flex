@@ -1,0 +1,22 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "composite": true,
+    "paths": {
+      "@aegis/core": ["../../packages/core/src/index.ts"],
+      "@aegis/hacks-engine": ["../../packages/hacks-engine/src/index.ts"],
+      "@aegis/skills-engine": ["../../packages/skills-engine/src/index.ts"],
+      "@aegis/forensic-engine": ["../../packages/forensic-engine/src/index.ts"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"],
+  "references": [
+    { "path": "../../packages/core" },
+    { "path": "../../packages/hacks-engine" },
+    { "path": "../../packages/skills-engine" },
+    { "path": "../../packages/forensic-engine" }
+  ]
+}
