@@ -1,14 +1,16 @@
-# 🛡️ AltFlex: Artificial Intelligence Powered Forensic Framework for Exploit Detection
+# 🛡️ AltFlex AEGIS v3.0
 
-<!-- 🤖 Machine Learning 🤖 -->
+> **A**daptive **E**xploit & **G**overnance **I**ntelligence **S**ystem
+
 <div align="center">
-<img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3N3NjdXJ1NWJ1NHZ5b2sxd2lhcXN3NDl3eHh3eTZtOWJ4dDNxdXpkaSZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/LGz5uWk10fZi4q3hx0/giphy.gif" width="250">
-<img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3bXVqZjg3Z2k3N2xlOWM5NmRxcTZ0bHo3d3c1MmVlcWpsdzExNDlsYyZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/jRUOCPIt1nJ1QwM1cK/giphy.gif" width="300">
-<img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3YjJpMHJjM2Jiejl0ZWNkNDFta29jbzFiejRoMHNuMHlmN2NmNm9veSZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/wD0otRg0E3IIlN4x60/giphy.gif" width="250">
+  <h2>The Shield of Web3 — Protection & Authority</h2>
+  <p>A dual-engine Web3 security intelligence system combining a massive-scale ETL pipeline for Defi exploits and an AI Skills safety scanner.</p>
 </div>
 
 ## A. Project Overview
-AltFlex is an integrated AI and digital forensics framework designed to proactively detect and analyze security exploits in cross-chain bridges and Decentralize Finance protocols. By combining machine learning anomaly detection with blockchain forensic analysis, the system provides a comprehensive security solution for the rapidly evolving Web3 ecosystem.
+**AltFlex AEGIS v3.0** is an integrated AI and digital forensics framework encompassing two primary engines:
+1. **Engine α — Hacks Dashboard**: A massive-scale ETL pipeline sourcing from DefiLlama and DeFiHackLabs.
+2. **Engine β — AI Skills Explorer**: A curated repository and marketplace for AI audit skill files with an automated Safety Scanner.
 
 ## B. Problem Statement
 DeFi protocols and cross-chain bridges are increasingly vulnerable to exploits, resulting in significant financial losses. Current security measures often lack the agility and intelligence to detect sophisticated attack vectors. AltFlex addresses this critical need by providing a proactive and adaptive solution for identifying and mitigating potential exploits using advanced AI/ML techniques.
