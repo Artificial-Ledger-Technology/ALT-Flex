@@ -132,221 +132,227 @@ graph TB
     HE_ADP --> PG & RD
     SE_ADP --> PG
     FE_ADP --> CHAIN & FOUNDRY
-    ```
-    
-    **Architectural Principles:**
-    
-    - **Domain Purity** — `@aegis/core` entities and ports import nothing outside the kernel
-    - **Adapter Replaceability** — Swap PostgreSQL for any DB without touching domain logic
-    - **Chain Agnosticism** — `IChainDataPort` → `EthereumAdapter | SolanaAdapter | CosmosAdapter`
-    - **Testability** — Every use case is unit-testable against in-memory port implementations
-    - **Independent Deployability** — Each engine ships as a separate deployable service
-    
-    ---
-    
-    ## Tech Stack
-    
-    | Layer | Technology | Version | Purpose |
-    |---|---|---|---|
-    | Package Manager | pnpm | 10.x | Strict dependency isolation, fast installs |
-    | Build Orchestration | Turborepo | 2.x | Task caching, parallel execution |
-    | Language | TypeScript | 5.4 | Strict mode, full-stack type safety |
-    | Frontend | Next.js + React | 15 + 19 | App Router, Server Components, streaming SSR |
-    | API Gateway | Fastify | 5.x | High-performance BFF |
-    | Schema Validation | Zod | 3.22 | Runtime validation + TypeScript inference |
-    | EVM Client | viem | 2.8 | Type-safe EVM interactions |
-    | Wallet / Signing | ethers | 6.11 | Wallet utilities, ABI encoding |
-    | Smart Contract Testing | Foundry | latest | Exploit POC execution, transaction tracing |
-    | Primary Database | PostgreSQL | 16 | Relational hack data, JSONB for skill metadata |
-    | Cache & Queue | Redis + BullMQ | 7 + 5.x | ETL job queues, API response caching |
-    | Logging | Winston | 3.11 | Structured logging across all packages |
-    | Date Utilities | date-fns | 3.3 | Lightweight date operations |
-    | Testing | Vitest | 1.3 | Unit + integration tests, coverage |
-    | Linting | ESLint + TS-ESLint | 8.x + 7.x | Static analysis, type-aware rules |
-    | Formatting | Prettier | 3.2 | Consistent code style |
-    | Git Hooks | Husky + lint-staged | 9 + 15 | Block non-conforming commits at gate |
-    | Containers | Docker + Compose | latest | One-command dev environment bootstrap |
-    | IaC | Terraform | — | Cloud infrastructure (Phase 6)
-    
-    ---
-    
-    Monorepo Structure
-    
-    ```
-    ALT-Flex/                               ← Git root / pnpm workspace root
-    │
-    ├── packages/
-    │   ├── core/                           ← 🧬 @aegis/core — Shared Kernel
-    │   │   └── src/
-    │   │       ├── domain/
-    │   │       │   ├── entities/           ← HackIncident, AISkillFile, ExploitPOC
-    │   │       │   ├── value-objects/      ← AttackVector, Chain, SafetyLabel
-    │   │       │   └── ports/              ← IHackDataPort, ISkillDataPort,
-    │   │       │                             IChainDataPort, ISafetyScannerPort, ICachePort
-    │   │       └── shared/
-    │   │           ├── types/              ← Global TypeScript types
-    │   │           ├── utils/              ← Pure utility functions
-    │   │           ├── constants/          ← Chain IDs, attack vector maps
-    │   │           └── errors/             ← Custom error hierarchy
-    │   │
-    │   ├── hacks-engine/                   ← ⚡ @aegis/hacks-engine — Engine α
-    │   │   └── src/
-    │   │       ├── adapters/
-    │   │       │   ├── defillama/          ← DefiLlama API client
-    │   │       │   ├── defihacklabs/       ← SunWeb3Sec GitHub scraper
-    │   │       │   └── postgres/           ← PostgreSQL repository
-    │   │       ├── application/            ← SyncHacks · FilterHacks · GetHackStats
-    │   │       ├── domain/
-    │   │       └── infrastructure/
-    │   │           ├── migrations/
-    │   │           └── seed/
-    │   │
-    │   ├── skills-engine/                  ← 🧠 @aegis/skills-engine — Engine β
-    │   │   └── src/
-    │   │       ├── adapters/
-    │   │       │   ├── github/             ← GitHub repo scraper
-    │   │       │   ├── parsers/            ← YAML / Markdown / MCP parsers
-    │   │       │   └── postgres/
-    │   │       ├── application/            ← IndexSkills · ScanSkillSafety · SearchSkills
-    │   │       ├── domain/safety/          ← Safety rule definitions
-    │   │       └── infrastructure/
-    │   │           ├── migrations/
-    │   │           └── safety-rules/       ← AST / regex safety rule configs
-    │   │
-    │   └── forensic-engine/                ← 🔬 @aegis/forensic-engine — Engine γ
-    │       └── src/
-    │           ├── adapters/
-    │           │   ├── foundry/            ← Foundry CLI wrapper
-    │           │   └── rpc/                ← Multi-chain RPC providers (viem)
-    │           ├── application/            ← SimulateExploit · TraceTransaction
-    │           ├── domain/
-    │           └── infrastructure/
-    │
-    ├── apps/
-    │   ├── web/                            ← 🌐 @aegis/web — Next.js 15 Frontend
-    │   │   └── src/
-    │   │       ├── app/
-    │   │       │   ├── (marketing)/        ← Landing page, about
-    │   │       │   └── dashboard/
-    │   │       │       ├── hacks/          ← Hacks Dashboard views
-    │   │       │       ├── skills/         ← AI Skills Explorer views
-    │   │       │       └── forensics/      ← Forensic trace views
-    │   │       ├── components/
-    │   │       │   ├── ui/                 ← Base UI primitives
-    │   │       │   ├── hacks/              ← HackCard, HackTable, FilterSidebar
-    │   │       │   ├── skills/             ← SkillCard, SafetyBadge, CopyButton
-    │   │       │   ├── forensics/          ← TraceViewer, ExploitSimulator
-    │   │       │   └── layout/             ← Header, Sidebar, Footer
-    │   │       ├── lib/                    ← API client, utilities
-    │   │       ├── hooks/                  ← Custom React hooks
-    │   │       └── styles/                 ← Global CSS, design tokens
-    │   │
-    │   └── api-gateway/                    ← 🚪 @aegis/api-gateway — Fastify BFF
-    │       └── src/
-    │           ├── routes/
-    │           │   ├── hacks.ts            ← /api/v1/hacks/*
-    │           │   ├── skills.ts           ← /api/v1/skills/*
-    │           │   ├── forensics.ts        ← /api/v1/forensics/*
-    │           │   └── health.ts           ← /api/v1/health
-    │           ├── middleware/             ← auth · rateLimit · validation
-    │           ├── config/env.ts           ← Zod-validated environment config
-    │           └── server.ts
-    │
-    ├── infrastructure/
-    │   ├── docker/                         ← Dockerfiles for all services
-    │   ├── terraform/                      ← Cloud IaC (Phase 6)
-    │   └── ci/                             ← GitHub Actions (ci.yml, deploy.yml)
-    │
-    ├── docs/
-    │   ├── BRAND_GUIDE.md
-    │   ├── CODE_REVIEW_PHASE0.md
-    │   ├── PHASE_0_PROJECT_INITIALIZATION.md
-    │   ├── ARCHITECTURE.md                 ← Phase 1 deliverable
-    │   └── API_SPECIFICATION.md            ← Phase 1 deliverable
-    │
-    ├── research/                           ← Jupyter notebooks & ML experiments
-    ├── .env.example
-    ├── .gitignore
-    ├── .prettierrc
-    ├── .eslintrc.cjs
-    ├── docker-compose.dev.yml
-    ├── pnpm-workspace.yaml
-    ├── tsconfig.base.json
-    ├── turbo.json
-    └── package.json
-    ---
-    
-    Domain Models
-    
-    All models live in `@aegis/core`, validated with Zod. These are **Phase 0 blueprints** —
-    implementations ship in Phase 1.
-    
-    ### HackIncident
-    
-    | Field | Type | Description |
-    |---|---|---|
-    | `id` | `string` (UUID) | Unique identifier |
-    | `protocolName` | `string` | e.g. "Euler Finance" |
-    | `date` | `Date` | Date of exploit |
-    | `chain` | `Chain` | Primary chain affected |
-    | `attackVector` | `AttackVector` | Classification of attack type |
-    | `lossUsd` | `number` | Total USD loss |
-    | `txHashes` | `string[]` | On-chain transaction hashes |
-    | `hasFoundryPoc` | `boolean` | Whether a Foundry POC exists |
-    | `foundryTestPath` | `string \| null` | Path in DeFiHackLabs repo |
-    | `fundsReturned` | `boolean` | Whether funds were returned |
-    | `dataSource` | `'defillama' \| 'defihacklabs' \| 'manual'` | ETL origin |
-    
-    ### AISkillFile
-    
-    | Field | Type | Description |
-    |---|---|---|
-    | `id` | `string` (UUID) | Unique identifier |
-    | `name` | `string` | Skill display name |
-    | `sourceRepo` | `string` | GitHub repository URL |
-    | `platform` | `'openai' \| 'claude' \| 'gemini' \| 'cursor' \| 'universal'` | Target AI platform |
-    | `language` | `'solidity' \| 'rust' \| 'move' \| 'vyper' \| 'multi'` | Smart contract language |
-    | `safetyLabel` | `SafetyLabel` | Safety scanner classification |
-    | `contentHash` | `string` | SHA-256 of file content |
-    | `copyCount` | `number` | Community usage metric |
-    | `starCount` | `number` | Source repository stars |
-    
-    ### Value Objects
-    
-    **`AttackVector`** — `FlashLoan` · `Reentrancy` · `OracleManipulation` · `AccessControl` ·
-    `BridgeExploit` · `GovernanceAttack` · `Phishing` · `RugPull` · `LogicError` ·
-    `Liquidation` · `SandwichAttack` · `Unknown`
-    
-    **`Chain`** — `Ethereum` · `BSC` · `Polygon` · `Arbitrum` · `Optimism` · `Avalanche` ·
-    `Base` · `Solana` · `Cosmos` · `Near` · `Aptos` · `Sui` · `MultiChain`
-    
-    **`SafetyLabel`** — `Safe` · `Suspicious` · `Malicious` · `Unreviewed`
-    
-    ### Hexagonal Port Interfaces
-``
-    // @aegis/core/src/domain/ports/IHackDataPort.ts
-    interface IHackDataPort {
-      findById(id: string): Promise<HackIncident | null>;
-      findMany(filters: HackFilters): Promise<PaginatedResult<HackIncident>>;
-      upsert(incident: HackIncident): Promise<void>;
-      getAttackVectorStats(): Promise<AttackVectorStat[]>;
-    }
-    
-    // @aegis/core/src/domain/ports/IChainDataPort.ts
-    interface IChainDataPort {
-      getTransaction(hash: string): Promise<Transaction>;
-      getBlock(numberOrHash: string | number): Promise<Block>;
-      traceTransaction(hash: string): Promise<TraceResult>;
-      callContract(params: CallParams): Promise<unknown>;
-    }
-    
-    // @aegis/core/src/domain/ports/ISafetyScannerPort.ts
-    interface ISafetyScannerPort {
-      scan(skillFile: AISkillFile): Promise<SafetyScanResult>;
-      getRules(): Promise<SafetyRule[]>;
-    }
 ```
-Smart Contract & EVM Integration
+
+**Architectural Principles:**
+
+- **Domain Purity** — `@aegis/core` entities and ports import nothing outside the kernel
+- **Adapter Replaceability** — Swap PostgreSQL for any DB without touching domain logic
+- **Chain Agnosticism** — `IChainDataPort` → `EthereumAdapter | SolanaAdapter | CosmosAdapter`
+- **Testability** — Every use case is unit-testable against in-memory port implementations
+- **Independent Deployability** — Each engine ships as a separate deployable service
+
+---
+
+## Tech Stack
+
+| Layer | Technology | Version | Purpose |
+|---|---|---|---|
+| Package Manager | pnpm | 10.x | Strict dependency isolation, fast installs |
+| Build Orchestration | Turborepo | 2.x | Task caching, parallel execution |
+| Language | TypeScript | 5.4 | Strict mode, full-stack type safety |
+| Frontend | Next.js + React | 15 + 19 | App Router, Server Components, streaming SSR |
+| API Gateway | Fastify | 5.x | High-performance BFF |
+| Schema Validation | Zod | 3.22 | Runtime validation + TypeScript inference |
+| EVM Client | viem | 2.8 | Type-safe EVM interactions |
+| Wallet / Signing | ethers | 6.11 | Wallet utilities, ABI encoding |
+| Smart Contract Testing | Foundry | latest | Exploit POC execution, transaction tracing |
+| Primary Database | PostgreSQL | 16 | Relational hack data, JSONB for skill metadata |
+| Cache & Queue | Redis + BullMQ | 7 + 5.x | ETL job queues, API response caching |
+| Logging | Winston | 3.11 | Structured logging across all packages |
+| Date Utilities | date-fns | 3.3 | Lightweight date operations |
+| Testing | Vitest | 1.3 | Unit + integration tests, coverage |
+| Linting | ESLint + TS-ESLint | 8.x + 7.x | Static analysis, type-aware rules |
+| Formatting | Prettier | 3.2 | Consistent code style |
+| Git Hooks | Husky + lint-staged | 9 + 15 | Block non-conforming commits at gate |
+| Containers | Docker + Compose | latest | One-command dev environment bootstrap |
+| IaC | Terraform | — | Cloud infrastructure (Phase 6) |
+
+---
+
+## Monorepo Structure
+
+```text
+ALT-Flex/                               ← Git root / pnpm workspace root
+│
+├── packages/
+│   ├── core/                           ← 🧬 @aegis/core — Shared Kernel
+│   │   └── src/
+│   │       ├── domain/
+│   │       │   ├── entities/           ← HackIncident, AISkillFile, ExploitPOC
+│   │       │   ├── value-objects/      ← AttackVector, Chain, SafetyLabel
+│   │       │   └── ports/              ← IHackDataPort, ISkillDataPort,
+│   │       │                             IChainDataPort, ISafetyScannerPort, ICachePort
+│   │       └── shared/
+│   │           ├── types/              ← Global TypeScript types
+│   │           ├── utils/              ← Pure utility functions
+│   │           ├── constants/          ← Chain IDs, attack vector maps
+│   │           └── errors/             ← Custom error hierarchy
+│   │
+│   ├── hacks-engine/                   ← ⚡ @aegis/hacks-engine — Engine α
+│   │   └── src/
+│   │       ├── adapters/
+│   │       │   ├── defillama/          ← DefiLlama API client
+│   │       │   ├── defihacklabs/       ← SunWeb3Sec GitHub scraper
+│   │       │   └── postgres/           ← PostgreSQL repository
+│   │       ├── application/            ← SyncHacks · FilterHacks · GetHackStats
+│   │       ├── domain/
+│   │       └── infrastructure/
+│   │           ├── migrations/
+│   │           └── seed/
+│   │
+│   ├── skills-engine/                  ← 🧠 @aegis/skills-engine — Engine β
+│   │   └── src/
+│   │       ├── adapters/
+│   │       │   ├── github/             ← GitHub repo scraper
+│   │       │   ├── parsers/            ← YAML / Markdown / MCP parsers
+│   │       │   └── postgres/
+│   │       ├── application/            ← IndexSkills · ScanSkillSafety · SearchSkills
+│   │       ├── domain/safety/          ← Safety rule definitions
+│   │       └── infrastructure/
+│   │           ├── migrations/
+│   │           └── safety-rules/       ← AST / regex safety rule configs
+│   │
+│   └── forensic-engine/                ← 🔬 @aegis/forensic-engine — Engine γ
+│       └── src/
+│           ├── adapters/
+│           │   ├── foundry/            ← Foundry CLI wrapper
+│           │   └── rpc/                ← Multi-chain RPC providers (viem)
+│           ├── application/            ← SimulateExploit · TraceTransaction
+│           ├── domain/
+│           └── infrastructure/
+│
+├── apps/
+│   ├── web/                            ← 🌐 @aegis/web — Next.js 15 Frontend
+│   │   └── src/
+│   │       ├── app/
+│   │       │   ├── (marketing)/        ← Landing page, about
+│   │       │   └── dashboard/
+│   │       │       ├── hacks/          ← Hacks Dashboard views
+│   │       │       ├── skills/         ← AI Skills Explorer views
+│   │       │       └── forensics/      ← Forensic trace views
+│   │       ├── components/
+│   │       │   ├── ui/                 ← Base UI primitives
+│   │       │   ├── hacks/              ← HackCard, HackTable, FilterSidebar
+│   │       │   ├── skills/             ← SkillCard, SafetyBadge, CopyButton
+│   │       │   ├── forensics/          ← TraceViewer, ExploitSimulator
+│   │       │   └── layout/             ← Header, Sidebar, Footer
+│   │       ├── lib/                    ← API client, utilities
+│   │       ├── hooks/                  ← Custom React hooks
+│   │       └── styles/                 ← Global CSS, design tokens
+│   │
+│   └── api-gateway/                    ← 🚪 @aegis/api-gateway — Fastify BFF
+│       └── src/
+│           ├── routes/
+│           │   ├── hacks.ts            ← /api/v1/hacks/*
+│           │   ├── skills.ts           ← /api/v1/skills/*
+│           │   ├── forensics.ts        ← /api/v1/forensics/*
+│           │   └── health.ts           ← /api/v1/health
+│           ├── middleware/             ← auth · rateLimit · validation
+│           ├── config/env.ts           ← Zod-validated environment config
+│           └── server.ts
+│
+├── infrastructure/
+│   ├── docker/                         ← Dockerfiles for all services
+│   ├── terraform/                      ← Cloud IaC (Phase 6)
+│   └── ci/                             ← GitHub Actions (ci.yml, deploy.yml)
+│
+├── docs/
+│   ├── BRAND_GUIDE.md
+│   ├── CODE_REVIEW_PHASE0.md
+│   ├── PHASE_0_PROJECT_INITIALIZATION.md
+│   ├── ARCHITECTURE.md                 ← Phase 1 deliverable
+│   └── API_SPECIFICATION.md            ← Phase 1 deliverable
+│
+├── research/                           ← Jupyter notebooks & ML experiments
+├── .env.example
+├── .gitignore
+├── .prettierrc
+├── .eslintrc.cjs
+├── docker-compose.dev.yml
+├── pnpm-workspace.yaml
+├── tsconfig.base.json
+├── turbo.json
+└── package.json
+```
+    
+---
+
+## Domain Models
+
+All models live in `@aegis/core`, validated with Zod. These are **Phase 0 blueprints** —
+implementations ship in Phase 1.
+
+### HackIncident
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | `string` (UUID) | Unique identifier |
+| `protocolName` | `string` | e.g. "Euler Finance" |
+| `date` | `Date` | Date of exploit |
+| `chain` | `Chain` | Primary chain affected |
+| `attackVector` | `AttackVector` | Classification of attack type |
+| `lossUsd` | `number` | Total USD loss |
+| `txHashes` | `string[]` | On-chain transaction hashes |
+| `hasFoundryPoc` | `boolean` | Whether a Foundry POC exists |
+| `foundryTestPath` | `string \| null` | Path in DeFiHackLabs repo |
+| `fundsReturned` | `boolean` | Whether funds were returned |
+| `dataSource` | `'defillama' \| 'defihacklabs' \| 'manual'` | ETL origin |
+
+### AISkillFile
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | `string` (UUID) | Unique identifier |
+| `name` | `string` | Skill display name |
+| `sourceRepo` | `string` | GitHub repository URL |
+| `platform` | `'openai' \| 'claude' \| 'gemini' \| 'cursor' \| 'universal'` | Target AI platform |
+| `language` | `'solidity' \| 'rust' \| 'move' \| 'vyper' \| 'multi'` | Smart contract language |
+| `safetyLabel` | `SafetyLabel` | Safety scanner classification |
+| `contentHash` | `string` | SHA-256 of file content |
+| `copyCount` | `number` | Community usage metric |
+| `starCount` | `number` | Source repository stars |
+
+### Value Objects
+
+**`AttackVector`** — `FlashLoan` · `Reentrancy` · `OracleManipulation` · `AccessControl` ·
+`BridgeExploit` · `GovernanceAttack` · `Phishing` · `RugPull` · `LogicError` ·
+`Liquidation` · `SandwichAttack` · `Unknown`
+
+**`Chain`** — `Ethereum` · `BSC` · `Polygon` · `Arbitrum` · `Optimism` · `Avalanche` ·
+`Base` · `Solana` · `Cosmos` · `Near` · `Aptos` · `Sui` · `MultiChain`
+
+**`SafetyLabel`** — `Safe` · `Suspicious` · `Malicious` · `Unreviewed`
+
+### Hexagonal Port Interfaces
+
+```typescript
+// @aegis/core/src/domain/ports/IHackDataPort.ts
+interface IHackDataPort {
+  findById(id: string): Promise<HackIncident | null>;
+  findMany(filters: HackFilters): Promise<PaginatedResult<HackIncident>>;
+  upsert(incident: HackIncident): Promise<void>;
+  getAttackVectorStats(): Promise<AttackVectorStat[]>;
+}
+
+// @aegis/core/src/domain/ports/IChainDataPort.ts
+interface IChainDataPort {
+  getTransaction(hash: string): Promise<Transaction>;
+  getBlock(numberOrHash: string | number): Promise<Block>;
+  traceTransaction(hash: string): Promise<TraceResult>;
+  callContract(params: CallParams): Promise<unknown>;
+}
+
+// @aegis/core/src/domain/ports/ISafetyScannerPort.ts
+interface ISafetyScannerPort {
+  scan(skillFile: AISkillFile): Promise<SafetyScanResult>;
+  getRules(): Promise<SafetyRule[]>;
+}
+```
+
+---
+
+## Smart Contract & EVM Integration
 
 The **Forensic Engine** (`@aegis/forensic-engine`) provides deep smart contract analysis —
 the technical core of **Thesis 2**.
@@ -427,8 +433,8 @@ export class FoundryAdapter implements IForensicRunnerPort {
 
 | Phase | Timeline | Status | Key Deliverables |
 |---|---|---|---|
-| **Phase 0 — Init** | Week 1–2 | ✅ **Complete** | Monorepo scaffold · pnpm workspace · Turbo config · Domain blueprints · Docker Compose · Dev tooling |
-| **Phase 1 — Architecture** | Week 3–4 | 🔄 **In Progress** | `ARCHITECTURE.md` · `API_SPECIFICATION.md` · DB migrations · Seed data · Domain implementations |
+| **Phase 0 — Init** | Week 1–2 | 🔄 **In Progress** | Monorepo scaffold · pnpm workspace · Turbo config · Domain blueprints · Docker Compose · Dev tooling |
+| **Phase 1 — Architecture** | Week 3–4 | ⏳ Planned | `ARCHITECTURE.md` · `API_SPECIFICATION.md` · DB migrations · Seed data · Domain implementations |
 | **Phase 2 — ETL Pipeline** | Week 5–8 | ⏳ Planned | DefiLlama sync worker · DeFiHackLabs scraper · BullMQ queues · PostgreSQL pipeline |
 | **Phase 3 — Safety Scanner** | Week 9–16 | ⏳ Planned | AST parser · Heuristic safety rules · Safety label classifier **(Thesis 1 core)** |
 | **Phase 4 — Frontend** | Week 17–22 | ⏳ Planned | Hacks Dashboard · AI Skills Explorer · Forensic trace viewer · AEGIS design system |
@@ -443,9 +449,11 @@ export class FoundryAdapter implements IForensicRunnerPort {
 |---|---|---|
 | Phase 0–2 | Methods of Research | Architecture docs · ETL design · DeFi exploit taxonomy literature review |
 | **Phase 3** | **Thesis 1** | *"Automated Detection of Malicious Intent in AI Audit Skill Files for Web3 Security"* — AST parser + heuristic rules detecting prompt injection, file-system abuse, and code exfiltration in YAML/Markdown AI skill files |
-| **Phase 5–6** | **Thesis 2** | *"Programmatic Exploit Simulation and Forensic Trace Analysis Using Foundry for Historical DeFi Incidents"* — Automated Foundry POC execution, transaction trace visualization, root-cause attack vector mapping
+| **Phase 5–6** | **Thesis 2** | *"Programmatic Exploit Simulation and Forensic Trace Analysis Using Foundry for Historical DeFi Incidents"* — Automated Foundry POC execution, transaction trace visualization, root-cause attack vector mapping |
 
-Getting Started
+---
+
+## Getting Started
 
 ### Prerequisites
 
@@ -646,7 +654,7 @@ http://localhost:3001/api/v1
 }
 ```
 
-Branch Strategy & Contributing
+## Branch Strategy & Contributing
 
 ### Branch Naming Convention
 
@@ -702,7 +710,9 @@ git commit -m "feat(core): add IChainDataPort hexagonal interface"
 git push origin feature/P1-ARCH-001-hex-diagrams
 ```
 
-Team
+---
+
+## Team
 
 | Name | GitHub | Role |
 |---|---|---|
@@ -717,7 +727,7 @@ Team
 
 ## Changelogs
 
-### 🛡️ [03.0.0] — 2026-03-XX · Phase 0 Complete
+### 🛡️ [03.0.0] — 2026-03-XX · Phase 0 🔄 **In Progress**
 
 #### Rebrand & Architecture
 - Rebranded project from *AltFlex v2* to **AltFlex AEGIS v3.0**
@@ -741,7 +751,7 @@ Team
 
 ---
 
-### 🔐 [02.0.0] — 2026-01-13 · Phase 2: Address Detection Security Enhancement
+### 🔐 [02.0.0] — 2026-01-13 · Phase 2: Address Detection Security Enhancement ✅ **Complete**
 
 - Sprint 1: Address validation layer
 - Sprint 2: On-chain verification
@@ -750,7 +760,7 @@ Team
 
 ---
 
-### 🚀 [01.0.0] — 2025-12-17 · Phase 1: Production-Ready Flash Loan Detection
+### 🚀 [01.0.0] — 2025-12-17 · Phase 1: Production-Ready Flash Loan Detection ✅ **Complete**
 
 - Flash loan detection pipeline (XGBoost + Rule-based)
 - Etherscan ETL collector
@@ -760,7 +770,7 @@ Team
 
 ---
 
-### 🚀 [0.7.7] — 2025-11-17 · Phase 0: Research and Gathering Data
+### 🚀 [0.7.7] — 2025-11-17 · Phase 0: Research and Gathering Data ✅ **Complete**
 
 - Gathering information and Brainstorm for our SE proposal 
 - Research about the DeFi past exploitation
