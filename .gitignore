@@ -1,0 +1,54 @@
+# ═══════════════════════════════════════════════════════════
+# AltFlex AEGIS v3.0 — .gitignore
+# Comprehensive exclusions for pnpm monorepo
+# ═══════════════════════════════════════════════════════════
+
+# ── Dependencies ──────────────────────────────────────────
+node_modules/
+.pnpm-store/
+
+# ── Build Outputs ─────────────────────────────────────────
+dist/
+.next/
+out/
+*.tsbuildinfo
+
+# ── Environment & Secrets ─────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ── IDE & Editor ──────────────────────────────────────────
+.idea/
+*.swp
+*.swo
+*~
+
+# ── Operating System ──────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Testing ───────────────────────────────────────────────
+coverage/
+
+# ── Foundry (Smart Contract Tooling) ─────────────────────
+cache/
+broadcast/
+
+# ── Python / Jupyter (research/) ─────────────────────────
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+*.egg-info/
+.venv/
+
+# ── Turbo Cache ───────────────────────────────────────────
+.turbo/
+
+# ── Debug Logs ────────────────────────────────────────────
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*

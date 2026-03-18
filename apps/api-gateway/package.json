@@ -15,11 +15,12 @@
     "@aegis/hacks-engine": "workspace:*",
     "@aegis/skills-engine": "workspace:*",
     "@aegis/forensic-engine": "workspace:*",
-    "fastify": "^4.26.0",
-    "@fastify/cors": "^9.0.0",
-    "@fastify/rate-limit": "^9.1.0",
-    "@fastify/swagger": "^8.14.0",
-    "zod": "^3.22.0"
+    "fastify": "~5.7.2",
+    "@fastify/cors": "~11.0.0",
+    "@fastify/rate-limit": "~10.2.0",
+    "@fastify/swagger": "~9.4.0",
+    "@fastify/swagger-ui": "~5.2.0",
+    "zod": "~3.22.0"
   },
   "devDependencies": {
     "tsx": "^4.7.0",

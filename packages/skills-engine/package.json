@@ -14,11 +14,11 @@
   },
   "dependencies": {
     "@aegis/core": "workspace:*",
-    "gray-matter": "^4.0.3",
-    "acorn": "^8.11.0",
-    "acorn-walk": "^8.3.0",
-    "semver": "^7.6.0",
-    "pg": "^8.11.0"
+    "gray-matter": "~4.0.3",
+    "acorn": "~8.11.0",
+    "acorn-walk": "~8.3.0",
+    "semver": "~7.6.0",
+    "pg": "~8.11.0"
   },
   "devDependencies": {
     "@types/pg": "^8.11.0",
