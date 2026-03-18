@@ -14,9 +14,9 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "zod": "^3.22.0",
-    "date-fns": "^3.3.0",
-    "winston": "^3.11.0"
+    "zod": "~3.22.0",
+    "date-fns": "~3.3.0",
+    "winston": "~3.11.0"
   },
   "devDependencies": {
     "typescript": "^5.4.0",
