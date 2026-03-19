@@ -4,7 +4,7 @@
 
 **A**daptive **E**xploit & **G**overnance **I**ntelligence **S**ystem
 
-*The Shield of Web3*
+_The Shield of Web3_
 
 [![Node.js](https://img.shields.io/badge/Node.js-%E2%89%A520.11-339933?logo=node.js&logoColor=white)](https://nodejs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
@@ -21,8 +21,8 @@
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](https://docker.com)
 [![License](https://img.shields.io/badge/License-MIT-2ECC71)](./LICENSE)
 
-> *In Greek mythology, the aegis (αἰγίς) was the shield of Zeus — a supernatural defense
-> wielded only by the most powerful. AltFlex AEGIS is the shield for Web3.*
+> _In Greek mythology, the aegis (αἰγίς) was the shield of Zeus — a supernatural defense
+> wielded only by the most powerful. AltFlex AEGIS is the shield for Web3._
 
 </div>
 
@@ -73,20 +73,20 @@ programmatically.
 
 ## Why AEGIS — The Rebrand
 
-The v1/v2 name — *"AltFlex: AI-Powered Forensic Framework for Exploit Detection"* — no longer
+The v1/v2 name — _"AltFlex: AI-Powered Forensic Framework for Exploit Detection"_ — no longer
 reflects the scope of this system.
 
-| Dimension | v1 / v2 (AltFlex) | v3.0 (AltFlex AEGIS) |
-|---|---|---|
-| **Scope** | Flash loan detection, 5 protocols | Every DeFi hack in history (1,000+ incidents) |
-| **Engine Count** | 1 — Transaction analysis | 3 — Hacks · AI Skills · EVM Forensics |
-| **AI Role** | XGBoost anomaly detector | AST Safety Scanner + LLM audit skill governance |
-| **Chain Support** | Ethereum only | EVM + Non-EVM (Solana, Cosmos, Move) |
-| **Data Sources** | Etherscan, PolygonScan | DefiLlama, DeFiHackLabs, GitHub AI repos |
-| **Architecture** | Monolithic Python + Next.js | Hexagonal TypeScript microservices |
-| **Language** | Python backend + TypeScript UI | 100% TypeScript across all layers |
-| **Smart Contract** | Flash loan pattern matching | Full Foundry exploit simulation + EVM traces |
-| **Academic Purpose** | Capstone proof-of-concept | Thesis 1 & Thesis 2 research system |
+| Dimension            | v1 / v2 (AltFlex)                 | v3.0 (AltFlex AEGIS)                            |
+| -------------------- | --------------------------------- | ----------------------------------------------- |
+| **Scope**            | Flash loan detection, 5 protocols | Every DeFi hack in history (1,000+ incidents)   |
+| **Engine Count**     | 1 — Transaction analysis          | 3 — Hacks · AI Skills · EVM Forensics           |
+| **AI Role**          | XGBoost anomaly detector          | AST Safety Scanner + LLM audit skill governance |
+| **Chain Support**    | Ethereum only                     | EVM + Non-EVM (Solana, Cosmos, Move)            |
+| **Data Sources**     | Etherscan, PolygonScan            | DefiLlama, DeFiHackLabs, GitHub AI repos        |
+| **Architecture**     | Monolithic Python + Next.js       | Hexagonal TypeScript microservices              |
+| **Language**         | Python backend + TypeScript UI    | 100% TypeScript across all layers               |
+| **Smart Contract**   | Flash loan pattern matching       | Full Foundry exploit simulation + EVM traces    |
+| **Academic Purpose** | Capstone proof-of-concept         | Thesis 1 & Thesis 2 research system             |
 
 ---
 
@@ -146,27 +146,27 @@ graph TB
 
 ## Tech Stack
 
-| Layer | Technology | Version | Purpose |
-|---|---|---|---|
-| Package Manager | pnpm | 10.x | Strict dependency isolation, fast installs |
-| Build Orchestration | Turborepo | 2.x | Task caching, parallel execution |
-| Language | TypeScript | 5.4 | Strict mode, full-stack type safety |
-| Frontend | Next.js + React | 15 + 19 | App Router, Server Components, streaming SSR |
-| API Gateway | Fastify | 5.x | High-performance BFF |
-| Schema Validation | Zod | 3.22 | Runtime validation + TypeScript inference |
-| EVM Client | viem | 2.8 | Type-safe EVM interactions |
-| Wallet / Signing | ethers | 6.11 | Wallet utilities, ABI encoding |
-| Smart Contract Testing | Foundry | latest | Exploit POC execution, transaction tracing |
-| Primary Database | PostgreSQL | 16 | Relational hack data, JSONB for skill metadata |
-| Cache & Queue | Redis + BullMQ | 7 + 5.x | ETL job queues, API response caching |
-| Logging | Winston | 3.11 | Structured logging across all packages |
-| Date Utilities | date-fns | 3.3 | Lightweight date operations |
-| Testing | Vitest | 1.3 | Unit + integration tests, coverage |
-| Linting | ESLint + TS-ESLint | 8.x + 7.x | Static analysis, type-aware rules |
-| Formatting | Prettier | 3.2 | Consistent code style |
-| Git Hooks | Husky + lint-staged | 9 + 15 | Block non-conforming commits at gate |
-| Containers | Docker + Compose | latest | One-command dev environment bootstrap |
-| IaC | Terraform | — | Cloud infrastructure (Phase 6) |
+| Layer                  | Technology          | Version   | Purpose                                        |
+| ---------------------- | ------------------- | --------- | ---------------------------------------------- |
+| Package Manager        | pnpm                | 10.x      | Strict dependency isolation, fast installs     |
+| Build Orchestration    | Turborepo           | 2.x       | Task caching, parallel execution               |
+| Language               | TypeScript          | 5.4       | Strict mode, full-stack type safety            |
+| Frontend               | Next.js + React     | 15 + 19   | App Router, Server Components, streaming SSR   |
+| API Gateway            | Fastify             | 5.x       | High-performance BFF                           |
+| Schema Validation      | Zod                 | 3.22      | Runtime validation + TypeScript inference      |
+| EVM Client             | viem                | 2.8       | Type-safe EVM interactions                     |
+| Wallet / Signing       | ethers              | 6.11      | Wallet utilities, ABI encoding                 |
+| Smart Contract Testing | Foundry             | latest    | Exploit POC execution, transaction tracing     |
+| Primary Database       | PostgreSQL          | 16        | Relational hack data, JSONB for skill metadata |
+| Cache & Queue          | Redis + BullMQ      | 7 + 5.x   | ETL job queues, API response caching           |
+| Logging                | Winston             | 3.11      | Structured logging across all packages         |
+| Date Utilities         | date-fns            | 3.3       | Lightweight date operations                    |
+| Testing                | Vitest              | 1.3       | Unit + integration tests, coverage             |
+| Linting                | ESLint + TS-ESLint  | 8.x + 7.x | Static analysis, type-aware rules              |
+| Formatting             | Prettier            | 3.2       | Consistent code style                          |
+| Git Hooks              | Husky + lint-staged | 9 + 15    | Block non-conforming commits at gate           |
+| Containers             | Docker + Compose    | latest    | One-command dev environment bootstrap          |
+| IaC                    | Terraform           | —         | Cloud infrastructure (Phase 6)                 |
 
 ---
 
@@ -275,7 +275,7 @@ ALT-Flex/                               ← Git root / pnpm workspace root
 ├── turbo.json
 └── package.json
 ```
-    
+
 ---
 
 ## Domain Models
@@ -285,33 +285,33 @@ implementations ship in Phase 1.
 
 ### HackIncident
 
-| Field | Type | Description |
-|---|---|---|
-| `id` | `string` (UUID) | Unique identifier |
-| `protocolName` | `string` | e.g. "Euler Finance" |
-| `date` | `Date` | Date of exploit |
-| `chain` | `Chain` | Primary chain affected |
-| `attackVector` | `AttackVector` | Classification of attack type |
-| `lossUsd` | `number` | Total USD loss |
-| `txHashes` | `string[]` | On-chain transaction hashes |
-| `hasFoundryPoc` | `boolean` | Whether a Foundry POC exists |
-| `foundryTestPath` | `string \| null` | Path in DeFiHackLabs repo |
-| `fundsReturned` | `boolean` | Whether funds were returned |
-| `dataSource` | `'defillama' \| 'defihacklabs' \| 'manual'` | ETL origin |
+| Field             | Type                                        | Description                   |
+| ----------------- | ------------------------------------------- | ----------------------------- |
+| `id`              | `string` (UUID)                             | Unique identifier             |
+| `protocolName`    | `string`                                    | e.g. "Euler Finance"          |
+| `date`            | `Date`                                      | Date of exploit               |
+| `chain`           | `Chain`                                     | Primary chain affected        |
+| `attackVector`    | `AttackVector`                              | Classification of attack type |
+| `lossUsd`         | `number`                                    | Total USD loss                |
+| `txHashes`        | `string[]`                                  | On-chain transaction hashes   |
+| `hasFoundryPoc`   | `boolean`                                   | Whether a Foundry POC exists  |
+| `foundryTestPath` | `string \| null`                            | Path in DeFiHackLabs repo     |
+| `fundsReturned`   | `boolean`                                   | Whether funds were returned   |
+| `dataSource`      | `'defillama' \| 'defihacklabs' \| 'manual'` | ETL origin                    |
 
 ### AISkillFile
 
-| Field | Type | Description |
-|---|---|---|
-| `id` | `string` (UUID) | Unique identifier |
-| `name` | `string` | Skill display name |
-| `sourceRepo` | `string` | GitHub repository URL |
-| `platform` | `'openai' \| 'claude' \| 'gemini' \| 'cursor' \| 'universal'` | Target AI platform |
-| `language` | `'solidity' \| 'rust' \| 'move' \| 'vyper' \| 'multi'` | Smart contract language |
-| `safetyLabel` | `SafetyLabel` | Safety scanner classification |
-| `contentHash` | `string` | SHA-256 of file content |
-| `copyCount` | `number` | Community usage metric |
-| `starCount` | `number` | Source repository stars |
+| Field         | Type                                                          | Description                   |
+| ------------- | ------------------------------------------------------------- | ----------------------------- |
+| `id`          | `string` (UUID)                                               | Unique identifier             |
+| `name`        | `string`                                                      | Skill display name            |
+| `sourceRepo`  | `string`                                                      | GitHub repository URL         |
+| `platform`    | `'openai' \| 'claude' \| 'gemini' \| 'cursor' \| 'universal'` | Target AI platform            |
+| `language`    | `'solidity' \| 'rust' \| 'move' \| 'vyper' \| 'multi'`        | Smart contract language       |
+| `safetyLabel` | `SafetyLabel`                                                 | Safety scanner classification |
+| `contentHash` | `string`                                                      | SHA-256 of file content       |
+| `copyCount`   | `number`                                                      | Community usage metric        |
+| `starCount`   | `number`                                                      | Source repository stars       |
 
 ### Value Objects
 
@@ -359,16 +359,16 @@ the technical core of **Thesis 2**.
 
 ### Attack Vectors Tracked On-Chain
 
-| Attack Type | On-Chain Signature | Foundry POC |
-|---|---|---|
-| **Flash Loan** | Uncollateralized single-tx borrow + repay within one block | ✅ Most incidents |
-| **Reentrancy** | Cross-function or cross-contract recursive external call | ✅ |
-| **Oracle Manipulation** | AMM spot price manipulation within a single block | ✅ |
-| **Access Control** | Unauthorized privileged call — missing `onlyOwner` / role check | ✅ |
-| **Bridge Exploit** | Cross-chain message forgery or signature replay | ⚠️ Partial |
-| **Governance Attack** | Flash-loan governance token acquisition + same-block vote | ✅ |
-| **Sandwich Attack** | MEV front-run + back-run wrapping a victim transaction | ✅ |
-| **Logic Error** | Arithmetic overflow / underflow / precision loss | ⚠️ Partial |
+| Attack Type             | On-Chain Signature                                              | Foundry POC       |
+| ----------------------- | --------------------------------------------------------------- | ----------------- |
+| **Flash Loan**          | Uncollateralized single-tx borrow + repay within one block      | ✅ Most incidents |
+| **Reentrancy**          | Cross-function or cross-contract recursive external call        | ✅                |
+| **Oracle Manipulation** | AMM spot price manipulation within a single block               | ✅                |
+| **Access Control**      | Unauthorized privileged call — missing `onlyOwner` / role check | ✅                |
+| **Bridge Exploit**      | Cross-chain message forgery or signature replay                 | ⚠️ Partial        |
+| **Governance Attack**   | Flash-loan governance token acquisition + same-block vote       | ✅                |
+| **Sandwich Attack**     | MEV front-run + back-run wrapping a victim transaction          | ✅                |
+| **Logic Error**         | Arithmetic overflow / underflow / precision loss                | ⚠️ Partial        |
 
 ### viem Adapter
 
@@ -419,37 +419,37 @@ export class FoundryAdapter implements IForensicRunnerPort {
 
 ## Architecture Decision Records
 
-| # | Decision | Rationale |
-|---|---|---|
-| **ADR-001** | pnpm Workspaces + Turborepo | Strictest dependency isolation + fastest installs. Turbo caches tasks without framework lock-in. Nx is overkill; Lerna is deprecated. |
-| **ADR-002** | 100% TypeScript — Python in `research/` only | v1/v2 suffered Python/TS impedance mismatch. ML inference wrappable via ONNX or REST. |
-| **ADR-003** | Hexagonal Architecture | Zero framework coupling in domain. Swap any adapter without touching business logic. Trivially unit-testable via in-memory ports. |
-| **ADR-004** | Next.js 15 App Router + React 19 | Server Components cut JS bundle on data-heavy dashboards. Streaming SSR speeds initial load. Parallel routes support dual-engine layout. |
-| **ADR-005** | PostgreSQL 16 + Redis 7 | Hack data is relational. JSONB covers NoSQL needs for skill metadata. BullMQ provides battle-tested ETL queues with retry semantics. |
+| #           | Decision                                     | Rationale                                                                                                                                |
+| ----------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| **ADR-001** | pnpm Workspaces + Turborepo                  | Strictest dependency isolation + fastest installs. Turbo caches tasks without framework lock-in. Nx is overkill; Lerna is deprecated.    |
+| **ADR-002** | 100% TypeScript — Python in `research/` only | v1/v2 suffered Python/TS impedance mismatch. ML inference wrappable via ONNX or REST.                                                    |
+| **ADR-003** | Hexagonal Architecture                       | Zero framework coupling in domain. Swap any adapter without touching business logic. Trivially unit-testable via in-memory ports.        |
+| **ADR-004** | Next.js 15 App Router + React 19             | Server Components cut JS bundle on data-heavy dashboards. Streaming SSR speeds initial load. Parallel routes support dual-engine layout. |
+| **ADR-005** | PostgreSQL 16 + Redis 7                      | Hack data is relational. JSONB covers NoSQL needs for skill metadata. BullMQ provides battle-tested ETL queues with retry semantics.     |
 
 ---
 
 ## Phase Roadmap
 
-| Phase | Timeline | Status | Key Deliverables |
-|---|---|---|---|
-| **Phase 0 — Init** | Week 1–2 | 🔄 **In Progress** | Monorepo scaffold · pnpm workspace · Turbo config · Domain blueprints · Docker Compose · Dev tooling |
-| **Phase 1 — Architecture** | Week 3–4 | ⏳ Planned | `ARCHITECTURE.md` · `API_SPECIFICATION.md` · DB migrations · Seed data · Domain implementations |
-| **Phase 2 — ETL Pipeline** | Week 5–8 | ⏳ Planned | DefiLlama sync worker · DeFiHackLabs scraper · BullMQ queues · PostgreSQL pipeline |
-| **Phase 3 — Safety Scanner** | Week 9–16 | ⏳ Planned | AST parser · Heuristic safety rules · Safety label classifier **(Thesis 1 core)** |
-| **Phase 4 — Frontend** | Week 17–22 | ⏳ Planned | Hacks Dashboard · AI Skills Explorer · Forensic trace viewer · AEGIS design system |
-| **Phase 5 — EVM Forensics** | Week 23–32 | ⏳ Planned | Foundry POC integration · Trace visualization · Root-cause mapping **(Thesis 2 core)** |
-| **Phase 6 — Production** | Week 33–40 | ⏳ Planned | Terraform · CI/CD · Production deployment · Performance evaluation |
+| Phase                        | Timeline   | Status             | Key Deliverables                                                                                     |
+| ---------------------------- | ---------- | ------------------ | ---------------------------------------------------------------------------------------------------- |
+| **Phase 0 — Init**           | Week 1–2   | 🔄 **In Progress** | Monorepo scaffold · pnpm workspace · Turbo config · Domain blueprints · Docker Compose · Dev tooling |
+| **Phase 1 — Architecture**   | Week 3–4   | ⏳ Planned         | `ARCHITECTURE.md` · `API_SPECIFICATION.md` · DB migrations · Seed data · Domain implementations      |
+| **Phase 2 — ETL Pipeline**   | Week 5–8   | ⏳ Planned         | DefiLlama sync worker · DeFiHackLabs scraper · BullMQ queues · PostgreSQL pipeline                   |
+| **Phase 3 — Safety Scanner** | Week 9–16  | ⏳ Planned         | AST parser · Heuristic safety rules · Safety label classifier **(Thesis 1 core)**                    |
+| **Phase 4 — Frontend**       | Week 17–22 | ⏳ Planned         | Hacks Dashboard · AI Skills Explorer · Forensic trace viewer · AEGIS design system                   |
+| **Phase 5 — EVM Forensics**  | Week 23–32 | ⏳ Planned         | Foundry POC integration · Trace visualization · Root-cause mapping **(Thesis 2 core)**               |
+| **Phase 6 — Production**     | Week 33–40 | ⏳ Planned         | Terraform · CI/CD · Production deployment · Performance evaluation                                   |
 
 ---
 
 ## Academic Alignment
 
-| Phase | Thesis | Title & Contribution |
-|---|---|---|
-| Phase 0–2 | Methods of Research | Architecture docs · ETL design · DeFi exploit taxonomy literature review |
-| **Phase 3** | **Thesis 1** | *"Automated Detection of Malicious Intent in AI Audit Skill Files for Web3 Security"* — AST parser + heuristic rules detecting prompt injection, file-system abuse, and code exfiltration in YAML/Markdown AI skill files |
-| **Phase 5–6** | **Thesis 2** | *"Programmatic Exploit Simulation and Forensic Trace Analysis Using Foundry for Historical DeFi Incidents"* — Automated Foundry POC execution, transaction trace visualization, root-cause attack vector mapping |
+| Phase         | Thesis              | Title & Contribution                                                                                                                                                                                                      |
+| ------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Phase 0–2     | Methods of Research | Architecture docs · ETL design · DeFi exploit taxonomy literature review                                                                                                                                                  |
+| **Phase 3**   | **Thesis 1**        | _"Automated Detection of Malicious Intent in AI Audit Skill Files for Web3 Security"_ — AST parser + heuristic rules detecting prompt injection, file-system abuse, and code exfiltration in YAML/Markdown AI skill files |
+| **Phase 5–6** | **Thesis 2**        | _"Programmatic Exploit Simulation and Forensic Trace Analysis Using Foundry for Historical DeFi Incidents"_ — Automated Foundry POC execution, transaction trace visualization, root-cause attack vector mapping          |
 
 ---
 
@@ -457,13 +457,13 @@ export class FoundryAdapter implements IForensicRunnerPort {
 
 ### Prerequisites
 
-| Tool | Minimum Version | Notes |
-|---|---|---|
-| Node.js | `20.11.0` | Use [nvm](https://github.com/nvm-sh/nvm) |
-| pnpm | `9.0.0` | `npm install -g pnpm` |
-| Docker Desktop | `24.x` | Required for PostgreSQL + Redis |
-| Git | `2.x` | — |
-| Foundry | latest | `curl -L https://foundry.paradigm.xyz \| bash && foundryup` *(Phase 5+)* |
+| Tool           | Minimum Version | Notes                                                                    |
+| -------------- | --------------- | ------------------------------------------------------------------------ |
+| Node.js        | `20.11.0`       | Use [nvm](https://github.com/nvm-sh/nvm)                                 |
+| pnpm           | `9.0.0`         | `npm install -g pnpm`                                                    |
+| Docker Desktop | `24.x`          | Required for PostgreSQL + Redis                                          |
+| Git            | `2.x`           | —                                                                        |
+| Foundry        | latest          | `curl -L https://foundry.paradigm.xyz \| bash && foundryup` _(Phase 5+)_ |
 
 > **Windows:** Add `shamefully-hoist=true` to `.npmrc` to resolve pnpm symlink issues with Next.js.
 
@@ -521,6 +521,7 @@ docker compose -f docker-compose.dev.yml up -d
 ```
 
 Boots:
+
 - `aegis-postgres` — PostgreSQL 16 on `:5432`
 - `aegis-redis` — Redis 7 on `:6379`
 
@@ -537,46 +538,46 @@ pnpm --filter @aegis/web dev
 pnpm --filter @aegis/api-gateway dev
 ```
 
-| Service | URL |
-|---|---|
-| Web Frontend | http://localhost:3000 |
-| API Gateway | http://localhost:3001 |
-| API Health | http://localhost:3001/api/v1/health
+| Service      | URL                                 |
+| ------------ | ----------------------------------- |
+| Web Frontend | http://localhost:3000               |
+| API Gateway  | http://localhost:3001               |
+| API Health   | http://localhost:3001/api/v1/health |
 
 ---
 
 ## Development Commands
 
-| Command | Description |
-|---|---|
-| `pnpm dev` | Start all apps and packages in watch mode |
-| `pnpm build` | Build all packages and apps via Turbo |
-| `pnpm test` | Run all test suites via Turbo |
-| `pnpm lint` | Lint all packages via Turbo |
-| `pnpm typecheck` | Type-check all packages via Turbo |
-| `pnpm format` | Format all files with Prettier |
-| `pnpm format:check` | Check formatting without writing |
-| `pnpm clean` | Remove all `dist/` and `node_modules/` |
-| `pnpm --filter @aegis/core build` | Build a single package |
-| `pnpm --filter @aegis/hacks-engine test` | Test a single package |
-| `pnpm --filter @aegis/web dev` | Run only the web app |
-| `pnpm --filter @aegis/api-gateway dev` | Run only the API gateway |
-| `docker compose -f docker-compose.dev.yml up -d` | Start PostgreSQL + Redis |
-| `docker compose -f docker-compose.dev.yml down` | Stop all infrastructure |
-| `docker compose -f docker-compose.dev.yml logs -f` | Tail all service logs |
+| Command                                            | Description                               |
+| -------------------------------------------------- | ----------------------------------------- |
+| `pnpm dev`                                         | Start all apps and packages in watch mode |
+| `pnpm build`                                       | Build all packages and apps via Turbo     |
+| `pnpm test`                                        | Run all test suites via Turbo             |
+| `pnpm lint`                                        | Lint all packages via Turbo               |
+| `pnpm typecheck`                                   | Type-check all packages via Turbo         |
+| `pnpm format`                                      | Format all files with Prettier            |
+| `pnpm format:check`                                | Check formatting without writing          |
+| `pnpm clean`                                       | Remove all `dist/` and `node_modules/`    |
+| `pnpm --filter @aegis/core build`                  | Build a single package                    |
+| `pnpm --filter @aegis/hacks-engine test`           | Test a single package                     |
+| `pnpm --filter @aegis/web dev`                     | Run only the web app                      |
+| `pnpm --filter @aegis/api-gateway dev`             | Run only the API gateway                  |
+| `docker compose -f docker-compose.dev.yml up -d`   | Start PostgreSQL + Redis                  |
+| `docker compose -f docker-compose.dev.yml down`    | Stop all infrastructure                   |
+| `docker compose -f docker-compose.dev.yml logs -f` | Tail all service logs                     |
 
 ### Common Troubleshooting
 
-| Problem | Cause | Fix |
-|---|---|---|
-| `ERR_PNPM_PEER_DEP_ISSUES` | Strict peer dependency enforcement | Add `auto-install-peers=true` to `.npmrc` |
-| `Cannot find module '@aegis/core'` | Workspace packages not linked | Run `pnpm install` from the **repo root** |
-| TypeScript path aliases not resolving | Missing `paths` in `tsconfig.json` | Ensure `baseUrl` is set and `paths` map to `workspace:*` |
-| Husky hooks not triggering | `.husky/` not initialized | Run `pnpm exec husky init` |
-| PostgreSQL connection refused | Docker not running or port conflict | `docker compose ps` — check port `5432` |
-| Next.js + pnpm `ENOENT` on Windows | Symlink resolution issues | Add `shamefully-hoist=true` to `.npmrc` |
-| `Docker Compose depends_on` race condition | Service starts before DB is ready | Use `healthcheck` + `condition: service_healthy` |
-| ESLint `parserOptions.project` error | `tsconfig.json` not found | Ensure `tsconfigRootDir` points to monorepo root |
+| Problem                                    | Cause                               | Fix                                                      |
+| ------------------------------------------ | ----------------------------------- | -------------------------------------------------------- |
+| `ERR_PNPM_PEER_DEP_ISSUES`                 | Strict peer dependency enforcement  | Add `auto-install-peers=true` to `.npmrc`                |
+| `Cannot find module '@aegis/core'`         | Workspace packages not linked       | Run `pnpm install` from the **repo root**                |
+| TypeScript path aliases not resolving      | Missing `paths` in `tsconfig.json`  | Ensure `baseUrl` is set and `paths` map to `workspace:*` |
+| Husky hooks not triggering                 | `.husky/` not initialized           | Run `pnpm exec husky init`                               |
+| PostgreSQL connection refused              | Docker not running or port conflict | `docker compose ps` — check port `5432`                  |
+| Next.js + pnpm `ENOENT` on Windows         | Symlink resolution issues           | Add `shamefully-hoist=true` to `.npmrc`                  |
+| `Docker Compose depends_on` race condition | Service starts before DB is ready   | Use `healthcheck` + `condition: service_healthy`         |
+| ESLint `parserOptions.project` error       | `tsconfig.json` not found           | Ensure `tsconfigRootDir` points to monorepo root         |
 
 ---
 
@@ -626,19 +627,19 @@ http://localhost:3001/api/v1
 
 ### Endpoints
 
-| Method | Path | Description | Phase |
-|---|---|---|---|
-| `GET` | `/health` | Service health + dependency status | Phase 0 |
-| `GET` | `/hacks` | Paginated list of DeFi hack incidents | Phase 2 |
-| `GET` | `/hacks/:id` | Single hack incident by ID | Phase 2 |
-| `GET` | `/hacks/stats` | Attack vector statistics + chain breakdown | Phase 2 |
-| `POST` | `/hacks/sync` | Trigger ETL sync from DefiLlama + DeFiHackLabs | Phase 2 |
-| `GET` | `/skills` | Paginated list of AI skill files | Phase 3 |
-| `GET` | `/skills/:id` | Single skill file by ID | Phase 3 |
-| `POST` | `/skills/scan` | Run safety scanner on a skill file | Phase 3 |
-| `GET` | `/skills/search` | Full-text search across skill files | Phase 3 |
-| `GET` | `/forensics/:txHash` | EVM transaction trace | Phase 5 |
-| `POST` | `/forensics/simulate` | Run Foundry POC simulation | Phase 5 |
+| Method | Path                  | Description                                    | Phase   |
+| ------ | --------------------- | ---------------------------------------------- | ------- |
+| `GET`  | `/health`             | Service health + dependency status             | Phase 0 |
+| `GET`  | `/hacks`              | Paginated list of DeFi hack incidents          | Phase 2 |
+| `GET`  | `/hacks/:id`          | Single hack incident by ID                     | Phase 2 |
+| `GET`  | `/hacks/stats`        | Attack vector statistics + chain breakdown     | Phase 2 |
+| `POST` | `/hacks/sync`         | Trigger ETL sync from DefiLlama + DeFiHackLabs | Phase 2 |
+| `GET`  | `/skills`             | Paginated list of AI skill files               | Phase 3 |
+| `GET`  | `/skills/:id`         | Single skill file by ID                        | Phase 3 |
+| `POST` | `/skills/scan`        | Run safety scanner on a skill file             | Phase 3 |
+| `GET`  | `/skills/search`      | Full-text search across skill files            | Phase 3 |
+| `GET`  | `/forensics/:txHash`  | EVM transaction trace                          | Phase 5 |
+| `POST` | `/forensics/simulate` | Run Foundry POC simulation                     | Phase 5 |
 
 ### Health Response Shape
 
@@ -658,14 +659,14 @@ http://localhost:3001/api/v1
 
 ### Branch Naming Convention
 
-| Branch | Purpose |
-|---|---|
-| `main` | Protected — production-ready, tagged releases only |
-| `develop` | Integration branch — all features merge here first |
+| Branch                           | Purpose                                               |
+| -------------------------------- | ----------------------------------------------------- |
+| `main`                           | Protected — production-ready, tagged releases only    |
+| `develop`                        | Integration branch — all features merge here first    |
 | `feature/P{phase}-{task}-{slug}` | Feature work, e.g. `feature/P1-ARCH-001-hex-diagrams` |
-| `fix/P{phase}-{slug}` | Bug fixes, e.g. `fix/P0-husky-hooks` |
-| `chore/{slug}` | Tooling, deps, CI changes |
-| `docs/{slug}` | Documentation-only changes |
+| `fix/P{phase}-{slug}`            | Bug fixes, e.g. `fix/P0-husky-hooks`                  |
+| `chore/{slug}`                   | Tooling, deps, CI changes                             |
+| `docs/{slug}`                    | Documentation-only changes                            |
 
 ### Pull Request Rules
 
@@ -714,14 +715,14 @@ git push origin feature/P1-ARCH-001-hex-diagrams
 
 ## Team
 
-| Name | GitHub | Role |
-|---|---|---|
-| **Jay Arre Talosig** | [@flexycode](https://github.com/flexycode) | Blockchain Architect · Blockchain Protocol Engineer · Product Manager (Web3) |
-| **Rinoah Venedict Dela Rama** | [@Noah-dev2217](https://github.com/Noah-dev2217) | Blockchain Developer · Smart Contract Engineer · Community Manager / Developer Relations (DevRel) | 
-| **Nicko Nehcterg Dalida** | [@nicknicndin](https://github.com/nicknicndin) | Blockchain Developer · DeFi Researcher · Smart Contract Auditor · Security Auditor |
-| **Jannah Cleine Glodo** | [@jncln](https://github.com/jncln) | Blockchain Engineer · Frontend/Web3 Developer · UI / UX Designer · Machine Learning Engineer |
-| **Anthonee Buno** | [@Leirk04](https://github.com/Leirk04) | Blockchain Engineer · Full Stack Web3 Developer · Data / Analytics Engineer |
-| **Brian Carlo De Vera** *(Collab)* | [@scarfer14](https://github.com/scarfer14) | QA Engineer · Cybersecurity Engineer · Network Engineer |
+| Name                               | GitHub                                           | Role                                                                                              |
+| ---------------------------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| **Jay Arre Talosig**               | [@flexycode](https://github.com/flexycode)       | Blockchain Architect · Blockchain Protocol Engineer · Product Manager (Web3)                      |
+| **Rinoah Venedict Dela Rama**      | [@Noah-dev2217](https://github.com/Noah-dev2217) | Blockchain Developer · Smart Contract Engineer · Community Manager / Developer Relations (DevRel) |
+| **Nicko Nehcterg Dalida**          | [@nicknicndin](https://github.com/nicknicndin)   | Blockchain Developer · DeFi Researcher · Smart Contract Auditor · Security Auditor                |
+| **Jannah Cleine Glodo**            | [@jncln](https://github.com/jncln)               | Blockchain Engineer · Frontend/Web3 Developer · UI / UX Designer · Machine Learning Engineer      |
+| **Anthonee Buno**                  | [@Leirk04](https://github.com/Leirk04)           | Blockchain Engineer · Full Stack Web3 Developer · Data / Analytics Engineer                       |
+| **Brian Carlo De Vera** _(Collab)_ | [@scarfer14](https://github.com/scarfer14)       | QA Engineer · Cybersecurity Engineer · Network Engineer                                           |
 
 ---
 
@@ -730,12 +731,14 @@ git push origin feature/P1-ARCH-001-hex-diagrams
 ### 🛡️ [03.0.0] — 2026-03-XX · Phase 0 🔄 **In Progress**
 
 #### Rebrand & Architecture
-- Rebranded project from *AltFlex v2* to **AltFlex AEGIS v3.0**
+
+- Rebranded project from _AltFlex v2_ to **AltFlex AEGIS v3.0**
 - Defined AEGIS acronym: **A**daptive **E**xploit & **G**overnance **I**ntelligence **S**ystem
 - Migrated from Python/TypeScript hybrid to 100% TypeScript monorepo
 - Adopted Hexagonal Architecture with explicit Ports & Adapters pattern
 
 #### Monorepo & Tooling (P0-INIT-001 → 010)
+
 - Initialized pnpm workspace with Turborepo v2 task orchestration
 - Scaffolded 6-package workspace: `core`, `hacks-engine`, `skills-engine`,
   `forensic-engine`, `web`, `api-gateway`
@@ -772,7 +775,7 @@ git push origin feature/P1-ARCH-001-hex-diagrams
 
 ### 🚀 [0.7.7] — 2025-11-17 · Phase 0: Research and Gathering Data ✅ **Complete**
 
-- Gathering information and Brainstorm for our SE proposal 
+- Gathering information and Brainstorm for our SE proposal
 - Research about the DeFi past exploitation
 - Team orienting
 - Explore on regards to blockchain development
@@ -811,7 +814,7 @@ SOFTWARE.
 
 Built with precision by the **AltFlex AEGIS Engineering Team**
 
-*College of Computer Studies — 2026*
+_College of Computer Studies — 2026_
 
 [🛡️ AltFlex AEGIS](https://github.com/Artificial-Ledger-Technology/ALT-Flex) ·
 [📋 Kanban Board](https://github.com/Artificial-Ledger-Technology/ALT-Flex/projects) ·

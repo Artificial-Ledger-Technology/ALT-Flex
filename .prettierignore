@@ -1,0 +1,21 @@
+# Build outputs
+dist/
+.next/
+out/
+*.tsbuildinfo
+
+# Dependencies
+node_modules/
+
+# Lock files
+pnpm-lock.yaml
+
+# Test coverage
+coverage/
+
+# Turbo cache
+.turbo/
+
+# Foundry
+cache/
+broadcast/
