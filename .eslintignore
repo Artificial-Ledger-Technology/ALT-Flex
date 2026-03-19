@@ -1,0 +1,26 @@
+# Build outputs
+dist/
+.next/
+out/
+*.tsbuildinfo
+
+# Dependencies
+node_modules/
+
+# Test coverage
+coverage/
+
+# Config files (JS/CJS — not TypeScript)
+*.js
+*.cjs
+*.mjs
+
+# Type declarations
+*.d.ts
+
+# Turbo cache
+.turbo/
+
+# Foundry
+cache/
+broadcast/

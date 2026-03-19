@@ -47,21 +47,21 @@ This phase ensures:
 
 ## Why "AEGIS"? — The Rebrand
 
-The v1/v2 name — *"AltFlex: AI-Powered Forensic Framework for Exploit Detection"* — no longer captures the scope. The platform now has two distinct intelligence pillars and a governance mandate (AI skill safety).
+The v1/v2 name — _"AltFlex: AI-Powered Forensic Framework for Exploit Detection"_ — no longer captures the scope. The platform now has two distinct intelligence pillars and a governance mandate (AI skill safety).
 
-| Aspect | v1/v2 (AltFlex) | v3.0 (AltFlex AEGIS) |
-|--------|-----------------|---------------------|
-| **Scope** | Flash loan detection for 5 protocols | Every DeFi hack in history (1,000+ incidents) |
-| **Engine Count** | 1 (Transaction analysis) | 2 (Hacks Dashboard + AI Skills Explorer) |
-| **AI Role** | XGBoost anomaly detector | Safety Scanner + LLM audit skill governance |
-| **Chain Support** | Ethereum only | EVM + Non-EVM (Solana, Cosmos, Move) |
-| **Data Sources** | Etherscan, PolygonScan | DefiLlama, DeFiHackLabs, GitHub AI repos |
-| **Architecture** | Monolithic Python/Next.js | Hexagonal TypeScript microservices |
-| **Academic Purpose** | Capstone proof-of-concept | Thesis 1 & 2 research system |
+| Aspect               | v1/v2 (AltFlex)                      | v3.0 (AltFlex AEGIS)                          |
+| -------------------- | ------------------------------------ | --------------------------------------------- |
+| **Scope**            | Flash loan detection for 5 protocols | Every DeFi hack in history (1,000+ incidents) |
+| **Engine Count**     | 1 (Transaction analysis)             | 2 (Hacks Dashboard + AI Skills Explorer)      |
+| **AI Role**          | XGBoost anomaly detector             | Safety Scanner + LLM audit skill governance   |
+| **Chain Support**    | Ethereum only                        | EVM + Non-EVM (Solana, Cosmos, Move)          |
+| **Data Sources**     | Etherscan, PolygonScan               | DefiLlama, DeFiHackLabs, GitHub AI repos      |
+| **Architecture**     | Monolithic Python/Next.js            | Hexagonal TypeScript microservices            |
+| **Academic Purpose** | Capstone proof-of-concept            | Thesis 1 & 2 research system                  |
 
 **AEGIS** = **A**daptive **E**xploit & **G**overnance **I**ntelligence **S**ystem
 
-> *In Greek mythology, the aegis (αἰγίς) was the shield of Zeus — a supernatural defense that could only be wielded by the most powerful. AltFlex AEGIS is the shield for Web3.*
+> _In Greek mythology, the aegis (αἰγίς) was the shield of Zeus — a supernatural defense that could only be wielded by the most powerful. AltFlex AEGIS is the shield for Web3._
 
 ---
 
@@ -72,6 +72,7 @@ The v1/v2 name — *"AltFlex: AI-Powered Forensic Framework for Exploit Detectio
 **Decision**: Use native pnpm workspaces with Turbo for task orchestration (not Nx or Lerna).
 
 **Rationale**:
+
 - pnpm is the fastest package manager with strict dependency isolation
 - Turbo provides efficient task caching without framework lock-in
 - Nx is overkill for our 6-package monorepo; Lerna is effectively deprecated
@@ -82,6 +83,7 @@ The v1/v2 name — *"AltFlex: AI-Powered Forensic Framework for Exploit Detectio
 **Decision**: v3.0 is 100% TypeScript. Python is limited to Jupyter notebooks in `research/`.
 
 **Rationale**:
+
 - v1/v2 suffered from Python/TypeScript impedance mismatch
 - Type safety across the full stack eliminates a class of integration bugs
 - Fastify (TS) replaces FastAPI (Python) — equal performance, unified language
@@ -92,6 +94,7 @@ The v1/v2 name — *"AltFlex: AI-Powered Forensic Framework for Exploit Detectio
 **Decision**: Every external dependency (databases, APIs, AI models, RPC nodes) is accessed exclusively through abstract `Port` interfaces. Concrete implementations are `Adapters`.
 
 **Rationale**:
+
 - Satisfies the "15-year future-proofing" requirement — swap any external dependency without touching domain logic
 - Makes unit testing trivial: test against ports using in-memory adapters
 - Academic papers can reference architecture diagrams that clearly show system boundaries
@@ -102,6 +105,7 @@ The v1/v2 name — *"AltFlex: AI-Powered Forensic Framework for Exploit Detectio
 **Decision**: Use Next.js 15 with React 19 Server Components for the frontend.
 
 **Rationale**:
+
 - Server Components reduce client-side JS bundle (critical for data-heavy dashboards)
 - Streaming SSR enables fast initial load for large hack datasets
 - App Router enables layouts and parallel routes for the dual-engine UI
@@ -112,6 +116,7 @@ The v1/v2 name — *"AltFlex: AI-Powered Forensic Framework for Exploit Detectio
 **Decision**: PostgreSQL 16 as primary datastore, Redis 7 as cache + job queue backend.
 
 **Rationale**:
+
 - Hack incidents are inherently relational (protocol → chains → attacks → transactions)
 - PostgreSQL JSONB columns provide NoSQL flexibility where needed (skill file metadata)
 - Full-text search via `tsvector` eliminates the need for Elasticsearch at this scale
@@ -123,19 +128,20 @@ The v1/v2 name — *"AltFlex: AI-Powered Forensic Framework for Exploit Detectio
 
 Before proceeding, ensure every tool is installed and verified:
 
-| Tool | Version | Verify Command | Purpose |
-|------|---------|---------------|---------|
-| Node.js | 20 LTS (≥20.11) | `node --version` | Runtime |
-| pnpm | ≥9.0 | `pnpm --version` | Package manager |
-| TypeScript | ≥5.4 | `npx tsc --version` | Type system |
-| Docker Desktop | ≥4.25 | `docker --version` | Containerization |
-| Docker Compose | ≥2.24 | `docker compose version` | Orchestration |
-| Git | ≥2.40 | `git --version` | Version control |
-| Foundry | latest | `forge --version` | Solidity testing (Phase 5) |
-| PostgreSQL | 16 | `psql --version` | Database (via Docker OK) |
-| VS Code | latest | — | IDE |
+| Tool           | Version         | Verify Command           | Purpose                    |
+| -------------- | --------------- | ------------------------ | -------------------------- |
+| Node.js        | 20 LTS (≥20.11) | `node --version`         | Runtime                    |
+| pnpm           | ≥9.0            | `pnpm --version`         | Package manager            |
+| TypeScript     | ≥5.4            | `npx tsc --version`      | Type system                |
+| Docker Desktop | ≥4.25           | `docker --version`       | Containerization           |
+| Docker Compose | ≥2.24           | `docker compose version` | Orchestration              |
+| Git            | ≥2.40           | `git --version`          | Version control            |
+| Foundry        | latest          | `forge --version`        | Solidity testing (Phase 5) |
+| PostgreSQL     | 16              | `psql --version`         | Database (via Docker OK)   |
+| VS Code        | latest          | —                        | IDE                        |
 
 **Install pnpm** (if not present):
+
 ```bash
 corepack enable
 corepack prepare pnpm@latest --activate
@@ -318,6 +324,7 @@ pnpm init
 ```
 
 **`pnpm-workspace.yaml`**:
+
 ```yaml
 packages:
   - 'packages/*'
@@ -325,6 +332,7 @@ packages:
 ```
 
 **Root `package.json`**:
+
 ```jsonc
 {
   "name": "@aegis/root",
@@ -333,7 +341,7 @@ packages:
   "description": "AltFlex AEGIS — Adaptive Exploit & Governance Intelligence System",
   "engines": {
     "node": ">=20.11.0",
-    "pnpm": ">=9.0.0"
+    "pnpm": ">=9.0.0",
   },
   "scripts": {
     "build": "turbo run build",
@@ -345,7 +353,7 @@ packages:
     "test:coverage": "turbo run test:coverage",
     "clean": "turbo run clean && rm -rf node_modules",
     "typecheck": "turbo run typecheck",
-    "prepare": "husky"
+    "prepare": "husky",
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7.0.0",
@@ -355,18 +363,19 @@ packages:
     "lint-staged": "^15.2.0",
     "prettier": "^3.2.0",
     "turbo": "^2.0.0",
-    "typescript": "^5.4.0"
+    "typescript": "^5.4.0",
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": ["eslint --fix", "prettier --write"],
-    "*.{json,md,yml,yaml}": ["prettier --write"]
-  }
+    "*.{json,md,yml,yaml}": ["prettier --write"],
+  },
 }
 ```
 
 ### Step 2: Turbo Configuration
 
 **`turbo.json`**:
+
 ```jsonc
 {
   "$schema": "https://turbo.build/schema.json",
@@ -374,23 +383,23 @@ packages:
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**"]
+      "outputs": ["dist/**", ".next/**"],
     },
     "dev": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
     },
     "lint": {},
     "test": {
-      "dependsOn": ["build"]
+      "dependsOn": ["build"],
     },
     "typecheck": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
     },
     "clean": {
-      "cache": false
-    }
-  }
+      "cache": false,
+    },
+  },
 }
 ```
 
@@ -415,17 +424,17 @@ packages:
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
   },
   "dependencies": {
     "zod": "^3.22.0",
     "date-fns": "^3.3.0",
-    "winston": "^3.11.0"
+    "winston": "^3.11.0",
   },
   "devDependencies": {
     "typescript": "^5.4.0",
-    "vitest": "^1.3.0"
-  }
+    "vitest": "^1.3.0",
+  },
 }
 ```
 
@@ -445,20 +454,20 @@ packages:
     "lint": "eslint src/",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
   },
   "dependencies": {
     "@aegis/core": "workspace:*",
     "axios": "^1.6.0",
     "pg": "^8.11.0",
     "ioredis": "^5.3.0",
-    "bullmq": "^5.1.0"
+    "bullmq": "^5.1.0",
   },
   "devDependencies": {
     "@types/pg": "^8.11.0",
     "typescript": "^5.4.0",
-    "vitest": "^1.3.0"
-  }
+    "vitest": "^1.3.0",
+  },
 }
 ```
 
@@ -478,7 +487,7 @@ packages:
     "lint": "eslint src/",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
   },
   "dependencies": {
     "@aegis/core": "workspace:*",
@@ -486,14 +495,14 @@ packages:
     "acorn": "^8.11.0",
     "acorn-walk": "^8.3.0",
     "semver": "^7.6.0",
-    "pg": "^8.11.0"
+    "pg": "^8.11.0",
   },
   "devDependencies": {
     "@types/pg": "^8.11.0",
     "@types/semver": "^7.5.0",
     "typescript": "^5.4.0",
-    "vitest": "^1.3.0"
-  }
+    "vitest": "^1.3.0",
+  },
 }
 ```
 
@@ -597,24 +606,10 @@ export const AISkillFileSchema = z.object({
   filePath: z.string(),
 
   /** Target AI platform */
-  platform: z.enum([
-    'claude',
-    'cursor',
-    'mcp',
-    'copilot',
-    'gemini',
-    'generic',
-  ]),
+  platform: z.enum(['claude', 'cursor', 'mcp', 'copilot', 'gemini', 'generic']),
 
   /** Target smart contract language */
-  language: z.enum([
-    'solidity',
-    'vyper',
-    'rust',
-    'move',
-    'cairo',
-    'multi',
-  ]),
+  language: z.enum(['solidity', 'vyper', 'rust', 'move', 'cairo', 'multi']),
 
   /** Raw file content */
   content: z.string(),
@@ -658,22 +653,22 @@ export type AISkillFile = z.infer<typeof AISkillFileSchema>;
  * (11 base categories) plus extended categories for AltFlex AEGIS.
  */
 export enum AttackVector {
-  ACCESS_CONTROL        = 'access-control',
-  ARITHMETIC_OVERFLOW   = 'arithmetic-overflow',
+  ACCESS_CONTROL = 'access-control',
+  ARITHMETIC_OVERFLOW = 'arithmetic-overflow',
   DELEGATECALL_INJECTION = 'delegatecall-injection',
-  FLASH_LOAN            = 'flash-loan',
-  ORACLE_MANIPULATION   = 'oracle-manipulation',
-  REENTRANCY            = 'reentrancy',
-  DAO_GOVERNANCE        = 'dao-governance',
-  FRONTRUNNING          = 'frontrunning',
-  PHISHING              = 'phishing',
-  DOS                   = 'dos',
-  REPLAY                = 'replay',
-  SELF_DESTRUCT         = 'self-destruct',
-  RUG_PULL              = 'rug-pull',
-  BRIDGE_EXPLOIT        = 'bridge-exploit',
-  LOGIC_ERROR           = 'logic-error',
-  OTHER                 = 'other',
+  FLASH_LOAN = 'flash-loan',
+  ORACLE_MANIPULATION = 'oracle-manipulation',
+  REENTRANCY = 'reentrancy',
+  DAO_GOVERNANCE = 'dao-governance',
+  FRONTRUNNING = 'frontrunning',
+  PHISHING = 'phishing',
+  DOS = 'dos',
+  REPLAY = 'replay',
+  SELF_DESTRUCT = 'self-destruct',
+  RUG_PULL = 'rug-pull',
+  BRIDGE_EXPLOIT = 'bridge-exploit',
+  LOGIC_ERROR = 'logic-error',
+  OTHER = 'other',
 }
 ```
 
@@ -689,26 +684,26 @@ export enum AttackVector {
  */
 export enum Chain {
   // EVM Chains
-  ETHEREUM  = 'ethereum',
-  BSC       = 'bsc',
-  POLYGON   = 'polygon',
-  ARBITRUM  = 'arbitrum',
-  OPTIMISM  = 'optimism',
+  ETHEREUM = 'ethereum',
+  BSC = 'bsc',
+  POLYGON = 'polygon',
+  ARBITRUM = 'arbitrum',
+  OPTIMISM = 'optimism',
   AVALANCHE = 'avalanche',
-  BASE      = 'base',
-  FANTOM    = 'fantom',
-  GNOSIS    = 'gnosis',
-  CRONOS    = 'cronos',
+  BASE = 'base',
+  FANTOM = 'fantom',
+  GNOSIS = 'gnosis',
+  CRONOS = 'cronos',
 
   // Non-EVM Chains
-  SOLANA    = 'solana',
-  COSMOS    = 'cosmos',
-  NEAR      = 'near',
-  STELLAR   = 'stellar',
+  SOLANA = 'solana',
+  COSMOS = 'cosmos',
+  NEAR = 'near',
+  STELLAR = 'stellar',
 
   // Multi-chain / Unknown
-  MULTI     = 'multi',
-  UNKNOWN   = 'unknown',
+  MULTI = 'multi',
+  UNKNOWN = 'unknown',
 }
 ```
 
@@ -1014,6 +1009,7 @@ volumes:
 ### Prettier Configuration
 
 **`.prettierrc`**:
+
 ```json
 {
   "semi": true,
@@ -1030,6 +1026,7 @@ volumes:
 ### ESLint Configuration
 
 **`.eslintrc.cjs`**:
+
 ```javascript
 /** @type {import('eslint').Linter.Config} */
 module.exports = {
@@ -1224,22 +1221,24 @@ git commit -m "feat(core): add domain models" # ✅ Accepted
 
 > This matrix maps each AltFlex AEGIS phase to academic deliverables, ensuring the project satisfies both commercial and thesis requirements.
 
-| Phase | Timeline | Academic Deliverable | Thesis | Commercial Value |
-|-------|----------|---------------------|--------|-----------------|
-| **Phase 0** | Week 1–2 | Project proposal, methodology design | Methods of Research | Platform foundation |
-| **Phase 1** | Week 3–4 | Architecture documentation, literature review | Methods of Research | API specification |
-| **Phase 2** | Week 5–8 | Data pipeline validation, ETL benchmarks | Methods of Research | Real-time hack data |
-| **Phase 3** | Week 9–16 | **Safety Scanner research & implementation** | **Thesis 1** | AI skill governance |
-| **Phase 4** | Week 17–22 | Frontend implementation, UX study | Thesis 1 / Thesis 2 | User-facing product |
-| **Phase 5** | Week 23–32 | **Deep EVM analysis, Foundry integration** | **Thesis 2** | Forensic intelligence |
-| **Phase 6** | Week 33–40 | Performance evaluation, deployment study | Thesis 2 | Production launch |
+| Phase       | Timeline   | Academic Deliverable                          | Thesis              | Commercial Value      |
+| ----------- | ---------- | --------------------------------------------- | ------------------- | --------------------- |
+| **Phase 0** | Week 1–2   | Project proposal, methodology design          | Methods of Research | Platform foundation   |
+| **Phase 1** | Week 3–4   | Architecture documentation, literature review | Methods of Research | API specification     |
+| **Phase 2** | Week 5–8   | Data pipeline validation, ETL benchmarks      | Methods of Research | Real-time hack data   |
+| **Phase 3** | Week 9–16  | **Safety Scanner research & implementation**  | **Thesis 1**        | AI skill governance   |
+| **Phase 4** | Week 17–22 | Frontend implementation, UX study             | Thesis 1 / Thesis 2 | User-facing product   |
+| **Phase 5** | Week 23–32 | **Deep EVM analysis, Foundry integration**    | **Thesis 2**        | Forensic intelligence |
+| **Phase 6** | Week 33–40 | Performance evaluation, deployment study      | Thesis 2            | Production launch     |
 
 ### Thesis 1 Scope (AI Safety Scanner)
+
 - **Title**: "Automated Detection of Malicious Intent in AI Audit Skill Files for Web3 Security"
 - **Core Contribution**: AST-based parser + heuristic rules for detecting prompt injection, file-system abuse, code exfiltration in YAML/Markdown skill files
 - **Evaluation**: Accuracy, precision, recall against labeled dataset of safe/malicious skill files
 
 ### Thesis 2 Scope (Deep EVM Integration)
+
 - **Title**: "Programmatic Exploit Simulation and Forensic Trace Analysis Using Foundry for Historical DeFi Incidents"
 - **Core Contribution**: Automated Foundry POC execution, transaction trace visualization, root-cause mapping
 - **Evaluation**: Coverage of DeFiHackLabs POCs, simulation accuracy, trace analysis depth
@@ -1248,16 +1247,16 @@ git commit -m "feat(core): add domain models" # ✅ Accepted
 
 ## Common Pitfalls & Fixes
 
-| Problem | Cause | Fix |
-|---------|-------|-----|
-| `ERR_PNPM_PEER_DEP_ISSUES` | Strict peer dependency enforcement | Add `auto-install-peers=true` to `.npmrc` |
-| TypeScript path aliases not resolving | Missing `paths` in `tsconfig.json` | Ensure `baseUrl` is set and paths map to `workspace:*` |
-| Docker Compose `depends_on` race | Service starts before DB is ready | Use `healthcheck` + `condition: service_healthy` |
-| Husky hooks not triggering | `.husky/` not initialized | Run `pnpm exec husky init` |
-| `Cannot find module '@aegis/core'` | pnpm workspace not linked | Run `pnpm install` from root (not from package) |
-| ESLint `parserOptions.project` error | `tsconfig.json` not found | Ensure `tsconfigRootDir` points to monorepo root |
-| Next.js + pnpm `ENOENT` | Symlink issues on Windows | Add `shamefully-hoist=true` to `.npmrc` |
-| PostgreSQL connection refused | Docker not running or port conflict | `docker compose ps` and check port `5432` |
+| Problem                               | Cause                               | Fix                                                    |
+| ------------------------------------- | ----------------------------------- | ------------------------------------------------------ |
+| `ERR_PNPM_PEER_DEP_ISSUES`            | Strict peer dependency enforcement  | Add `auto-install-peers=true` to `.npmrc`              |
+| TypeScript path aliases not resolving | Missing `paths` in `tsconfig.json`  | Ensure `baseUrl` is set and paths map to `workspace:*` |
+| Docker Compose `depends_on` race      | Service starts before DB is ready   | Use `healthcheck` + `condition: service_healthy`       |
+| Husky hooks not triggering            | `.husky/` not initialized           | Run `pnpm exec husky init`                             |
+| `Cannot find module '@aegis/core'`    | pnpm workspace not linked           | Run `pnpm install` from root (not from package)        |
+| ESLint `parserOptions.project` error  | `tsconfig.json` not found           | Ensure `tsconfigRootDir` points to monorepo root       |
+| Next.js + pnpm `ENOENT`               | Symlink issues on Windows           | Add `shamefully-hoist=true` to `.npmrc`                |
+| PostgreSQL connection refused         | Docker not running or port conflict | `docker compose ps` and check port `5432`              |
 
 ---
 
@@ -1275,6 +1274,6 @@ Once Phase 0 validation is complete, Phase 1 will deliver:
 
 ---
 
-*Document Version: 3.0.0*  
-*Author: AltFlex AEGIS Engineering*  
-*Last Updated: March 2026*
+_Document Version: 3.0.0_  
+_Author: AltFlex AEGIS Engineering_  
+_Last Updated: March 2026_

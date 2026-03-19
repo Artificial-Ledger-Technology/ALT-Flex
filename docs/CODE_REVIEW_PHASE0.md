@@ -21,14 +21,14 @@ Every task in this phase is a **hard blocker** for Phase 1 (Architecture & API D
 
 ## Architecture Philosophy
 
-| Principle | Implementation |
-|-----------|---------------|
-| **Hexagonal Architecture** | All external services (AI models, RPC nodes, scrapers, APIs) sit behind abstract port/adapter interfaces |
-| **Interface Segregation** | Fine-grained TypeScript interfaces — no god-objects |
-| **Chain Agnosticism** | Data models support EVM (Ethereum, BSC, Polygon, Arbitrum, Avalanche, Optimism, Base) + Non-EVM (Solana, Cosmos, Move chains) |
-| **Agent Agnosticism** | AI skill models aren't locked to Claude/Cursor — extensible to any future agent framework |
-| **Stateless Microservices** | ETL Pipeline, Forensic Engine, Safety Scanner, and Frontend are independently deployable |
-| **15-Year Future-Proofing** | Abstract data layer, versioned APIs, feature flags, plugin architecture |
+| Principle                   | Implementation                                                                                                                |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| **Hexagonal Architecture**  | All external services (AI models, RPC nodes, scrapers, APIs) sit behind abstract port/adapter interfaces                      |
+| **Interface Segregation**   | Fine-grained TypeScript interfaces — no god-objects                                                                           |
+| **Chain Agnosticism**       | Data models support EVM (Ethereum, BSC, Polygon, Arbitrum, Avalanche, Optimism, Base) + Non-EVM (Solana, Cosmos, Move chains) |
+| **Agent Agnosticism**       | AI skill models aren't locked to Claude/Cursor — extensible to any future agent framework                                     |
+| **Stateless Microservices** | ETL Pipeline, Forensic Engine, Safety Scanner, and Frontend are independently deployable                                      |
+| **15-Year Future-Proofing** | Abstract data layer, versioned APIs, feature flags, plugin architecture                                                       |
 
 ---
 
@@ -40,24 +40,26 @@ Every task in this phase is a **hard blocker** for Phase 1 (Architecture & API D
 
 **Title**: Establish AltFlex AEGIS v3.0 Branding, Naming Convention, and Repository Meta
 
-| Field | Value |
-|-------|-------|
-| Priority | P0 — Critical |
-| Estimated Hours | 1 |
-| Dependencies | None |
-| Labels | `branding`, `meta`, `documentation` |
+| Field           | Value                               |
+| --------------- | ----------------------------------- |
+| Priority        | P0 — Critical                       |
+| Estimated Hours | 1                                   |
+| Dependencies    | None                                |
+| Labels          | `branding`, `meta`, `documentation` |
 
 **Description**:  
 Formally define the v3.0 product identity. The project transitions from "AltFlex: AI-Powered Forensic Framework for Exploit Detection" to **"AltFlex AEGIS: Adaptive Exploit & Governance Intelligence System"** — reflecting the dual-engine architecture (Hacks Dashboard + AI Skills Explorer) and its academic + commercial dual purpose.
 
 **Acceptance Criteria**:
+
 - [ ] New project name finalized: **AltFlex AEGIS v3.0**
 - [ ] AEGIS acronym defined: **A**daptive **E**xploit & **G**overnance **I**ntelligence **S**ystem
 - [ ] New tagline established for README hero section
 - [ ] GitHub repo description updated
 - [ ] Color palette and design tokens documented in `docs/BRAND_GUIDE.md`
 
-**Key Decision**:  
+**Key Decision**:
+
 > AEGIS (Greek: αἰγίς) — the shield of Zeus. The name signals both **protection** (exploit detection, safety scanning) and **authority** (governance over AI skill integrity).
 
 ---
@@ -66,17 +68,18 @@ Formally define the v3.0 product identity. The project transitions from "AltFlex
 
 **Title**: Scaffold Hexagonal pnpm Workspace Monorepo with All Service Boundaries
 
-| Field | Value |
-|-------|-------|
-| Priority | P0 — Critical |
-| Estimated Hours | 2 |
-| Dependencies | P0-INIT-001 |
-| Labels | `setup`, `infrastructure`, `hexagonal` |
+| Field           | Value                                  |
+| --------------- | -------------------------------------- |
+| Priority        | P0 — Critical                          |
+| Estimated Hours | 2                                      |
+| Dependencies    | P0-INIT-001                            |
+| Labels          | `setup`, `infrastructure`, `hexagonal` |
 
 **Description**:  
 Create the root project structure using **pnpm workspaces** with strict service boundaries enforcing hexagonal architecture. Each engine (Hacks, Skills), the shared kernel, and the frontend are isolated packages.
 
 **Acceptance Criteria**:
+
 - [ ] Root directory initialized as a pnpm workspace monorepo
 - [ ] `packages/core/` — Shared domain models, interfaces, value objects
 - [ ] `packages/hacks-engine/` — Hacks Dashboard ETL + API service
@@ -91,6 +94,7 @@ Create the root project structure using **pnpm workspaces** with strict service 
 - [ ] Root `tsconfig.base.json` with strict TypeScript paths
 
 **Files to Create**:
+
 ```
 pnpm-workspace.yaml
 tsconfig.base.json
@@ -163,17 +167,18 @@ research/
 
 **Title**: Configure Strict TypeScript with Cross-Package Path Resolution
 
-| Field | Value |
-|-------|-------|
-| Priority | P0 — Critical |
-| Estimated Hours | 1.5 |
-| Dependencies | P0-INIT-002 |
-| Labels | `setup`, `typescript`, `configuration` |
+| Field           | Value                                  |
+| --------------- | -------------------------------------- |
+| Priority        | P0 — Critical                          |
+| Estimated Hours | 1.5                                    |
+| Dependencies    | P0-INIT-002                            |
+| Labels          | `setup`, `typescript`, `configuration` |
 
 **Description**:  
 Establish a base `tsconfig.base.json` with strict compiler options. Each package/app extends this base config with its own path aliases. This ensures type safety across the entire monorepo from day one.
 
 **Acceptance Criteria**:
+
 - [ ] `tsconfig.base.json` at root with `strict: true`, `noUncheckedIndexedAccess: true`, `exactOptionalPropertyTypes: true`
 - [ ] Each package has `tsconfig.json` extending the base
 - [ ] Path aliases configured: `@aegis/core`, `@aegis/hacks-engine`, `@aegis/skills-engine`, `@aegis/forensic-engine`
@@ -181,6 +186,7 @@ Establish a base `tsconfig.base.json` with strict compiler options. Each package
 - [ ] VS Code workspace settings for consistent TypeScript version
 
 **Key Configuration**:
+
 ```jsonc
 // tsconfig.base.json
 {
@@ -200,8 +206,8 @@ Establish a base `tsconfig.base.json` with strict compiler options. Each package
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
-    "resolveJsonModule": true
-  }
+    "resolveJsonModule": true,
+  },
 }
 ```
 
@@ -211,17 +217,18 @@ Establish a base `tsconfig.base.json` with strict compiler options. Each package
 
 **Title**: Install Production and Development Dependencies Across All Workspaces
 
-| Field | Value |
-|-------|-------|
-| Priority | P0 — Critical |
-| Estimated Hours | 2 |
-| Dependencies | P0-INIT-003 |
-| Labels | `setup`, `dependencies`, `tooling` |
+| Field           | Value                              |
+| --------------- | ---------------------------------- |
+| Priority        | P0 — Critical                      |
+| Estimated Hours | 2                                  |
+| Dependencies    | P0-INIT-003                        |
+| Labels          | `setup`, `dependencies`, `tooling` |
 
 **Description**:  
 Install all core runtime and development dependencies. This is a controlled, audited install — every dependency must be justified.
 
 **Acceptance Criteria**:
+
 - [ ] Root dev dependencies: `typescript`, `prettier`, `eslint`, `husky`, `lint-staged`, `vitest`, `tsx`, `turbo`
 - [ ] `@aegis/core`: `zod` (schema validation), `date-fns`, `winston` (logging)
 - [ ] `@aegis/hacks-engine`: `axios`, `pg` (PostgreSQL), `ioredis`, `bullmq` (job queue)
@@ -246,17 +253,18 @@ Install all core runtime and development dependencies. This is a controlled, aud
 
 **Title**: Set Up ESLint, Prettier, Husky, and lint-staged for Commit-Level Quality Gates
 
-| Field | Value |
-|-------|-------|
-| Priority | P0 — Critical |
-| Estimated Hours | 1.5 |
-| Dependencies | P0-INIT-004 |
-| Labels | `quality`, `linting`, `ci` |
+| Field           | Value                      |
+| --------------- | -------------------------- |
+| Priority        | P0 — Critical              |
+| Estimated Hours | 1.5                        |
+| Dependencies    | P0-INIT-004                |
+| Labels          | `quality`, `linting`, `ci` |
 
 **Description**:  
 Enforce code quality at the commit level. No malformed code can enter `main`. This is critical for academic rigor — thesis reviewers will examine code quality.
 
 **Acceptance Criteria**:
+
 - [ ] ESLint config with `@typescript-eslint/recommended-type-checked`
 - [ ] Prettier config (2-space indent, single quotes, trailing commas, 100 print width)
 - [ ] Husky `pre-commit` hook runs `lint-staged`
@@ -265,6 +273,7 @@ Enforce code quality at the commit level. No malformed code can enter `main`. Th
 - [ ] Root `npm run lint` and `npm run format` scripts work across all workspaces
 
 **Conventional Commits Pattern**:
+
 ```
 feat(hacks-engine): add DefiLlama ETL adapter
 fix(skills-engine): handle malformed YAML in safety scanner
@@ -278,23 +287,25 @@ test(forensic-engine): add Foundry trace parser unit tests
 
 **Title**: Create Comprehensive `.env.example` with All Service Credentials
 
-| Field | Value |
-|-------|-------|
-| Priority | P0 — Critical |
-| Estimated Hours | 1 |
-| Dependencies | P0-INIT-002 |
-| Labels | `security`, `configuration`, `infrastructure` |
+| Field           | Value                                         |
+| --------------- | --------------------------------------------- |
+| Priority        | P0 — Critical                                 |
+| Estimated Hours | 1                                             |
+| Dependencies    | P0-INIT-002                                   |
+| Labels          | `security`, `configuration`, `infrastructure` |
 
 **Description**:  
 Create a comprehensive environment template that covers all services across the dual-engine platform. Secrets never touch version control.
 
 **Acceptance Criteria**:
+
 - [ ] `.env.example` at root with all variables documented
 - [ ] `.env` added to `.gitignore` (root and all packages)
 - [ ] Environment validation using Zod schemas on startup
 - [ ] Separate env sections: Database, Redis, API Keys, Auth, Feature Flags
 
 **Environment Template**:
+
 ```bash
 # ═══════════════════════════════════════════════
 # AltFlex AEGIS v3.0 — Environment Configuration
@@ -355,17 +366,18 @@ NEXT_PUBLIC_APP_NAME=AltFlex AEGIS
 
 **Title**: Create Production and Development Docker Configurations
 
-| Field | Value |
-|-------|-------|
-| Priority | P0 — High |
-| Estimated Hours | 2 |
-| Dependencies | P0-INIT-006 |
-| Labels | `infrastructure`, `docker`, `devops` |
+| Field           | Value                                |
+| --------------- | ------------------------------------ |
+| Priority        | P0 — High                            |
+| Estimated Hours | 2                                    |
+| Dependencies    | P0-INIT-006                          |
+| Labels          | `infrastructure`, `docker`, `devops` |
 
 **Description**:  
 Containerize every service. Development and production configs are separate. One `docker compose up` boots the entire platform.
 
 **Acceptance Criteria**:
+
 - [ ] `infrastructure/docker/Dockerfile.api-gateway` — Multi-stage build
 - [ ] `infrastructure/docker/Dockerfile.web` — Next.js optimized production build
 - [ ] `infrastructure/docker/Dockerfile.hacks-worker` — ETL pipeline worker
@@ -376,13 +388,14 @@ Containerize every service. Development and production configs are separate. One
 - [ ] `make dev` and `make prod` convenience targets in root `Makefile`
 
 **Service Architecture**:
+
 ```yaml
 # docker-compose.dev.yml services
 services:
-  postgres:    # PostgreSQL 16 — primary datastore
-  redis:       # Redis 7 — cache + job queue backend
+  postgres: # PostgreSQL 16 — primary datastore
+  redis: # Redis 7 — cache + job queue backend
   api-gateway: # Fastify BFF — unified API surface
-  web:         # Next.js 15 — frontend dashboard
+  web: # Next.js 15 — frontend dashboard
   hacks-worker: # BullMQ worker — DefiLlama/DeFiHackLabs ETL
   skills-worker: # BullMQ worker — GitHub scraper + safety scanner
 ```
@@ -393,17 +406,18 @@ services:
 
 **Title**: Initialize Git Configuration, Branch Protection, and CI Hooks
 
-| Field | Value |
-|-------|-------|
-| Priority | P0 — High |
-| Estimated Hours | 1 |
-| Dependencies | P0-INIT-005 |
-| Labels | `git`, `ci`, `workflow` |
+| Field           | Value                   |
+| --------------- | ----------------------- |
+| Priority        | P0 — High               |
+| Estimated Hours | 1                       |
+| Dependencies    | P0-INIT-005             |
+| Labels          | `git`, `ci`, `workflow` |
 
 **Description**:  
 Define the branching strategy and Git workflow that supports both academic review cycles and rapid development.
 
 **Acceptance Criteria**:
+
 - [ ] `.gitignore` updated for pnpm, TypeScript, Next.js, Foundry, Python notebooks
 - [ ] `.gitattributes` for LFS (datasets, model weights)
 - [ ] Branch naming convention documented:
@@ -422,17 +436,18 @@ Define the branching strategy and Git workflow that supports both academic revie
 
 **Title**: Design Core Domain Entities for Both Engines as TypeScript Interfaces
 
-| Field | Value |
-|-------|-------|
-| Priority | P0 — Critical |
-| Estimated Hours | 3 |
-| Dependencies | P0-INIT-003 |
-| Labels | `domain`, `architecture`, `data-model` |
+| Field           | Value                                  |
+| --------------- | -------------------------------------- |
+| Priority        | P0 — Critical                          |
+| Estimated Hours | 3                                      |
+| Dependencies    | P0-INIT-003                            |
+| Labels          | `domain`, `architecture`, `data-model` |
 
 **Description**:  
 Define the core domain entities that both engines share. These are pure TypeScript interfaces — no database coupling. This is the nucleus of the hexagonal architecture.
 
 **Acceptance Criteria**:
+
 - [ ] `HackIncident` entity — protocol, chain, date, loss, attack vector, tx hashes, sources
 - [ ] `AttackVector` value object — enumerated vulnerability taxonomy (11 categories from SCH)
 - [ ] `Chain` value object — supports EVM + non-EVM chains, chain ID, name, explorer URL
@@ -444,22 +459,23 @@ Define the core domain entities that both engines share. These are pure TypeScri
 - [ ] All entities are framework-agnostic (no ORM decorators)
 
 **Attack Vector Taxonomy** (from reference dashboard):
+
 ```typescript
 enum AttackVector {
-  ACCESS_CONTROL       = 'access-control',
-  ARITHMETIC_OVERFLOW  = 'arithmetic-overflow',
+  ACCESS_CONTROL = 'access-control',
+  ARITHMETIC_OVERFLOW = 'arithmetic-overflow',
   DELEGATECALL_INJECTION = 'delegatecall-injection',
-  FLASH_LOAN           = 'flash-loan',
-  ORACLE_MANIPULATION  = 'oracle-manipulation',
-  REENTRANCY           = 'reentrancy',
-  DAO_GOVERNANCE       = 'dao-governance',
-  FRONTRUNNING         = 'frontrunning',
-  PHISHING             = 'phishing',
-  DOS                  = 'dos',
-  REPLAY               = 'replay',
-  SELF_DESTRUCT        = 'self-destruct',
-  RUG_PULL             = 'rug-pull',
-  OTHER                = 'other',
+  FLASH_LOAN = 'flash-loan',
+  ORACLE_MANIPULATION = 'oracle-manipulation',
+  REENTRANCY = 'reentrancy',
+  DAO_GOVERNANCE = 'dao-governance',
+  FRONTRUNNING = 'frontrunning',
+  PHISHING = 'phishing',
+  DOS = 'dos',
+  REPLAY = 'replay',
+  SELF_DESTRUCT = 'self-destruct',
+  RUG_PULL = 'rug-pull',
+  OTHER = 'other',
 }
 ```
 
@@ -469,17 +485,18 @@ enum AttackVector {
 
 **Title**: Full Environment Validation — Every Service Boots, Every Lint Passes
 
-| Field | Value |
-|-------|-------|
-| Priority | P0 — Critical |
-| Estimated Hours | 2 |
-| Dependencies | P0-INIT-007, P0-INIT-008, P0-INIT-009 |
-| Labels | `validation`, `testing`, `qa` |
+| Field           | Value                                 |
+| --------------- | ------------------------------------- |
+| Priority        | P0 — Critical                         |
+| Estimated Hours | 2                                     |
+| Dependencies    | P0-INIT-007, P0-INIT-008, P0-INIT-009 |
+| Labels          | `validation`, `testing`, `qa`         |
 
 **Description**:  
 The final quality gate. If this task fails, Phase 0 is incomplete.
 
 **Acceptance Criteria**:
+
 - [ ] `pnpm install` — zero errors, zero warnings
 - [ ] `pnpm run build` — all packages compile successfully
 - [ ] `pnpm run lint` — zero errors
@@ -520,16 +537,16 @@ graph TD
 
 ## Phase Gate Criteria
 
-| Criterion | Requirement | Status |
-|-----------|-------------|--------|
-| Monorepo boots | `pnpm install && pnpm build` = 0 errors | ⬜ |
-| All services up | Docker Compose = all healthy | ⬜ |
-| Lint passes | `pnpm lint` = 0 errors | ⬜ |
-| Types compile | `tsc --noEmit` = 0 errors | ⬜ |
-| Domain models | All core entities defined with Zod schemas | ⬜ |
-| Environment | `.env.example` covers all services | ⬜ |
-| Docs complete | Phase 0 dev guide + code review + README stub | ⬜ |
-| Academic alignment | Architecture supports Thesis 1 & 2 scope | ⬜ |
+| Criterion          | Requirement                                   | Status |
+| ------------------ | --------------------------------------------- | ------ |
+| Monorepo boots     | `pnpm install && pnpm build` = 0 errors       | ⬜     |
+| All services up    | Docker Compose = all healthy                  | ⬜     |
+| Lint passes        | `pnpm lint` = 0 errors                        | ⬜     |
+| Types compile      | `tsc --noEmit` = 0 errors                     | ⬜     |
+| Domain models      | All core entities defined with Zod schemas    | ⬜     |
+| Environment        | `.env.example` covers all services            | ⬜     |
+| Docs complete      | Phase 0 dev guide + code review + README stub | ⬜     |
+| Academic alignment | Architecture supports Thesis 1 & 2 scope      | ⬜     |
 
 > **⛔ Phase 1 CANNOT begin until all Phase Gate Criteria are ✅.**
 
@@ -539,18 +556,18 @@ graph TD
 
 The existing ALT-Flex v1/v2 codebase (`src/`, `frontend/`, `tests/`) will be **archived** but not deleted. Key learnings to carry forward:
 
-| v1/v2 Component | v3.0 Destination | Notes |
-|-----------------|-----------------|-------|
-| `src/collectors/etherscan_collector.py` | `packages/hacks-engine/src/adapters/` | Rewrite in TypeScript behind port interface |
-| `src/models/anomaly_detector.py` | `packages/forensic-engine/src/adapters/` | XGBoost model → TypeScript service wrapper |
-| `src/models/behavioral_analyzer.py` | `packages/hacks-engine/src/application/` | Velocity/funding analysis → use case layer |
-| `src/app/main.py` (FastAPI) | `apps/api-gateway/src/` | Migrate to Fastify with TypeScript |
-| `frontend/` (Next.js 14) | `apps/web/` | Full rewrite → Next.js 15 + React 19 |
-| `tests/` (159 tests) | Distributed per package | Each package owns its test suite |
-| `data/` (sample exploits) | `packages/hacks-engine/seed/` | 5 exploits → seed data for development |
+| v1/v2 Component                         | v3.0 Destination                         | Notes                                       |
+| --------------------------------------- | ---------------------------------------- | ------------------------------------------- |
+| `src/collectors/etherscan_collector.py` | `packages/hacks-engine/src/adapters/`    | Rewrite in TypeScript behind port interface |
+| `src/models/anomaly_detector.py`        | `packages/forensic-engine/src/adapters/` | XGBoost model → TypeScript service wrapper  |
+| `src/models/behavioral_analyzer.py`     | `packages/hacks-engine/src/application/` | Velocity/funding analysis → use case layer  |
+| `src/app/main.py` (FastAPI)             | `apps/api-gateway/src/`                  | Migrate to Fastify with TypeScript          |
+| `frontend/` (Next.js 14)                | `apps/web/`                              | Full rewrite → Next.js 15 + React 19        |
+| `tests/` (159 tests)                    | Distributed per package                  | Each package owns its test suite            |
+| `data/` (sample exploits)               | `packages/hacks-engine/seed/`            | 5 exploits → seed data for development      |
 
 ---
 
-*Document Version: 3.0.0*  
-*Author: AltFlex AEGIS Engineering*  
-*Last Updated: March 11, 2026*
+_Document Version: 3.0.0_  
+_Author: AltFlex AEGIS Engineering_  
+_Last Updated: March 11, 2026_

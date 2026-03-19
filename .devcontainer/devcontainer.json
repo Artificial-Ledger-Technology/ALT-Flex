@@ -1,17 +1,13 @@
 {
-	"name": "AltFlex Dev Environment",
-	"build": {
-		"dockerfile": "Dockerfile",
-		"context": ".."
-	},
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"ms-python.python",
-				"ms-python.vscode-pylance",
-				"njpwerner.autodocstring"
-			]
-		}
-	},
-	"remoteUser": "vscode"
+  "name": "AltFlex Dev Environment",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-python.python", "ms-python.vscode-pylance", "njpwerner.autodocstring"]
+    }
+  },
+  "remoteUser": "vscode"
 }
