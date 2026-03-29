@@ -1,0 +1,89 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# AltFlex AEGIS v3.0 — API Gateway Dockerfile
+# Multi-stage build for Fastify 5 BFF (Backend-for-Frontend)
+# Service: @aegis/api-gateway · Port: 4000
+# ═══════════════════════════════════════════════════════════════════════════════
+# Security: Non-root user, pinned base image, multi-stage (no devDeps in prod)
+# Trivy: Scan this image in CI with `trivy image aegis/api-gateway:latest`
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# ── Stage 1: Dependencies ────────────────────────────────────────────────────
+FROM node:20.11-alpine AS deps
+
+RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
+
+WORKDIR /app
+
+# Copy workspace configuration
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json turbo.json tsconfig.base.json ./
+
+# Copy all workspace package.json files (needed for pnpm install)
+COPY packages/core/package.json ./packages/core/
+COPY packages/hacks-engine/package.json ./packages/hacks-engine/
+COPY packages/skills-engine/package.json ./packages/skills-engine/
+COPY packages/forensic-engine/package.json ./packages/forensic-engine/
+COPY apps/api-gateway/package.json ./apps/api-gateway/
+COPY apps/web/package.json ./apps/web/
+
+# Install ALL dependencies (dev + prod needed for build stage)
+RUN pnpm install --frozen-lockfile
+
+# ── Stage 2: Builder ─────────────────────────────────────────────────────────
+FROM deps AS builder
+
+WORKDIR /app
+
+# Copy all source code
+COPY packages/core/src ./packages/core/src
+COPY packages/core/tsconfig.json ./packages/core/
+COPY packages/hacks-engine/src ./packages/hacks-engine/src
+COPY packages/hacks-engine/tsconfig.json ./packages/hacks-engine/
+COPY packages/skills-engine/src ./packages/skills-engine/src
+COPY packages/skills-engine/tsconfig.json ./packages/skills-engine/
+COPY packages/forensic-engine/src ./packages/forensic-engine/src
+COPY packages/forensic-engine/tsconfig.json ./packages/forensic-engine/
+COPY apps/api-gateway/src ./apps/api-gateway/src
+COPY apps/api-gateway/tsconfig.json ./apps/api-gateway/
+
+# Build using Turborepo — respects topological order:
+# @aegis/core → engines → @aegis/api-gateway
+RUN pnpm turbo run build --filter=@aegis/api-gateway...
+
+# Prune dev dependencies for production
+RUN pnpm prune --prod
+
+# ── Stage 3: Production Runner ───────────────────────────────────────────────
+FROM node:20.11-alpine AS runner
+
+# Security: Run as non-root
+RUN addgroup --system --gid 1001 aegis && \
+    adduser --system --uid 1001 aegis
+
+WORKDIR /app
+
+# Copy production artifacts only
+COPY --from=builder --chown=aegis:aegis /app/node_modules ./node_modules
+COPY --from=builder --chown=aegis:aegis /app/packages/core/dist ./packages/core/dist
+COPY --from=builder --chown=aegis:aegis /app/packages/core/package.json ./packages/core/
+COPY --from=builder --chown=aegis:aegis /app/packages/hacks-engine/dist ./packages/hacks-engine/dist
+COPY --from=builder --chown=aegis:aegis /app/packages/hacks-engine/package.json ./packages/hacks-engine/
+COPY --from=builder --chown=aegis:aegis /app/packages/skills-engine/dist ./packages/skills-engine/dist
+COPY --from=builder --chown=aegis:aegis /app/packages/skills-engine/package.json ./packages/skills-engine/
+COPY --from=builder --chown=aegis:aegis /app/packages/forensic-engine/dist ./packages/forensic-engine/dist
+COPY --from=builder --chown=aegis:aegis /app/packages/forensic-engine/package.json ./packages/forensic-engine/
+COPY --from=builder --chown=aegis:aegis /app/apps/api-gateway/dist ./apps/api-gateway/dist
+COPY --from=builder --chown=aegis:aegis /app/apps/api-gateway/package.json ./apps/api-gateway/
+COPY --from=builder --chown=aegis:aegis /app/package.json ./
+
+ENV NODE_ENV=production
+ENV API_HOST=0.0.0.0
+ENV API_PORT=4000
+
+EXPOSE 4000
+
+USER aegis
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD ["wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:4000/api/v1/health"]
+
+CMD ["node", "apps/api-gateway/dist/server.js"]

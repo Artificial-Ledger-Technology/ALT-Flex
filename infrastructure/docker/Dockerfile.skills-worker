@@ -1,0 +1,74 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# AltFlex AEGIS v3.0 — Skills Worker Dockerfile
+# Multi-stage build for BullMQ Skills Indexer + Safety Scanner (Engine β)
+# Service: @aegis/skills-engine · No HTTP port (background worker)
+# ═══════════════════════════════════════════════════════════════════════════════
+# Purpose: GitHub AI skill repo scraping, AST safety scanning, skill indexing
+# Queue: BullMQ via Redis 7 — processes skills-index + safety-scan jobs
+# Security: Non-root user, pinned base image, no devDeps in production
+# Trivy: Scan this image in CI with `trivy image aegis/skills-worker:latest`
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# ── Stage 1: Dependencies ────────────────────────────────────────────────────
+FROM node:20.11-alpine AS deps
+
+RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
+
+WORKDIR /app
+
+# Copy workspace configuration
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json turbo.json tsconfig.base.json ./
+
+# Copy workspace package.json files needed for this worker
+COPY packages/core/package.json ./packages/core/
+COPY packages/skills-engine/package.json ./packages/skills-engine/
+# Include other packages so pnpm workspace graph resolves correctly
+COPY packages/hacks-engine/package.json ./packages/hacks-engine/
+COPY packages/forensic-engine/package.json ./packages/forensic-engine/
+COPY apps/api-gateway/package.json ./apps/api-gateway/
+COPY apps/web/package.json ./apps/web/
+
+# Install ALL dependencies (dev + prod needed for build stage)
+RUN pnpm install --frozen-lockfile
+
+# ── Stage 2: Builder ─────────────────────────────────────────────────────────
+FROM deps AS builder
+
+WORKDIR /app
+
+# Copy source for core + skills-engine only
+COPY packages/core/src ./packages/core/src
+COPY packages/core/tsconfig.json ./packages/core/
+COPY packages/skills-engine/src ./packages/skills-engine/src
+COPY packages/skills-engine/tsconfig.json ./packages/skills-engine/
+
+# Build using Turborepo — respects topological order: @aegis/core → @aegis/skills-engine
+RUN pnpm turbo run build --filter=@aegis/skills-engine...
+
+# Prune dev dependencies for production
+RUN pnpm prune --prod
+
+# ── Stage 3: Production Runner ───────────────────────────────────────────────
+FROM node:20.11-alpine AS runner
+
+# Security: Run as non-root
+RUN addgroup --system --gid 1001 aegis && \
+    adduser --system --uid 1001 aegis
+
+WORKDIR /app
+
+# Copy production artifacts only
+COPY --from=builder --chown=aegis:aegis /app/node_modules ./node_modules
+COPY --from=builder --chown=aegis:aegis /app/packages/core/dist ./packages/core/dist
+COPY --from=builder --chown=aegis:aegis /app/packages/core/package.json ./packages/core/
+COPY --from=builder --chown=aegis:aegis /app/packages/skills-engine/dist ./packages/skills-engine/dist
+COPY --from=builder --chown=aegis:aegis /app/packages/skills-engine/package.json ./packages/skills-engine/
+COPY --from=builder --chown=aegis:aegis /app/package.json ./
+
+ENV NODE_ENV=production
+
+USER aegis
+
+# Background worker — no HTTP port exposed
+# Relies on Docker restart policy + process exit codes for health
+CMD ["node", "packages/skills-engine/dist/worker.js"]

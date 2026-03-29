@@ -1,0 +1,236 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# AltFlex AEGIS v3.0 — Production Docker Compose
+# Health checks · Restart policies · Resource limits · Log rotation
+# ═══════════════════════════════════════════════════════════════════════════════
+# Usage:
+#   docker compose -f docker-compose.prod.yml up --build -d
+#   make prod
+# ═══════════════════════════════════════════════════════════════════════════════
+
+name: aegis-prod
+
+services:
+  # ── PostgreSQL 16 — Primary Datastore ────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: aegis-postgres-prod
+    restart: unless-stopped
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-aegis_prod}
+      POSTGRES_USER: ${POSTGRES_USER:-aegis}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+    volumes:
+      - pgdata_prod:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-aegis} -d ${POSTGRES_DB:-aegis_prod}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '5'
+    networks:
+      - aegis-network
+
+  # ── Redis 7 — Cache + BullMQ Job Queue Backend ──────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: aegis-redis-prod
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redisdata_prod:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 128M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '5'
+    networks:
+      - aegis-network
+
+  # ── API Gateway — Fastify 5 BFF (Production) ────────────────────────────
+  api-gateway:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.api-gateway
+      target: runner
+    container_name: aegis-api-gateway-prod
+    restart: unless-stopped
+    ports:
+      - '4000:4000'
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      POSTGRES_HOST: postgres
+      REDIS_HOST: redis
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'wget',
+          '--no-verbose',
+          '--tries=1',
+          '--spider',
+          'http://localhost:4000/api/v1/health',
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '5'
+    networks:
+      - aegis-network
+
+  # ── Web Frontend — Next.js 15 (Production) ──────────────────────────────
+  web:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.web
+      target: runner
+    container_name: aegis-web-prod
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      HOSTNAME: '0.0.0.0'
+    depends_on:
+      api-gateway:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:3000']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '5'
+    networks:
+      - aegis-network
+
+  # ── Hacks Worker — BullMQ ETL Pipeline (Production) ─────────────────────
+  hacks-worker:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.hacks-worker
+      target: runner
+    container_name: aegis-hacks-worker-prod
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      POSTGRES_HOST: postgres
+      REDIS_HOST: redis
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 128M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '5'
+    networks:
+      - aegis-network
+
+  # ── Skills Worker — BullMQ Indexer + Safety Scanner (Production) ────────
+  skills-worker:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.skills-worker
+      target: runner
+    container_name: aegis-skills-worker-prod
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      POSTGRES_HOST: postgres
+      REDIS_HOST: redis
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 128M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '5'
+    networks:
+      - aegis-network
+
+# ── Named Volumes ──────────────────────────────────────────────────────────
+volumes:
+  pgdata_prod:
+    name: aegis-pgdata-prod
+  redisdata_prod:
+    name: aegis-redisdata-prod
+
+# ── Networks ───────────────────────────────────────────────────────────────
+networks:
+  aegis-network:
+    name: aegis-prod-network
+    driver: bridge
