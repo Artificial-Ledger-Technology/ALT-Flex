@@ -1,0 +1,73 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# AltFlex AEGIS v3.0 — Web Frontend Dockerfile
+# Multi-stage build for Next.js 15 with standalone output optimization
+# Service: @aegis/web · Port: 3000
+# ═══════════════════════════════════════════════════════════════════════════════
+# Security: Non-root user (nextjs:1001), pinned base image, standalone output
+# Note: Requires `output: 'standalone'` in next.config.js for optimal image
+# Trivy: Scan this image in CI with `trivy image aegis/web:latest`
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# ── Stage 1: Dependencies ────────────────────────────────────────────────────
+FROM node:20.11-alpine AS deps
+
+RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
+
+WORKDIR /app
+
+# Copy workspace configuration
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json turbo.json tsconfig.base.json ./
+
+# Copy all workspace package.json files (pnpm needs full workspace graph)
+COPY packages/core/package.json ./packages/core/
+COPY packages/hacks-engine/package.json ./packages/hacks-engine/
+COPY packages/skills-engine/package.json ./packages/skills-engine/
+COPY packages/forensic-engine/package.json ./packages/forensic-engine/
+COPY apps/api-gateway/package.json ./apps/api-gateway/
+COPY apps/web/package.json ./apps/web/
+
+# Install ALL dependencies (dev + prod needed for build stage)
+RUN pnpm install --frozen-lockfile
+
+# ── Stage 2: Builder ─────────────────────────────────────────────────────────
+FROM deps AS builder
+
+WORKDIR /app
+
+# Copy web app source
+COPY apps/web/ ./apps/web/
+
+# Build Next.js (standalone output mode)
+RUN pnpm --filter @aegis/web build
+
+# ── Stage 3: Production Runner ───────────────────────────────────────────────
+FROM node:20.11-alpine AS runner
+
+WORKDIR /app
+
+# Security: Run as non-root
+RUN addgroup --system --gid 1001 nextjs && \
+    adduser --system --uid 1001 nextjs
+
+# Copy Next.js standalone build artifacts
+COPY --from=builder /app/apps/web/public ./public
+
+# Set correct permissions for Next.js cache
+RUN mkdir .next && chown nextjs:nextjs .next
+
+# Copy standalone server + static assets
+COPY --from=builder --chown=nextjs:nextjs /app/apps/web/.next/standalone ./
+COPY --from=builder --chown=nextjs:nextjs /app/apps/web/.next/static ./apps/web/.next/static
+
+ENV NODE_ENV=production
+ENV HOSTNAME=0.0.0.0
+ENV PORT=3000
+
+EXPOSE 3000
+
+USER nextjs
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+  CMD ["wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+
+CMD ["node", "apps/web/server.js"]

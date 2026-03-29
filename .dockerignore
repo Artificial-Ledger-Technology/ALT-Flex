@@ -1,0 +1,65 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# AltFlex AEGIS v3.0 — Docker Build Context Exclusions
+# Keeps images lean by excluding non-essential files from the build context.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# ── Dependencies (installed fresh inside container) ──────────────────────────
+node_modules
+.pnpm-store
+
+# ── Build Outputs (rebuilt inside container) ─────────────────────────────────
+dist
+.next
+out
+*.tsbuildinfo
+
+# ── Environment & Secrets ────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+.env.development
+.env.staging
+.env.production
+.env.test
+!.env.example
+
+# ── Version Control ──────────────────────────────────────────────────────────
+.git
+.gitignore
+
+# ── AI Agent Configurations ──────────────────────────────────────────────────
+.claude
+.gemini
+
+# ── IDE & Editor ─────────────────────────────────────────────────────────────
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# ── Operating System ─────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Testing & Coverage ──────────────────────────────────────────────────────
+coverage
+
+# ── Turbo Cache ──────────────────────────────────────────────────────────────
+.turbo
+
+# ── Logs ─────────────────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# ── Non-Runtime Directories ──────────────────────────────────────────────────
+research
+docs
+.husky
+.devcontainer
+
+# ── Foundry / Smart Contracts ────────────────────────────────────────────────
+cache
+broadcast

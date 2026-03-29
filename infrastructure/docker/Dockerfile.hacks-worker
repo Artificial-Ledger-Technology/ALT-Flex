@@ -1,0 +1,74 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# AltFlex AEGIS v3.0 — Hacks Worker Dockerfile
+# Multi-stage build for BullMQ ETL pipeline worker (Engine α)
+# Service: @aegis/hacks-engine · No HTTP port (background worker)
+# ═══════════════════════════════════════════════════════════════════════════════
+# Purpose: DefiLlama + DeFiHackLabs ETL, incident sync, analytics pipeline
+# Queue: BullMQ via Redis 7 — processes hacks-sync jobs
+# Security: Non-root user, pinned base image, no devDeps in production
+# Trivy: Scan this image in CI with `trivy image aegis/hacks-worker:latest`
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# ── Stage 1: Dependencies ────────────────────────────────────────────────────
+FROM node:20.11-alpine AS deps
+
+RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
+
+WORKDIR /app
+
+# Copy workspace configuration
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json turbo.json tsconfig.base.json ./
+
+# Copy workspace package.json files needed for this worker
+COPY packages/core/package.json ./packages/core/
+COPY packages/hacks-engine/package.json ./packages/hacks-engine/
+# Include other packages so pnpm workspace graph resolves correctly
+COPY packages/skills-engine/package.json ./packages/skills-engine/
+COPY packages/forensic-engine/package.json ./packages/forensic-engine/
+COPY apps/api-gateway/package.json ./apps/api-gateway/
+COPY apps/web/package.json ./apps/web/
+
+# Install ALL dependencies (dev + prod needed for build stage)
+RUN pnpm install --frozen-lockfile
+
+# ── Stage 2: Builder ─────────────────────────────────────────────────────────
+FROM deps AS builder
+
+WORKDIR /app
+
+# Copy source for core + hacks-engine only
+COPY packages/core/src ./packages/core/src
+COPY packages/core/tsconfig.json ./packages/core/
+COPY packages/hacks-engine/src ./packages/hacks-engine/src
+COPY packages/hacks-engine/tsconfig.json ./packages/hacks-engine/
+
+# Build using Turborepo — respects topological order: @aegis/core → @aegis/hacks-engine
+RUN pnpm turbo run build --filter=@aegis/hacks-engine...
+
+# Prune dev dependencies for production
+RUN pnpm prune --prod
+
+# ── Stage 3: Production Runner ───────────────────────────────────────────────
+FROM node:20.11-alpine AS runner
+
+# Security: Run as non-root
+RUN addgroup --system --gid 1001 aegis && \
+    adduser --system --uid 1001 aegis
+
+WORKDIR /app
+
+# Copy production artifacts only
+COPY --from=builder --chown=aegis:aegis /app/node_modules ./node_modules
+COPY --from=builder --chown=aegis:aegis /app/packages/core/dist ./packages/core/dist
+COPY --from=builder --chown=aegis:aegis /app/packages/core/package.json ./packages/core/
+COPY --from=builder --chown=aegis:aegis /app/packages/hacks-engine/dist ./packages/hacks-engine/dist
+COPY --from=builder --chown=aegis:aegis /app/packages/hacks-engine/package.json ./packages/hacks-engine/
+COPY --from=builder --chown=aegis:aegis /app/package.json ./
+
+ENV NODE_ENV=production
+
+USER aegis
+
+# Background worker — no HTTP port exposed
+# Relies on Docker restart policy + process exit codes for health
+CMD ["node", "packages/hacks-engine/dist/worker.js"]

@@ -1,0 +1,168 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# AltFlex AEGIS v3.0 — Development Docker Compose
+# Hot-reload enabled · Mounted volumes · Debug logging
+# ═══════════════════════════════════════════════════════════════════════════════
+# Usage:
+#   docker compose -f docker-compose.dev.yml up --build -d
+#   make dev
+# ═══════════════════════════════════════════════════════════════════════════════
+
+name: aegis-dev
+
+services:
+  # ── PostgreSQL 16 — Primary Datastore ────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: aegis-postgres-dev
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: aegis_dev
+      POSTGRES_USER: aegis
+      POSTGRES_PASSWORD: changeme
+    volumes:
+      - pgdata_dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U aegis -d aegis_dev']
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    networks:
+      - aegis-network
+
+  # ── Redis 7 — Cache + BullMQ Job Queue Backend ──────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: aegis-redis-dev
+    ports:
+      - '6379:6379'
+    volumes:
+      - redisdata_dev:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    networks:
+      - aegis-network
+
+  # ── API Gateway — Fastify 5 BFF (Hot-Reload) ────────────────────────────
+  api-gateway:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.api-gateway
+      target: deps
+    container_name: aegis-api-gateway-dev
+    command: pnpm --filter @aegis/api-gateway dev
+    ports:
+      - '4000:4000'
+    volumes:
+      # Hot-reload: Mount source directories for live changes
+      - ./apps/api-gateway/src:/app/apps/api-gateway/src
+      - ./packages/core/src:/app/packages/core/src
+      - ./packages/hacks-engine/src:/app/packages/hacks-engine/src
+      - ./packages/skills-engine/src:/app/packages/skills-engine/src
+      - ./packages/forensic-engine/src:/app/packages/forensic-engine/src
+    env_file: .env
+    environment:
+      NODE_ENV: development
+      POSTGRES_HOST: postgres
+      REDIS_HOST: redis
+      DATABASE_URL: postgresql://aegis:changeme@postgres:5432/aegis_dev
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - aegis-network
+
+  # ── Web Frontend — Next.js 15 (Hot-Reload) ──────────────────────────────
+  web:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.web
+      target: deps
+    container_name: aegis-web-dev
+    command: pnpm --filter @aegis/web dev
+    ports:
+      - '3000:3000'
+    volumes:
+      # Hot-reload: Mount source + public for live changes
+      - ./apps/web/src:/app/apps/web/src
+      - ./apps/web/public:/app/apps/web/public
+    env_file: .env
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://localhost:4000
+    depends_on:
+      - api-gateway
+    networks:
+      - aegis-network
+
+  # ── Hacks Worker — BullMQ ETL Pipeline (Hot-Reload) ─────────────────────
+  hacks-worker:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.hacks-worker
+      target: deps
+    container_name: aegis-hacks-worker-dev
+    command: pnpm --filter @aegis/hacks-engine dev
+    volumes:
+      # Hot-reload: Mount source for live changes
+      - ./packages/hacks-engine/src:/app/packages/hacks-engine/src
+      - ./packages/core/src:/app/packages/core/src
+    env_file: .env
+    environment:
+      NODE_ENV: development
+      POSTGRES_HOST: postgres
+      REDIS_HOST: redis
+      DATABASE_URL: postgresql://aegis:changeme@postgres:5432/aegis_dev
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - aegis-network
+
+  # ── Skills Worker — BullMQ Indexer + Safety Scanner (Hot-Reload) ────────
+  skills-worker:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.skills-worker
+      target: deps
+    container_name: aegis-skills-worker-dev
+    command: pnpm --filter @aegis/skills-engine dev
+    volumes:
+      # Hot-reload: Mount source for live changes
+      - ./packages/skills-engine/src:/app/packages/skills-engine/src
+      - ./packages/core/src:/app/packages/core/src
+    env_file: .env
+    environment:
+      NODE_ENV: development
+      POSTGRES_HOST: postgres
+      REDIS_HOST: redis
+      DATABASE_URL: postgresql://aegis:changeme@postgres:5432/aegis_dev
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - aegis-network
+
+# ── Named Volumes ──────────────────────────────────────────────────────────
+volumes:
+  pgdata_dev:
+    name: aegis-pgdata-dev
+  redisdata_dev:
+    name: aegis-redisdata-dev
+
+# ── Networks ───────────────────────────────────────────────────────────────
+networks:
+  aegis-network:
+    name: aegis-dev-network
+    driver: bridge
