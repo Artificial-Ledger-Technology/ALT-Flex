@@ -1,19 +1,29 @@
-# ═══════════════════════════════════════════════════════════
+# ═══════════════════════════════════════════════════════════════════════
 # AltFlex AEGIS v3.0 — .gitignore
-# Comprehensive exclusions for pnpm monorepo
-# ═══════════════════════════════════════════════════════════
+# Comprehensive exclusions for pnpm monorepo, TypeScript, Next.js,
+# Foundry, Python/Jupyter, Docker, Terraform, and all dev tooling
+# ═══════════════════════════════════════════════════════════════════════
 
-# ── Dependencies ──────────────────────────────────────────
+# ── Dependencies ──────────────────────────────────────────────────────
 node_modules/
 .pnpm-store/
+.pnpm-debug.log
 
-# ── Build Outputs ─────────────────────────────────────────
+# ── Build Outputs ─────────────────────────────────────────────────────
 dist/
+build/
 .next/
 out/
 *.tsbuildinfo
+*.js.map
+*.d.ts.map
 
-# ── Environment & Secrets ─────────────────────────────────
+# ── TypeScript ────────────────────────────────────────────────────────
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# ── Environment & Secrets ─────────────────────────────────────────────
+# Root-level env files
 .env
 .env.local
 .env.*.local
@@ -22,37 +32,134 @@ out/
 .env.production
 .env.test
 
-# ── IDE & Editor ──────────────────────────────────────────
+# Package-level env files (belt-and-suspenders)
+apps/**/.env
+apps/**/.env.*
+packages/**/.env
+packages/**/.env.*
+infrastructure/**/.env
+infrastructure/**/.env.*
+
+# ── IDE & Editor ──────────────────────────────────────────────────────
 .idea/
 *.swp
 *.swo
 *~
+.project
+.classpath
+.settings/
 
-# ── Operating System ──────────────────────────────────────
+# VS Code — keep workspace settings, ignore personal files
+# .vscode/ is committed for shared workspace config
+.vscode/*.code-workspace
+
+# ── Operating System ──────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
 desktop.ini
+ehthumbs.db
+ehthumbs_vista.db
 
-# ── Testing ───────────────────────────────────────────────
+# ── Testing & Coverage ───────────────────────────────────────────────
 coverage/
+.nyc_output/
+*.lcov
+test-results/
+playwright-report/
+blob-report/
 
-# ── Foundry (Smart Contract Tooling) ─────────────────────
+# ── Foundry / Forge (Smart Contract Tooling) ─────────────────────────
+# Foundry build artifacts
 cache/
 broadcast/
+out/
 
-# ── Python / Jupyter (research/) ─────────────────────────
+# Foundry-specific
+packages/forensic-engine/cache/
+packages/forensic-engine/out/
+packages/forensic-engine/broadcast/
+
+# Forge script dry-run artifacts
+dry-run/
+
+# ── Python / Jupyter (research/) ─────────────────────────────────────
 __pycache__/
+*.py[cod]
+*$py.class
 *.pyc
+*.pyo
 .ipynb_checkpoints/
 *.egg-info/
+*.egg
+.eggs/
 .venv/
+venv/
+env/
+.python-version
 
-# ── Turbo Cache ───────────────────────────────────────────
+# Jupyter kernel specs
+.local/share/jupyter/
+
+# Python virtual environments in research directory
+research/.venv/
+research/venv/
+
+# ── Data Files (should use Git LFS for large files) ──────────────────
+# Prevent accidental commits of large datasets
+*.csv.gz
+*.parquet
+*.arrow
+*.feather
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+
+# Model weights — MUST use Git LFS
+*.pt
+*.pth
+*.onnx
+*.safetensors
+*.bin
+!package.json
+
+# ── Turbo Cache ───────────────────────────────────────────────────────
 .turbo/
 
-# ── Debug Logs ────────────────────────────────────────────
+# ── Docker ────────────────────────────────────────────────────────────
+# Docker volumes and data (local dev)
+infrastructure/docker/volumes/
+infrastructure/docker/data/
+docker-compose.override.yml
+
+# ── Terraform ─────────────────────────────────────────────────────────
+infrastructure/terraform/**/.terraform/
+infrastructure/terraform/**/*.tfstate
+infrastructure/terraform/**/*.tfstate.backup
+infrastructure/terraform/**/*.tfvars
+infrastructure/terraform/**/crash.log
+infrastructure/terraform/**/.terraform.lock.hcl
+
+# ── Debug Logs ────────────────────────────────────────────────────────
 *.log
 npm-debug.log*
 pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+lerna-debug.log*
+
+# ── Next.js ───────────────────────────────────────────────────────────
+.next/
+.vercel
+.output/
+.cache/
+
+# ── Storybook ─────────────────────────────────────────────────────────
+storybook-static/
+
+# ── Misc ──────────────────────────────────────────────────────────────
+.eslintcache
+.stylelintcache
+*.bak
+*.tmp
+*.temp
