@@ -64,9 +64,7 @@ export interface ICachePort {
   /**
    * Set multiple cached values.
    */
-  setMany<T>(
-    entries: ReadonlyArray<{ key: string; value: T; ttlSeconds?: number }>,
-  ): Promise<void>;
+  setMany<T>(entries: ReadonlyArray<{ key: string; value: T; ttlSeconds?: number }>): Promise<void>;
 
   /**
    * Delete multiple cached values by keys.

@@ -1,9 +1,9 @@
 ---
-name: "🚀 Feature Request"
+name: '🚀 Feature Request'
 about: Propose a new feature or enhancement for AltFlex AEGIS
-title: "feat(<scope>): <brief description>"
-labels: ["enhancement", "triage"]
-assignees: ""
+title: 'feat(<scope>): <brief description>'
+labels: ['enhancement', 'triage']
+assignees: ''
 ---
 
 ## 🚀 Feature Request
@@ -48,21 +48,24 @@ assignees: ""
 
 <!-- Define clear, testable criteria for this feature to be "done" -->
 
-- [ ] 
-- [ ] 
-- [ ] 
+- [ ]
+- [ ]
+- [ ]
 
 ### Technical Considerations
 
 <!-- Optional: Architectural notes, dependencies, API design ideas -->
 
 **Dependencies:**
+
 <!-- Does this depend on other features or issues? -->
 
 **API Surface:**
+
 <!-- Any new endpoints, interfaces, or exports? -->
 
 **Data Model Changes:**
+
 <!-- New entities, schema changes, or migrations? -->
 
 ---
@@ -76,6 +79,7 @@ assignees: ""
 - [ ] Relevant to Thesis 2 (Implementation & Defense)
 
 **Research Connection:**
+
 <!-- How does this feature support the academic deliverables? -->
 
 ---

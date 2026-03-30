@@ -1,9 +1,9 @@
 ---
-name: "🐛 Bug Report"
+name: '🐛 Bug Report'
 about: Report a bug or unexpected behavior in AltFlex AEGIS
-title: "bug(<scope>): <brief description>"
-labels: ["bug", "triage"]
-assignees: ""
+title: 'bug(<scope>): <brief description>'
+labels: ['bug', 'triage']
+assignees: ''
 ---
 
 ## 🐛 Bug Report
@@ -39,9 +39,9 @@ assignees: ""
 
 <!-- Provide detailed steps to reproduce the bug -->
 
-1. 
-2. 
-3. 
+1.
+2.
+3.
 
 ### Expected Behavior
 
@@ -59,10 +59,10 @@ assignees: ""
 
 ### Environment
 
-| Detail          | Value                    |
-| --------------- | ------------------------ |
-| Node.js Version | <!-- e.g., 20.11.0 -->   |
-| pnpm Version    | <!-- e.g., 9.x.x -->     |
+| Detail          | Value                     |
+| --------------- | ------------------------- |
+| Node.js Version | <!-- e.g., 20.11.0 -->    |
+| pnpm Version    | <!-- e.g., 9.x.x -->      |
 | OS              | <!-- e.g., macOS 14.3 --> |
 | Browser         | <!-- if frontend bug -->  |
 | Docker Version  | <!-- if infra bug -->     |

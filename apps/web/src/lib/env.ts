@@ -19,19 +19,9 @@ import { z } from 'zod';
  * in this schema — they would be bundled into the client JavaScript.
  */
 const ClientEnvSchema = z.object({
-  NEXT_PUBLIC_API_URL: z
-    .string()
-    .url()
-    .default('http://localhost:4000')
-    .describe('API base URL'),
-  NEXT_PUBLIC_APP_NAME: z
-    .string()
-    .default('AltFlex AEGIS')
-    .describe('Application display name'),
-  NEXT_PUBLIC_APP_VERSION: z
-    .string()
-    .default('3.0.0')
-    .describe('Application version'),
+  NEXT_PUBLIC_API_URL: z.string().url().default('http://localhost:4000').describe('API base URL'),
+  NEXT_PUBLIC_APP_NAME: z.string().default('AltFlex AEGIS').describe('Application display name'),
+  NEXT_PUBLIC_APP_VERSION: z.string().default('3.0.0').describe('Application version'),
   NEXT_PUBLIC_ENABLE_ANALYTICS: z
     .enum(['true', 'false'])
     .default('false')

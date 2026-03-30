@@ -103,9 +103,7 @@ export interface SafetyLabelMetadata {
 /**
  * Metadata registry for all safety labels.
  */
-export const SAFETY_LABEL_METADATA: Readonly<
-  Record<SafetyLabel, SafetyLabelMetadata>
-> = {
+export const SAFETY_LABEL_METADATA: Readonly<Record<SafetyLabel, SafetyLabelMetadata>> = {
   [SafetyLabel.SAFE]: {
     displayName: 'Safe',
     description:
@@ -162,9 +160,7 @@ export function getAllSafetyLabels(): SafetyLabel[] {
 /**
  * Returns metadata for a given safety label.
  */
-export function getSafetyLabelMetadata(
-  label: SafetyLabel,
-): SafetyLabelMetadata {
+export function getSafetyLabelMetadata(label: SafetyLabel): SafetyLabelMetadata {
   return SAFETY_LABEL_METADATA[label];
 }
 
@@ -197,10 +193,7 @@ export function maxRiskLabel(a: SafetyLabel, b: SafetyLabel): SafetyLabel {
  * Invalid transitions:
  * - Any analyzed state → UNANALYZED (cannot "un-scan")
  */
-export function isValidLabelTransition(
-  from: SafetyLabel,
-  to: SafetyLabel,
-): boolean {
+export function isValidLabelTransition(from: SafetyLabel, to: SafetyLabel): boolean {
   // Same state is always valid (no-op)
   if (from === to) return true;
 
