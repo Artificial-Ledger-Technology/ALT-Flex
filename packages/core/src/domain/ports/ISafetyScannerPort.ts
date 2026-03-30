@@ -15,7 +15,7 @@
  */
 
 import type { AISkillFile } from '../entities/AISkillFile.js';
-import type { SafetyScanResult, CreateScanResultInput, ScanFinding } from '../entities/SafetyScanResult.js';
+import type { SafetyScanResult, CreateScanResultInput } from '../entities/SafetyScanResult.js';
 import type { SafetyLabel } from '../value-objects/SafetyLabel.js';
 
 // ═══════════════════════════════════════════════════════════════════════════════

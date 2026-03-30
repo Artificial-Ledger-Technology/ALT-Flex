@@ -45,9 +45,7 @@
 <!-- Describe the technical changes in detail -->
 <!-- Use bullet points for multiple changes -->
 
-- 
-
----
+- ***
 
 ## 🧪 Testing
 
@@ -62,6 +60,7 @@
 - [ ] Docker Compose services start successfully (if applicable)
 
 **Test Evidence:**
+
 <!-- Paste test output, screenshots, or describe test scenarios -->
 
 ---
@@ -96,9 +95,7 @@
 <!-- List any breaking changes and migration steps required -->
 <!-- Delete this section if no breaking changes -->
 
-- 
-
----
+- ***
 
 ## 📦 Deployment Notes
 

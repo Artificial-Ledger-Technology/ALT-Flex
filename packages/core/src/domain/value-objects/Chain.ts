@@ -304,8 +304,7 @@ export const CHAIN_METADATA: Readonly<Record<Chain, ChainMetadata>> = {
     nativeCurrency: 'ATOM',
     explorerUrl: 'https://www.mintscan.io/cosmos',
     txUrlTemplate: 'https://www.mintscan.io/cosmos/tx/{hash}',
-    addressUrlTemplate:
-      'https://www.mintscan.io/cosmos/account/{address}',
+    addressUrlTemplate: 'https://www.mintscan.io/cosmos/account/{address}',
     consensus: ConsensusType.PROOF_OF_STAKE,
     brandColor: '#2E3148',
   },
@@ -388,10 +387,7 @@ export function getEvmChains(): Chain[] {
  */
 export function getNonEvmChains(): Chain[] {
   return getAllChains().filter(
-    (c) =>
-      !CHAIN_METADATA[c].isEvm &&
-      c !== Chain.MULTI &&
-      c !== Chain.UNKNOWN,
+    (c) => !CHAIN_METADATA[c].isEvm && c !== Chain.MULTI && c !== Chain.UNKNOWN,
   );
 }
 
@@ -423,10 +419,7 @@ export function buildTxUrl(chain: Chain, txHash: string): string | null {
  * Build an address explorer URL for a given chain and address.
  * Returns null if the chain doesn't have an explorer configured.
  */
-export function buildAddressUrl(
-  chain: Chain,
-  address: string,
-): string | null {
+export function buildAddressUrl(chain: Chain, address: string): string | null {
   const template = CHAIN_METADATA[chain].addressUrlTemplate;
   if (template === null) return null;
   return template.replace('{address}', address);
@@ -437,8 +430,6 @@ export function buildAddressUrl(
  * Returns `Chain.UNKNOWN` if no match is found.
  */
 export function chainFromChainId(chainId: number): Chain {
-  const entry = Object.entries(CHAIN_METADATA).find(
-    ([, meta]) => meta.chainId === chainId,
-  );
+  const entry = Object.entries(CHAIN_METADATA).find(([, meta]) => meta.chainId === chainId);
   return entry !== undefined ? (entry[0] as Chain) : Chain.UNKNOWN;
 }

@@ -133,9 +133,7 @@ export interface AttackVectorMetadata {
  * @academic This metadata supports Thesis 1's pattern classification
  *           by providing structured context for each vulnerability class.
  */
-export const ATTACK_VECTOR_METADATA: Readonly<
-  Record<AttackVector, AttackVectorMetadata>
-> = {
+export const ATTACK_VECTOR_METADATA: Readonly<Record<AttackVector, AttackVectorMetadata>> = {
   [AttackVector.ACCESS_CONTROL]: {
     displayName: 'Access Control',
     description:
@@ -151,8 +149,7 @@ export const ATTACK_VECTOR_METADATA: Readonly<
   },
   [AttackVector.ARITHMETIC_OVERFLOW]: {
     displayName: 'Arithmetic Overflow',
-    description:
-      'Integer overflow/underflow or precision loss leading to incorrect calculations.',
+    description: 'Integer overflow/underflow or precision loss leading to incorrect calculations.',
     defaultSeverity: AttackSeverity.HIGH,
     swcId: 'SWC-101',
     evmSpecific: true,
@@ -190,8 +187,7 @@ export const ATTACK_VECTOR_METADATA: Readonly<
   },
   [AttackVector.ORACLE_MANIPULATION]: {
     displayName: 'Oracle Manipulation',
-    description:
-      'Corrupting price feed data to exploit protocol pricing assumptions.',
+    description: 'Corrupting price feed data to exploit protocol pricing assumptions.',
     defaultSeverity: AttackSeverity.CRITICAL,
     swcId: null,
     evmSpecific: false,
@@ -229,8 +225,7 @@ export const ATTACK_VECTOR_METADATA: Readonly<
   },
   [AttackVector.FRONTRUNNING]: {
     displayName: 'Front-running / MEV',
-    description:
-      'Transaction ordering exploitation including sandwich attacks and MEV extraction.',
+    description: 'Transaction ordering exploitation including sandwich attacks and MEV extraction.',
     defaultSeverity: AttackSeverity.MEDIUM,
     swcId: 'SWC-114',
     evmSpecific: false,
@@ -268,8 +263,7 @@ export const ATTACK_VECTOR_METADATA: Readonly<
   },
   [AttackVector.REPLAY]: {
     displayName: 'Replay Attack',
-    description:
-      'Reuse of valid transactions or signatures across chains or protocol versions.',
+    description: 'Reuse of valid transactions or signatures across chains or protocol versions.',
     defaultSeverity: AttackSeverity.HIGH,
     swcId: 'SWC-121',
     evmSpecific: false,
@@ -281,8 +275,7 @@ export const ATTACK_VECTOR_METADATA: Readonly<
   },
   [AttackVector.SELF_DESTRUCT]: {
     displayName: 'Self-Destruct',
-    description:
-      'Exploiting selfdestruct opcode to force-send ETH or destroy contract state.',
+    description: 'Exploiting selfdestruct opcode to force-send ETH or destroy contract state.',
     defaultSeverity: AttackSeverity.MEDIUM,
     swcId: 'SWC-106',
     evmSpecific: true,
@@ -294,8 +287,7 @@ export const ATTACK_VECTOR_METADATA: Readonly<
   },
   [AttackVector.RUG_PULL]: {
     displayName: 'Rug Pull',
-    description:
-      'Malicious token mechanics, exit scams, or hidden admin withdrawal functions.',
+    description: 'Malicious token mechanics, exit scams, or hidden admin withdrawal functions.',
     defaultSeverity: AttackSeverity.CRITICAL,
     swcId: null,
     evmSpecific: false,
@@ -333,16 +325,11 @@ export const ATTACK_VECTOR_METADATA: Readonly<
   },
   [AttackVector.OTHER]: {
     displayName: 'Other',
-    description:
-      'Novel or unclassified attack vector not fitting the current taxonomy.',
+    description: 'Novel or unclassified attack vector not fitting the current taxonomy.',
     defaultSeverity: AttackSeverity.MEDIUM,
     swcId: null,
     evmSpecific: false,
-    mitigations: [
-      'Defense-in-depth strategy',
-      'Regular security audits',
-      'Bug bounty programs',
-    ],
+    mitigations: ['Defense-in-depth strategy', 'Regular security audits', 'Bug bounty programs'],
   },
 } as const;
 
@@ -362,18 +349,14 @@ export function getAllAttackVectors(): AttackVector[] {
  * Retrieves metadata for a given attack vector.
  * Throws if vector is not a valid enum member (should never happen with Zod validation).
  */
-export function getAttackVectorMetadata(
-  vector: AttackVector,
-): AttackVectorMetadata {
+export function getAttackVectorMetadata(vector: AttackVector): AttackVectorMetadata {
   return ATTACK_VECTOR_METADATA[vector];
 }
 
 /**
  * Returns attack vectors filtered by severity.
  */
-export function getAttackVectorsBySeverity(
-  severity: AttackSeverity,
-): AttackVector[] {
+export function getAttackVectorsBySeverity(severity: AttackSeverity): AttackVector[] {
   return getAllAttackVectors().filter(
     (v) => ATTACK_VECTOR_METADATA[v].defaultSeverity === severity,
   );
@@ -384,7 +367,5 @@ export function getAttackVectorsBySeverity(
  * Useful for filtering when analyzing non-EVM chains.
  */
 export function getEvmSpecificAttackVectors(): AttackVector[] {
-  return getAllAttackVectors().filter(
-    (v) => ATTACK_VECTOR_METADATA[v].evmSpecific,
-  );
+  return getAllAttackVectors().filter((v) => ATTACK_VECTOR_METADATA[v].evmSpecific);
 }

@@ -41,15 +41,16 @@ graph LR
 
 ### `main` — Production Releases
 
-| Property        | Value                                                     |
-| --------------- | --------------------------------------------------------- |
-| **Purpose**     | Stable, deployable production code                        |
-| **Protection**  | Requires PR + 1 approval + passing CI                     |
-| **Merge From**  | `develop` only (via release PR)                           |
-| **Tags**        | Semantic versioning (`v3.0.0`, `v3.1.0`)                  |
-| **Deployments** | Auto-deploys to production on merge                       |
+| Property        | Value                                    |
+| --------------- | ---------------------------------------- |
+| **Purpose**     | Stable, deployable production code       |
+| **Protection**  | Requires PR + 1 approval + passing CI    |
+| **Merge From**  | `develop` only (via release PR)          |
+| **Tags**        | Semantic versioning (`v3.0.0`, `v3.1.0`) |
+| **Deployments** | Auto-deploys to production on merge      |
 
 **Rules:**
+
 - ❌ Never commit directly to `main`
 - ❌ Never force push
 - ✅ All CI checks must pass
@@ -59,14 +60,15 @@ graph LR
 
 ### `develop` — Integration Branch
 
-| Property        | Value                                                     |
-| --------------- | --------------------------------------------------------- |
-| **Purpose**     | Integration point for all completed features              |
-| **Protection**  | Requires PR + passing CI                                  |
-| **Merge From**  | `feat/*`, `fix/*`, `docs/*`, `thesis/*`                   |
-| **Deployments** | Auto-deploys to staging environment                       |
+| Property        | Value                                        |
+| --------------- | -------------------------------------------- |
+| **Purpose**     | Integration point for all completed features |
+| **Protection**  | Requires PR + passing CI                     |
+| **Merge From**  | `feat/*`, `fix/*`, `docs/*`, `thesis/*`      |
+| **Deployments** | Auto-deploys to staging environment          |
 
 **Rules:**
+
 - ❌ Never commit directly (use feature branches)
 - ✅ Must always be in a buildable state
 - ✅ Run full test suite before merging to `main`
@@ -75,14 +77,15 @@ graph LR
 
 ### `feat/<scope>/<description>` — Feature Branches
 
-| Property        | Value                                                     |
-| --------------- | --------------------------------------------------------- |
-| **Purpose**     | New features and enhancements                             |
-| **Created From**| `develop`                                                 |
-| **Merges Into** | `develop` via PR                                          |
-| **Lifetime**    | Short-lived (1–5 days ideal)                              |
+| Property         | Value                         |
+| ---------------- | ----------------------------- |
+| **Purpose**      | New features and enhancements |
+| **Created From** | `develop`                     |
+| **Merges Into**  | `develop` via PR              |
+| **Lifetime**     | Short-lived (1–5 days ideal)  |
 
 **Naming Convention:**
+
 ```
 feat/<scope>/<kebab-case-description>
 ```
@@ -90,6 +93,7 @@ feat/<scope>/<kebab-case-description>
 **Valid Scopes:** `core`, `hacks-engine`, `skills-engine`, `forensic-engine`, `web`, `api-gateway`, `infra`
 
 **Examples:**
+
 ```
 feat/hacks-engine/defillama-etl-adapter
 feat/web/exploit-dashboard-filters
@@ -103,19 +107,21 @@ feat/infra/kubernetes-helm-chart
 
 ### `fix/<scope>/<description>` — Bugfix Branches
 
-| Property        | Value                                                     |
-| --------------- | --------------------------------------------------------- |
-| **Purpose**     | Bug fixes and patches                                     |
-| **Created From**| `develop` (or `main` for hotfixes)                        |
-| **Merges Into** | `develop` via PR (or `main` for critical hotfixes)        |
-| **Lifetime**    | Very short-lived (hours to 1 day)                         |
+| Property         | Value                                              |
+| ---------------- | -------------------------------------------------- |
+| **Purpose**      | Bug fixes and patches                              |
+| **Created From** | `develop` (or `main` for hotfixes)                 |
+| **Merges Into**  | `develop` via PR (or `main` for critical hotfixes) |
+| **Lifetime**     | Very short-lived (hours to 1 day)                  |
 
 **Naming Convention:**
+
 ```
 fix/<scope>/<kebab-case-description>
 ```
 
 **Examples:**
+
 ```
 fix/hacks-engine/null-loss-amount-handling
 fix/web/chart-overflow-on-mobile
@@ -125,6 +131,7 @@ fix/core/zod-schema-date-parsing
 
 **Hotfix Protocol:**
 For critical production issues:
+
 ```
 fix/hotfix/<description>  →  merges directly to main AND develop
 ```
@@ -133,19 +140,21 @@ fix/hotfix/<description>  →  merges directly to main AND develop
 
 ### `docs/<description>` — Documentation Branches
 
-| Property        | Value                                                     |
-| --------------- | --------------------------------------------------------- |
-| **Purpose**     | Documentation updates, guides, and diagrams               |
-| **Created From**| `develop`                                                 |
-| **Merges Into** | `develop` via PR                                          |
-| **Lifetime**    | Short-lived                                               |
+| Property         | Value                                       |
+| ---------------- | ------------------------------------------- |
+| **Purpose**      | Documentation updates, guides, and diagrams |
+| **Created From** | `develop`                                   |
+| **Merges Into**  | `develop` via PR                            |
+| **Lifetime**     | Short-lived                                 |
 
 **Naming Convention:**
+
 ```
 docs/<kebab-case-description>
 ```
 
 **Examples:**
+
 ```
 docs/api-endpoint-reference
 docs/architecture-decision-records
@@ -157,25 +166,27 @@ docs/deployment-runbook
 
 ### `thesis/<1|2>/<description>` — Academic Deliverable Branches
 
-| Property        | Value                                                     |
-| --------------- | --------------------------------------------------------- |
-| **Purpose**     | Thesis-aligned development with academic milestone gates  |
-| **Created From**| `develop`                                                 |
-| **Merges Into** | `develop` via PR (after advisor review)                   |
-| **Lifetime**    | Medium-lived (aligned with thesis milestones)             |
+| Property         | Value                                                    |
+| ---------------- | -------------------------------------------------------- |
+| **Purpose**      | Thesis-aligned development with academic milestone gates |
+| **Created From** | `develop`                                                |
+| **Merges Into**  | `develop` via PR (after advisor review)                  |
+| **Lifetime**     | Medium-lived (aligned with thesis milestones)            |
 
 **Naming Convention:**
+
 ```
 thesis/<phase>/<kebab-case-description>
 ```
 
 **Phase Mapping:**
-| Phase | Academic Milestone                 |
+| Phase | Academic Milestone |
 | ----- | ---------------------------------- |
-| `1`   | Thesis 1 — Methods of Research     |
-| `2`   | Thesis 2 — Implementation & Defense|
+| `1` | Thesis 1 — Methods of Research |
+| `2` | Thesis 2 — Implementation & Defense|
 
 **Examples:**
+
 ```
 thesis/1/literature-review-exploit-taxonomy
 thesis/1/research-methodology-chapter
@@ -185,6 +196,7 @@ thesis/2/defense-presentation-demo
 ```
 
 **Academic Workflow:**
+
 1. Create branch from `develop`
 2. Implement thesis-relevant code + documentation
 3. Submit PR with academic artifact checklist
@@ -208,6 +220,7 @@ All commits follow **Conventional Commits** (enforced by Husky + commitlint):
 **Types:** `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
 
 **Examples:**
+
 ```
 feat(hacks-engine): add DefiLlama ETL adapter with retry logic
 fix(skills-engine): handle malformed YAML in safety scanner
@@ -225,24 +238,24 @@ gitGraph
     commit id: "v3.0.0" tag: "v3.0.0"
     branch develop
     commit id: "phase-0-init"
-    
+
     branch feat/hacks-engine/etl-adapter
     commit id: "add ETL service"
     commit id: "add retry logic"
     checkout develop
     merge feat/hacks-engine/etl-adapter id: "merge: ETL adapter"
-    
+
     branch thesis/1/methodology
     commit id: "research methodology"
     commit id: "lit review"
     checkout develop
     merge thesis/1/methodology id: "merge: thesis ch.3"
-    
+
     branch fix/web/chart-overflow
     commit id: "fix overflow"
     checkout develop
     merge fix/web/chart-overflow id: "merge: chart fix"
-    
+
     checkout main
     merge develop id: "v3.1.0" tag: "v3.1.0"
 ```
@@ -252,6 +265,7 @@ gitGraph
 ## Branch Protection Rules
 
 ### `main` Branch
+
 - ✅ Require pull request before merging
 - ✅ Require at least 1 approval
 - ✅ Require status checks to pass (CI pipeline)
@@ -261,12 +275,14 @@ gitGraph
 - ❌ Do not allow deletions
 
 ### `develop` Branch
+
 - ✅ Require pull request before merging
 - ✅ Require status checks to pass (CI pipeline)
 - ✅ Allow squash merge and regular merge
 - ❌ Do not allow force pushes
 
 ### Feature/Fix Branches
+
 - No protection rules (developer autonomy)
 - Must pass CI before PR merge
 - Auto-delete after merge
@@ -291,15 +307,15 @@ gitGraph
 
 ## Quick Reference
 
-| Action                    | Command                                          |
-| ------------------------- | ------------------------------------------------ |
-| Start a feature           | `git checkout develop && git checkout -b feat/<scope>/<desc>` |
-| Start a bugfix            | `git checkout develop && git checkout -b fix/<scope>/<desc>`  |
-| Start thesis work         | `git checkout develop && git checkout -b thesis/<1\|2>/<desc>` |
-| Start docs update         | `git checkout develop && git checkout -b docs/<desc>`          |
-| Update from develop       | `git checkout <branch> && git rebase develop`                  |
-| Submit for review         | `git push -u origin <branch>` → open PR on GitHub             |
-| Hotfix production         | `git checkout main && git checkout -b fix/hotfix/<desc>`       |
+| Action              | Command                                                        |
+| ------------------- | -------------------------------------------------------------- |
+| Start a feature     | `git checkout develop && git checkout -b feat/<scope>/<desc>`  |
+| Start a bugfix      | `git checkout develop && git checkout -b fix/<scope>/<desc>`   |
+| Start thesis work   | `git checkout develop && git checkout -b thesis/<1\|2>/<desc>` |
+| Start docs update   | `git checkout develop && git checkout -b docs/<desc>`          |
+| Update from develop | `git checkout <branch> && git rebase develop`                  |
+| Submit for review   | `git push -u origin <branch>` → open PR on GitHub              |
+| Hotfix production   | `git checkout main && git checkout -b fix/hotfix/<desc>`       |
 
 ---
 

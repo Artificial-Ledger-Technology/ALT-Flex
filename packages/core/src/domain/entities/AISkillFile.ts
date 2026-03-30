@@ -26,13 +26,13 @@ import { SafetyLabel, SafetyLabelSchema } from '../value-objects/SafetyLabel.js'
  * Each platform has different skill file formats and conventions.
  */
 export const AIPlatformSchema = z.enum([
-  'claude',   // Anthropic Claude (.claude/skills/)
-  'cursor',   // Cursor IDE (.cursor/rules/)
-  'mcp',      // Model Context Protocol (tool definitions)
-  'copilot',  // GitHub Copilot instructions
-  'gemini',   // Google Gemini (.gemini/skills/)
+  'claude', // Anthropic Claude (.claude/skills/)
+  'cursor', // Cursor IDE (.cursor/rules/)
+  'mcp', // Model Context Protocol (tool definitions)
+  'copilot', // GitHub Copilot instructions
+  'gemini', // Google Gemini (.gemini/skills/)
   'windsurf', // Windsurf IDE
-  'generic',  // Platform-agnostic or unknown
+  'generic', // Platform-agnostic or unknown
 ]);
 export type AIPlatform = z.infer<typeof AIPlatformSchema>;
 
@@ -41,11 +41,11 @@ export type AIPlatform = z.infer<typeof AIPlatformSchema>;
  */
 export const SmartContractLanguageSchema = z.enum([
   'solidity', // Ethereum / EVM
-  'vyper',    // Ethereum / EVM (Python-like)
-  'rust',     // Solana (Anchor), NEAR, Cosmos
-  'move',     // Aptos, Sui
-  'cairo',    // StarkNet
-  'multi',    // Multi-language or language-agnostic
+  'vyper', // Ethereum / EVM (Python-like)
+  'rust', // Solana (Anchor), NEAR, Cosmos
+  'move', // Aptos, Sui
+  'cairo', // StarkNet
+  'multi', // Multi-language or language-agnostic
 ]);
 export type SmartContractLanguage = z.infer<typeof SmartContractLanguageSchema>;
 
@@ -53,11 +53,11 @@ export type SmartContractLanguage = z.infer<typeof SmartContractLanguageSchema>;
  * Source file format of the skill file.
  */
 export const SkillFileFormatSchema = z.enum([
-  'yaml',       // YAML with frontmatter
-  'markdown',   // Pure Markdown (e.g., SKILL.md)
-  'json',       // JSON configuration
-  'toml',       // TOML configuration
-  'text',       // Plain text instructions
+  'yaml', // YAML with frontmatter
+  'markdown', // Pure Markdown (e.g., SKILL.md)
+  'json', // JSON configuration
+  'toml', // TOML configuration
+  'text', // Plain text instructions
 ]);
 export type SkillFileFormat = z.infer<typeof SkillFileFormatSchema>;
 
@@ -66,16 +66,16 @@ export type SkillFileFormat = z.infer<typeof SkillFileFormatSchema>;
  * Organized by purpose for the AI Skills Explorer UI.
  */
 export const SkillCategorySchema = z.enum([
-  'vulnerability-detection',   // Finding bugs and exploits
-  'code-review',               // General code review assistance
-  'gas-optimization',          // Gas efficiency analysis
-  'formal-verification',       // Mathematical proof assistance
-  'documentation',             // NatSpec / documentation generation
-  'testing',                   // Test generation and fuzzing
-  'deployment',                // Deployment and upgrade assistance
-  'monitoring',                // On-chain monitoring and alerting
-  'incident-response',         // Post-exploit analysis
-  'general',                   // General-purpose
+  'vulnerability-detection', // Finding bugs and exploits
+  'code-review', // General code review assistance
+  'gas-optimization', // Gas efficiency analysis
+  'formal-verification', // Mathematical proof assistance
+  'documentation', // NatSpec / documentation generation
+  'testing', // Test generation and fuzzing
+  'deployment', // Deployment and upgrade assistance
+  'monitoring', // On-chain monitoring and alerting
+  'incident-response', // Post-exploit analysis
+  'general', // General-purpose
 ]);
 export type SkillCategory = z.infer<typeof SkillCategorySchema>;
 
@@ -148,9 +148,7 @@ export const AISkillFileSchema = z.object({
   format: SkillFileFormatSchema,
 
   /** Content hash (SHA-256 hex digest) for deduplication */
-  contentHash: z
-    .string()
-    .regex(/^[a-f0-9]{64}$/, 'Must be a valid SHA-256 hex digest'),
+  contentHash: z.string().regex(/^[a-f0-9]{64}$/, 'Must be a valid SHA-256 hex digest'),
 
   /** Content size in bytes */
   contentSizeBytes: z.number().int().nonnegative(),

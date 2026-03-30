@@ -151,6 +151,7 @@ lerna-debug.log*
 # ── AI Agent Configuration ────────────────────────────────
 .claude/
 .gemini/
+.opencode/
 
 # ── Next.js ───────────────────────────────────────────────────────────
 .next/
@@ -167,3 +168,7 @@ storybook-static/
 *.bak
 *.tmp
 *.temp
+
+# ── IDE shits ──────────────────────────────────────────────────────────────
+.vscode
+.cursor

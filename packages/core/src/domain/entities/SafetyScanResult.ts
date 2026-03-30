@@ -26,11 +26,11 @@ import { SafetyLabel, SafetyLabelSchema } from '../value-objects/SafetyLabel.js'
  * Aligned with traditional security audit severity levels.
  */
 export const FindingSeveritySchema = z.enum([
-  'critical',  // Confirmed malicious intent (e.g., code exfiltration)
-  'high',      // Highly suspicious pattern (e.g., network requests in a code review skill)
-  'medium',    // Moderately suspicious (e.g., file system access)
-  'low',       // Minor concern, unlikely malicious
-  'info',      // Informational note (e.g., deprecated pattern usage)
+  'critical', // Confirmed malicious intent (e.g., code exfiltration)
+  'high', // Highly suspicious pattern (e.g., network requests in a code review skill)
+  'medium', // Moderately suspicious (e.g., file system access)
+  'low', // Minor concern, unlikely malicious
+  'info', // Informational note (e.g., deprecated pattern usage)
 ]);
 export type FindingSeverity = z.infer<typeof FindingSeveritySchema>;
 
@@ -39,16 +39,16 @@ export type FindingSeverity = z.infer<typeof FindingSeveritySchema>;
  * Maps to the threat model in the Thesis 1 research framework.
  */
 export const FindingCategorySchema = z.enum([
-  'prompt-injection',      // Attempts to override AI system instructions
-  'code-exfiltration',     // Attempts to read/transmit source code
-  'file-system-access',    // Unauthorized file read/write instructions
-  'network-request',       // Unauthorized external API/network calls
-  'shell-execution',       // Instructions to execute shell commands
-  'data-extraction',       // Attempts to extract sensitive data (keys, tokens)
-  'instruction-override',  // Attempts to override safety guidelines
-  'obfuscation',           // Obfuscated or encoded content hiding intent
-  'supply-chain',          // Dependencies or imports from untrusted sources
-  'other',                 // Unclassified finding
+  'prompt-injection', // Attempts to override AI system instructions
+  'code-exfiltration', // Attempts to read/transmit source code
+  'file-system-access', // Unauthorized file read/write instructions
+  'network-request', // Unauthorized external API/network calls
+  'shell-execution', // Instructions to execute shell commands
+  'data-extraction', // Attempts to extract sensitive data (keys, tokens)
+  'instruction-override', // Attempts to override safety guidelines
+  'obfuscation', // Obfuscated or encoded content hiding intent
+  'supply-chain', // Dependencies or imports from untrusted sources
+  'other', // Unclassified finding
 ]);
 export type FindingCategory = z.infer<typeof FindingCategorySchema>;
 
@@ -178,9 +178,7 @@ export const SafetyScanResultSchema = z.object({
 
   // ── Manual Review ─────────────────────────────────────────────────────────
   /** Whether manual review has been performed on this scan result */
-  manualReviewStatus: z
-    .enum(['pending', 'reviewed', 'overridden'])
-    .default('pending'),
+  manualReviewStatus: z.enum(['pending', 'reviewed', 'overridden']).default('pending'),
 
   /** ID of the reviewer (if manually reviewed) */
   reviewedBy: z.string().optional(),
@@ -257,17 +255,9 @@ export function getFindingsByCategory(
 /**
  * Get the highest-severity finding.
  */
-export function getHighestSeverity(
-  result: SafetyScanResult,
-): FindingSeverity | null {
+export function getHighestSeverity(result: SafetyScanResult): FindingSeverity | null {
   if (result.findings.length === 0) return null;
-  const order: FindingSeverity[] = [
-    'critical',
-    'high',
-    'medium',
-    'low',
-    'info',
-  ];
+  const order: FindingSeverity[] = ['critical', 'high', 'medium', 'low', 'info'];
   for (const sev of order) {
     if (result.findings.some((f) => f.severity === sev)) return sev;
   }
@@ -278,17 +268,13 @@ export function getHighestSeverity(
  * Check if the scan result has any actionable findings (non-info, non-false-positive).
  */
 export function hasActionableFindings(result: SafetyScanResult): boolean {
-  return result.findings.some(
-    (f) => f.severity !== 'info' && !f.isFalsePositive,
-  );
+  return result.findings.some((f) => f.severity !== 'info' && !f.isFalsePositive);
 }
 
 /**
  * Get unique finding categories present in the scan.
  */
-export function getUniqueCategories(
-  result: SafetyScanResult,
-): FindingCategory[] {
+export function getUniqueCategories(result: SafetyScanResult): FindingCategory[] {
   const categories = new Set(result.findings.map((f) => f.category));
   return [...categories];
 }

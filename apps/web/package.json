@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "echo \"No tests yet\"",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "next": "~15.3.0",
@@ -14,7 +16,8 @@
     "react-dom": "~19.0.0",
     "recharts": "~2.12.0",
     "framer-motion": "~11.0.0",
-    "lucide-react": "~0.344.0"
+    "lucide-react": "~0.344.0",
+    "zod": "~3.22.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

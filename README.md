@@ -28,6 +28,8 @@ _The Shield of Web3_
 
 ---
 
+![AltFlex Aegis](assets/images/AltFlex%20Aegis.png)
+
 ## Table of Contents
 
 - [Overview](#overview)
@@ -502,7 +504,7 @@ POSTGRES_PASSWORD=devpassword
 REDIS_HOST=localhost
 REDIS_PORT=6379
 
-API_PORT=3001
+API_PORT=4000
 API_RATE_LIMIT_MAX=100
 JWT_SECRET=your-dev-secret-minimum-32-characters
 
@@ -514,35 +516,55 @@ ARB_RPC_URL=https://arb1.arbitrum.io/rpc
 
 > **Never commit `.env`.** `.env.example` is the source of truth for all required variables.
 
-### 4 — Start Infrastructure
+### 4 — Start the Platform (Docker Compose)
+
+The easiest way to boot the entire AltFlex AEGIS platform with hot-reloading is using the provided `Makefile` targets. This builds the containers and starts everything in the background.
 
 ```bash
-docker compose -f docker-compose.dev.yml up -d
+make dev
 ```
 
-Boots:
+**Services Booted:**
 
-- `aegis-postgres` — PostgreSQL 16 on `:5432`
-- `aegis-redis` — Redis 7 on `:6379`
+- **`aegis-postgres`** — PostgreSQL Database on `:5432`
+- **`aegis-redis`** — Redis Cache & Queue on `:6379`
+- **`aegis-api-gateway`** — Fastify API Gateway on `:4000`
+- **`aegis-web`** — Next.js Frontend on `:3000`
 
-Health checks ensure both services are fully ready before dependent containers start.
+Health checks ensure the database and cache are fully ready before the API and Web containers start.
 
-### 5 — Run Development Servers
+**Helpful Docker Commands:**
 
-```bash
-# All apps and packages in watch mode
-pnpm dev
+- `make health` — Verify the health endpoints of all running services.
+- `make logs` — Tail the live logs of the development containers.
+- `make down` — Stop all running AEGIS services safely.
 
-# Specific workspace only
-pnpm --filter @aegis/web dev
-pnpm --filter @aegis/api-gateway dev
-```
+### 5 — Alternative: Run Servers Locally
+
+If you prefer to run the Node.js services locally on your host machine (using Docker only for the infrastructure databases):
+
+1. **Start the database and cache containers:**
+
+   ```bash
+   docker compose -f docker-compose.dev.yml up -d postgres redis
+   ```
+
+2. **Start the development servers via Turborepo:**
+
+   ```bash
+   # Start all apps and packages in watch mode
+   pnpm dev
+
+   # Or, start specific workspaces only
+   pnpm --filter @aegis/web dev
+   pnpm --filter @aegis/api-gateway dev
+   ```
 
 | Service      | URL                                 |
 | ------------ | ----------------------------------- |
 | Web Frontend | http://localhost:3000               |
-| API Gateway  | http://localhost:3001               |
-| API Health   | http://localhost:3001/api/v1/health |
+| API Gateway  | http://localhost:4000               |
+| API Health   | http://localhost:4000/api/v1/health |
 
 ---
 

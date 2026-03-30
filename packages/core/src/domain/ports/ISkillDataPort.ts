@@ -12,7 +12,14 @@
  * @hexagonal Port — Domain Layer
  */
 
-import type { AISkillFile, CreateAISkillInput, UpdateAISkillInput, AIPlatform, SmartContractLanguage, SkillCategory } from '../entities/AISkillFile.js';
+import type {
+  AISkillFile,
+  CreateAISkillInput,
+  UpdateAISkillInput,
+  AIPlatform,
+  SmartContractLanguage,
+  SkillCategory,
+} from '../entities/AISkillFile.js';
 import type { SafetyLabel } from '../value-objects/SafetyLabel.js';
 import type { PaginatedResult, SortConfig } from './IHackDataPort.js';
 

@@ -13,7 +13,11 @@
  * @hexagonal Port — Domain Layer
  */
 
-import type { HackIncident, CreateHackIncidentInput, UpdateHackIncidentInput } from '../entities/HackIncident.js';
+import type {
+  HackIncident,
+  CreateHackIncidentInput,
+  UpdateHackIncidentInput,
+} from '../entities/HackIncident.js';
 import type { AttackVector } from '../value-objects/AttackVector.js';
 import type { Chain } from '../value-objects/Chain.js';
 

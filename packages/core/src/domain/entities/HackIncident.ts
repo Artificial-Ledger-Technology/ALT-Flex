@@ -15,8 +15,8 @@
  */
 
 import { z } from 'zod';
-import { AttackVector, AttackVectorSchema } from '../value-objects/AttackVector.js';
-import { Chain, ChainSchema } from '../value-objects/Chain.js';
+import { AttackVectorSchema, type AttackVector } from '../value-objects/AttackVector.js';
+import { ChainSchema } from '../value-objects/Chain.js';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // Sub-schemas (Composable building blocks)
@@ -27,12 +27,7 @@ import { Chain, ChainSchema } from '../value-objects/Chain.js';
  * Each incident tracks where it was sourced from for deduplication
  * and data quality auditing.
  */
-export const DataSourceSchema = z.enum([
-  'defillama',
-  'defihacklabs',
-  'manual',
-  'rekt-news',
-]);
+export const DataSourceSchema = z.enum(['defillama', 'defihacklabs', 'manual', 'rekt-news']);
 export type DataSource = z.infer<typeof DataSourceSchema>;
 
 /**
@@ -81,7 +76,10 @@ export const HackIncidentSchema = z
     protocolName: z.string().min(1),
 
     /** Protocol slug for URL-safe referencing */
-    protocolSlug: z.string().regex(/^[a-z0-9-]+$/).optional(),
+    protocolSlug: z
+      .string()
+      .regex(/^[a-z0-9-]+$/)
+      .optional(),
 
     /** Date of the exploit (UTC) */
     date: z.coerce.date(),
@@ -215,13 +213,8 @@ export function getRecoveryRate(incident: HackIncident): number {
 /**
  * Get all attack vectors (primary + secondary) for an incident.
  */
-export function getAllAttackVectorsForIncident(
-  incident: HackIncident,
-): AttackVector[] {
-  const vectors = new Set<AttackVector>([
-    incident.attackVector,
-    ...incident.secondaryVectors,
-  ]);
+export function getAllAttackVectorsForIncident(incident: HackIncident): AttackVector[] {
+  const vectors = new Set<AttackVector>([incident.attackVector, ...incident.secondaryVectors]);
   return [...vectors];
 }
 

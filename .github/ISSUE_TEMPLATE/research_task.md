@@ -1,9 +1,9 @@
 ---
-name: "🎓 Research Task"
+name: '🎓 Research Task'
 about: Track a research activity, experiment, or academic deliverable
-title: "research(<phase>): <brief description>"
-labels: ["research", "thesis", "triage"]
-assignees: ""
+title: 'research(<phase>): <brief description>'
+labels: ['research', 'thesis', 'triage']
+assignees: ''
 ---
 
 ## 🎓 Research Task
@@ -21,6 +21,7 @@ assignees: ""
 - [ ] **Thesis 2** — Implementation, evaluation, defense
 
 **Thesis Chapter / Section:**
+
 <!-- e.g., Chapter 3.2 — Attack Vector Classification Methodology -->
 
 ---
@@ -29,9 +30,9 @@ assignees: ""
 
 <!-- If applicable, state your hypothesis clearly -->
 
-**H₀ (Null):** 
+**H₀ (Null):**
 
-**H₁ (Alternative):** 
+**H₁ (Alternative):**
 
 ---
 
@@ -40,18 +41,19 @@ assignees: ""
 <!-- Describe the research approach -->
 
 **Data Sources:**
+
 <!-- What data will you use? (DefiLlama, DeFiHackLabs, custom dataset, etc.) -->
-- 
 
-**Analysis Method:**
+- **Analysis Method:**
+
 <!-- How will you analyze the data? (Statistical analysis, ML model, qualitative review, etc.) -->
-- 
 
-**Tools / Libraries:**
+- **Tools / Libraries:**
+
 <!-- What tools will you use? (Jupyter, Python, R, Foundry, etc.) -->
-- 
 
-**Sample Size / Scope:**
+- **Sample Size / Scope:**
+
 <!-- How many incidents, contracts, or data points? -->
 
 ---
@@ -66,15 +68,15 @@ assignees: ""
 - [ ] TypeScript implementation in `packages/`
 - [ ] Visualization / chart for thesis
 - [ ] Presentation slides
-- [ ] Other: 
+- [ ] Other:
 
 ### Success Criteria
 
 <!-- How will you know if the research task is complete and valid? -->
 
-- [ ] 
-- [ ] 
-- [ ] 
+- [ ]
+- [ ]
+- [ ]
 
 ---
 
@@ -99,8 +101,8 @@ assignees: ""
 <!-- Link papers, repos, or prior research that informs this task -->
 <!-- Use APA or numbered references -->
 
-1. 
-2. 
+1.
+2.
 
 ### Reproducibility Checklist
 
