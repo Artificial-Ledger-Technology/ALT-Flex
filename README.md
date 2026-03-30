@@ -435,8 +435,8 @@ export class FoundryAdapter implements IForensicRunnerPort {
 
 | Phase                        | Timeline   | Status             | Key Deliverables                                                                                     |
 | ---------------------------- | ---------- | ------------------ | ---------------------------------------------------------------------------------------------------- |
-| **Phase 0 — Init**           | Week 1–2   | 🔄 **In Progress** | Monorepo scaffold · pnpm workspace · Turbo config · Domain blueprints · Docker Compose · Dev tooling |
-| **Phase 1 — Architecture**   | Week 3–4   | ⏳ Planned         | `ARCHITECTURE.md` · `API_SPECIFICATION.md` · DB migrations · Seed data · Domain implementations      |
+| **Phase 0 — Init**           | Week 1–2   | ✅ **Done**        | Monorepo scaffold · pnpm workspace · Turbo config · Domain blueprints · Docker Compose · Dev tooling |
+| **Phase 1 — Architecture**   | Week 3–4   | 🔄 **In Progress** | `ARCHITECTURE.md` · `API_SPECIFICATION.md` · DB migrations · Seed data · Domain implementations      |
 | **Phase 2 — ETL Pipeline**   | Week 5–8   | ⏳ Planned         | DefiLlama sync worker · DeFiHackLabs scraper · BullMQ queues · PostgreSQL pipeline                   |
 | **Phase 3 — Safety Scanner** | Week 9–16  | ⏳ Planned         | AST parser · Heuristic safety rules · Safety label classifier **(Thesis 1 core)**                    |
 | **Phase 4 — Frontend**       | Week 17–22 | ⏳ Planned         | Hacks Dashboard · AI Skills Explorer · Forensic trace viewer · AEGIS design system                   |
