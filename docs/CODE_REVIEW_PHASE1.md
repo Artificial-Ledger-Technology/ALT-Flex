@@ -45,19 +45,20 @@ Create the master architecture document defining every system boundary, data flo
 - [ ] Technology stack matrix — justified per component
 - [ ] Cross-cutting concerns — logging, error handling, authentication, caching
 - [ ] All diagrams use Mermaid for portability and version control
-      **Required Diagrams**:
-      | Diagram | Type | Purpose |
-      |---------|------|---------|
-      | System Context | C4 L1 | Shows AEGIS in the broader Web3 ecosystem |
-      | Container Overview | C4 L2 | Shows all 6 services, 2 databases, external APIs |
-      | Hacks Engine Internals | Hexagonal | Ports, adapters, use cases for Engine α |
-      | Skills Engine Internals | Hexagonal | Ports, adapters, use cases for Engine β |
-      | Forensic Engine Internals | Hexagonal | Foundry integration, RPC adapters |
-      | ETL Data Flow | Flowchart | DefiLlama → Normalize → PostgreSQL → Cache |
-      | Safety Scanner Pipeline | Flowchart | GitHub → Parse → AST Scan → Label → Store |
-      | Hack Search Flow | Sequence | User → Web → Gateway → Hacks Engine → DB |
-      | Skill Copy Flow | Sequence | User → Web → Gateway → Skills Engine → DB |
-      | Exploit Simulation | Sequence | User → Web → Gateway → Forensic → Foundry |
+
+**Required Diagrams**:
+| Diagram | Type | Purpose |
+|---------|------|---------|
+| System Context | C4 L1 | Shows AEGIS in the broader Web3 ecosystem |
+| Container Overview | C4 L2 | Shows all 6 services, 2 databases, external APIs |
+| Hacks Engine Internals | Hexagonal | Ports, adapters, use cases for Engine α |
+| Skills Engine Internals | Hexagonal | Ports, adapters, use cases for Engine β |
+| Forensic Engine Internals | Hexagonal | Foundry integration, RPC adapters |
+| ETL Data Flow | Flowchart | DefiLlama → Normalize → PostgreSQL → Cache |
+| Safety Scanner Pipeline | Flowchart | GitHub → Parse → AST Scan → Label → Store |
+| Hack Search Flow | Sequence | User → Web → Gateway → Hacks Engine → DB |
+| Skill Copy Flow | Sequence | User → Web → Gateway → Skills Engine → DB |
+| Exploit Simulation | Sequence | User → Web → Gateway → Forensic → Foundry |
 
 ---
 
