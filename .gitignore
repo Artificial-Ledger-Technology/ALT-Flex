@@ -148,10 +148,9 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
-# ── AI Agent Configuration ────────────────────────────────
-.claude/
-.gemini/
-.opencode/
+
+# ── AI Agent Configuration (Allowed for project consistency) ────────────
+# .claude/, .gemini/, and .opencode/ are intentionally tracked to share agentic skills
 
 # ── Next.js ───────────────────────────────────────────────────────────
 .next/

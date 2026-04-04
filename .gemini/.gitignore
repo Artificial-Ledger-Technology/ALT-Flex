@@ -1,0 +1,3 @@
+# Local gemini overrides
+*.local.md
+settings.local.json
