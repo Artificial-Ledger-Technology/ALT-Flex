@@ -14,6 +14,9 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import rateLimit from '@fastify/rate-limit';
 
+// ── Route Modules ────────────────────────────────────────────────────────────
+import { hacksRoutes } from './routes/hacks.routes.js';
+
 // ── Configuration ────────────────────────────────────────────────────────────
 const PORT = parseInt(process.env['API_PORT'] ?? '4000', 10);
 const HOST = process.env['API_HOST'] ?? '0.0.0.0';
@@ -48,7 +51,7 @@ async function registerPlugins(): Promise<void> {
 }
 
 // ── Routes ───────────────────────────────────────────────────────────────────
-function registerRoutes(): void {
+async function registerRoutes(): Promise<void> {
   // Health check — used by Docker healthcheck + monitoring
   server.get('/health', async (_request, _reply) => {
     return {
@@ -80,13 +83,17 @@ function registerRoutes(): void {
       health: '/health',
     };
   });
+
+  // ── Domain Route Modules ─────────────────────────────────────────────────
+  // P1-ARCH-003: Hacks Dashboard API (Engine α)
+  await server.register(hacksRoutes);
 }
 
 // ── Bootstrap ────────────────────────────────────────────────────────────────
 async function start(): Promise<void> {
   try {
     await registerPlugins();
-    registerRoutes();
+    await registerRoutes();
 
     await server.listen({ port: PORT, host: HOST });
     server.log.info(`🛡️  AEGIS API Gateway listening on http://${HOST}:${PORT}`);

@@ -50,3 +50,8 @@ export type {
   ServerEnv,
   GatewayEnv,
 } from './shared/env/index.js';
+
+// ── API Contract Schemas ────────────────────────────────────────────────────
+// Request/response Zod schemas for all API endpoints.
+// These compose domain types — never duplicate them.
+export * from './shared/schemas/index.js';
