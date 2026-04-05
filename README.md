@@ -24,6 +24,8 @@ _The Shield of Web3_
 > _In Greek mythology, the aegis (αἰγίς) was the shield of Zeus — a supernatural defense
 > wielded only by the most powerful. AltFlex AEGIS is the shield for Web3._
 
+**AltFlex AEGIS aggregates every recorded DeFi exploit in history, indexes AI audit skill files for safety classification, and simulates historical attacks using Foundry — powering both a security intelligence dashboard and two academic theses, all within a single hexagonal TypeScript monorepo.**
+
 </div>
 
 ---
@@ -71,6 +73,18 @@ parses their AST structure, and runs a safety pipeline classifying each file as
 simulate historical exploits, extract transaction traces, and map root-cause attack patterns
 programmatically.
 
+### Engine Feature Matrix
+
+| Dimension          | Engine α — Hacks Dashboard                  | Engine β — AI Skills Explorer            | Engine γ — Forensic Engine                        |
+| ------------------ | ------------------------------------------- | ---------------------------------------- | ------------------------------------------------- |
+| **Purpose**        | DeFi exploit aggregation & analytics        | AI skill file indexing & safety scanning | Foundry-based exploit simulation & trace analysis |
+| **Data Source**    | DefiLlama API, DeFiHackLabs                 | GitHub AI skill repositories             | EVM RPC providers, Foundry CLI                    |
+| **Primary Entity** | `HackIncident`                              | `AISkillFile` + `SafetyScanResult`       | `ExploitPOC`                                      |
+| **Key Port**       | `IHackDataPort`                             | `ISkillDataPort` + `ISafetyScannerPort`  | `IChainDataPort` + `ISimulationPort`              |
+| **Output**         | Analytical dashboard + attack vector charts | Searchable catalog + safety badges       | Trace visualization + call trees                  |
+| **Thesis**         | Thesis 2 — Pattern Classification           | Thesis 1 — Malicious Intent Detection    | Thesis 2 — Forensic Simulation                    |
+| **Phase**          | Phase 2 (ETL) → Phase 4 (UI)                | Phase 3 (Scanner) → Phase 4 (UI)         | Phase 5 (Integration)                             |
+
 ---
 
 ## Why AEGIS — The Rebrand
@@ -98,6 +112,8 @@ AltFlex AEGIS follows **Hexagonal Architecture (Ports & Adapters)**. Every exter
 databases, APIs, blockchain RPC nodes, AI models, the Foundry CLI — is accessed exclusively
 through abstract `Port` interfaces defined in `@aegis/core`. Concrete implementations are
 `Adapters`. The domain layer has **zero coupling** to any framework or infrastructure concern.
+
+> 📐 **Full architecture specification**: [ARCHITECTURE.md](./ARCHITECTURE.md) — 11 Mermaid diagrams covering C4 models, hexagonal internals, data flow pipelines, and sequence diagrams.
 
 ```mermaid
 graph TB
@@ -262,10 +278,10 @@ ALT-Flex/                               ← Git root / pnpm workspace root
 ├── docs/
 │   ├── BRAND_GUIDE.md
 │   ├── CODE_REVIEW_PHASE0.md
-│   ├── PHASE_0_PROJECT_INITIALIZATION.md
-│   ├── ARCHITECTURE.md                 ← Phase 1 deliverable
-│   └── API_SPECIFICATION.md            ← Phase 1 deliverable
+│   ├── CODE_REVIEW_PHASE1.md           ← Phase 1 task tracker
+│   └── PHASE_0_PROJECT_INITIALIZATION.md
 │
+├── ARCHITECTURE.md                     ← Phase 1 deliverable (P1-ARCH-001 ✅)
 ├── research/                           ← Jupyter notebooks & ML experiments
 ├── .env.example
 ├── .gitignore
@@ -287,33 +303,52 @@ implementations ship in Phase 1.
 
 ### HackIncident
 
-| Field             | Type                                        | Description                   |
-| ----------------- | ------------------------------------------- | ----------------------------- |
-| `id`              | `string` (UUID)                             | Unique identifier             |
-| `protocolName`    | `string`                                    | e.g. "Euler Finance"          |
-| `date`            | `Date`                                      | Date of exploit               |
-| `chain`           | `Chain`                                     | Primary chain affected        |
-| `attackVector`    | `AttackVector`                              | Classification of attack type |
-| `lossUsd`         | `number`                                    | Total USD loss                |
-| `txHashes`        | `string[]`                                  | On-chain transaction hashes   |
-| `hasFoundryPoc`   | `boolean`                                   | Whether a Foundry POC exists  |
-| `foundryTestPath` | `string \| null`                            | Path in DeFiHackLabs repo     |
-| `fundsReturned`   | `boolean`                                   | Whether funds were returned   |
-| `dataSource`      | `'defillama' \| 'defihacklabs' \| 'manual'` | ETL origin                    |
+The primary aggregate in Engine α — validated at runtime with `HackIncidentSchema` (Zod).
+
+| Field              | Type                                                       | Description                                    |
+| ------------------ | ---------------------------------------------------------- | ---------------------------------------------- |
+| `id`               | `string` (UUID v4)                                         | Unique identifier                              |
+| `protocolName`     | `string`                                                   | e.g. "Euler Finance"                           |
+| `protocolSlug`     | `string` (optional)                                        | URL-safe kebab-case identifier                 |
+| `date`             | `Date`                                                     | Date of exploit (UTC)                          |
+| `chain`            | `Chain`                                                    | Primary blockchain affected                    |
+| `attackVector`     | `AttackVector`                                             | Primary vulnerability classification           |
+| `secondaryVectors` | `AttackVector[]`                                           | Additional attack techniques (combo exploits)  |
+| `lossUsd`          | `number` (≥ 0)                                             | Total USD loss at time of exploit              |
+| `fundsReturned`    | `number` (≥ 0, ≤ lossUsd)                                  | Funds recovered through negotiation            |
+| `txHashes`         | `string[]`                                                 | Raw transaction hashes (backward compat)       |
+| `transactionRefs`  | `TransactionReference[]`                                   | Structured tx refs with chain context + labels |
+| `hasFoundryPoc`    | `boolean`                                                  | Whether a Foundry POC exists                   |
+| `foundryTestPath`  | `string \| undefined`                                      | Path in DeFiHackLabs repo                      |
+| `protocolCategory` | `string` (optional)                                        | e.g. "Lending", "DEX", "Bridge", "Yield"       |
+| `wasAudited`       | `boolean` (optional)                                       | Whether protocol was audited pre-exploit       |
+| `auditFirms`       | `string[]`                                                 | Audit firms involved                           |
+| `dataSource`       | `'defillama' \| 'defihacklabs' \| 'manual' \| 'rekt-news'` | ETL origin                                     |
+| `lastSyncedAt`     | `Date`                                                     | Last ETL sync timestamp                        |
 
 ### AISkillFile
 
-| Field         | Type                                                          | Description                   |
-| ------------- | ------------------------------------------------------------- | ----------------------------- |
-| `id`          | `string` (UUID)                                               | Unique identifier             |
-| `name`        | `string`                                                      | Skill display name            |
-| `sourceRepo`  | `string`                                                      | GitHub repository URL         |
-| `platform`    | `'openai' \| 'claude' \| 'gemini' \| 'cursor' \| 'universal'` | Target AI platform            |
-| `language`    | `'solidity' \| 'rust' \| 'move' \| 'vyper' \| 'multi'`        | Smart contract language       |
-| `safetyLabel` | `SafetyLabel`                                                 | Safety scanner classification |
-| `contentHash` | `string`                                                      | SHA-256 of file content       |
-| `copyCount`   | `number`                                                      | Community usage metric        |
-| `starCount`   | `number`                                                      | Source repository stars       |
+Domain entity for indexed AI audit skill files — validated with `AISkillFileSchema` (Zod).
+
+| Field              | Type                                                                                | Description                                   |
+| ------------------ | ----------------------------------------------------------------------------------- | --------------------------------------------- |
+| `id`               | `string` (UUID v4)                                                                  | Unique identifier                             |
+| `name`             | `string`                                                                            | Skill display name                            |
+| `description`      | `string`                                                                            | Short description of skill purpose            |
+| `category`         | `SkillCategory`                                                                     | e.g. "vulnerability-detection", "code-review" |
+| `sourceRepo`       | `string`                                                                            | GitHub `owner/repo` format                    |
+| `filePath`         | `string`                                                                            | File path within the repository               |
+| `platform`         | `'claude' \| 'cursor' \| 'mcp' \| 'copilot' \| 'gemini' \| 'windsurf' \| 'generic'` | Target AI platform                            |
+| `language`         | `'solidity' \| 'vyper' \| 'rust' \| 'move' \| 'cairo' \| 'multi'`                   | Smart contract language                       |
+| `content`          | `string`                                                                            | Raw file content                              |
+| `format`           | `'yaml' \| 'markdown' \| 'json' \| 'toml' \| 'text'`                                | Source file format                            |
+| `contentHash`      | `string` (SHA-256)                                                                  | Content hash for deduplication                |
+| `contentSizeBytes` | `number`                                                                            | Content size in bytes                         |
+| `safetyLabel`      | `SafetyLabel`                                                                       | Safety scanner classification                 |
+| `author`           | `string`                                                                            | Skill author or team                          |
+| `copyCount`        | `number`                                                                            | Community copy metric                         |
+| `starCount`        | `number`                                                                            | Community star metric                         |
+| `viewCount`        | `number`                                                                            | Community view metric                         |
 
 ### Value Objects
 
@@ -324,7 +359,7 @@ implementations ship in Phase 1.
 **`Chain`** — `Ethereum` · `BSC` · `Polygon` · `Arbitrum` · `Optimism` · `Avalanche` ·
 `Base` · `Solana` · `Cosmos` · `Near` · `Aptos` · `Sui` · `MultiChain`
 
-**`SafetyLabel`** — `Safe` · `Suspicious` · `Malicious` · `Unreviewed`
+**`SafetyLabel`** — `Safe` · `Suspicious` · `Malicious` · `Unanalyzed`
 
 ### Hexagonal Port Interfaces
 
@@ -332,23 +367,36 @@ implementations ship in Phase 1.
 // @aegis/core/src/domain/ports/IHackDataPort.ts
 interface IHackDataPort {
   findById(id: string): Promise<HackIncident | null>;
-  findMany(filters: HackFilters): Promise<PaginatedResult<HackIncident>>;
-  upsert(incident: HackIncident): Promise<void>;
+  findAll(filters: HackFilters): Promise<PaginatedResult<HackIncident>>;
+  save(incident: CreateHackIncidentInput | HackIncident): Promise<HackIncident>;
+  saveBatch(incidents: Array<CreateHackIncidentInput | HackIncident>): Promise<number>;
+  update(input: UpdateHackIncidentInput): Promise<HackIncident | null>;
+  delete(id: string): Promise<boolean>;
   getAttackVectorStats(): Promise<AttackVectorStat[]>;
+  getChainStats(): Promise<ChainStat[]>;
+  getDashboardStats(): Promise<DashboardStats>;
+  getLossTimeSeries(granularity: 'day' | 'week' | 'month' | 'year'): Promise<LossTimeSeriesPoint[]>;
 }
 
 // @aegis/core/src/domain/ports/IChainDataPort.ts
 interface IChainDataPort {
-  getTransaction(hash: string): Promise<Transaction>;
-  getBlock(numberOrHash: string | number): Promise<Block>;
-  traceTransaction(hash: string): Promise<TraceResult>;
-  callContract(params: CallParams): Promise<unknown>;
+  getChain(): Chain;
+  isHealthy(): Promise<boolean>;
+  getTransaction(txHash: string): Promise<TransactionData | null>;
+  getTransactionTrace(txHash: string): Promise<TransactionTrace | null>;
+  getBlock(blockNumber: number): Promise<BlockData | null>;
+  getBlockByTimestamp(timestamp: Date): Promise<BlockData | null>;
+  getContractInfo(address: string): Promise<ContractInfo | null>;
+  isContract(address: string): Promise<boolean>;
+  getBalance(address: string, blockNumber?: number): Promise<string>;
 }
 
 // @aegis/core/src/domain/ports/ISafetyScannerPort.ts
 interface ISafetyScannerPort {
-  scan(skillFile: AISkillFile): Promise<SafetyScanResult>;
-  getRules(): Promise<SafetyRule[]>;
+  scan(request: ScanRequest): Promise<ScanResponse>;
+  configure(config: ScannerConfig): Promise<void>;
+  getRules(): Promise<ScannerRuleConfig[]>;
+  getVersion(): string;
 }
 ```
 
@@ -436,7 +484,7 @@ export class FoundryAdapter implements IForensicRunnerPort {
 | Phase                        | Timeline   | Status             | Key Deliverables                                                                                     |
 | ---------------------------- | ---------- | ------------------ | ---------------------------------------------------------------------------------------------------- |
 | **Phase 0 — Init**           | Week 1–2   | ✅ **Done**        | Monorepo scaffold · pnpm workspace · Turbo config · Domain blueprints · Docker Compose · Dev tooling |
-| **Phase 1 — Architecture**   | Week 3–4   | 🔄 **In Progress** | `ARCHITECTURE.md` · `API_SPECIFICATION.md` · DB migrations · Seed data · Domain implementations      |
+| **Phase 1 — Architecture**   | Week 3–4   | 🔄 **In Progress** | `ARCHITECTURE.md` ✅ · README Hero ✅ · API contracts · DB migrations · Seed data                    |
 | **Phase 2 — ETL Pipeline**   | Week 5–8   | ⏳ Planned         | DefiLlama sync worker · DeFiHackLabs scraper · BullMQ queues · PostgreSQL pipeline                   |
 | **Phase 3 — Safety Scanner** | Week 9–16  | ⏳ Planned         | AST parser · Heuristic safety rules · Safety label classifier **(Thesis 1 core)**                    |
 | **Phase 4 — Frontend**       | Week 17–22 | ⏳ Planned         | Hacks Dashboard · AI Skills Explorer · Forensic trace viewer · AEGIS design system                   |
@@ -638,30 +686,65 @@ the Hexagonal boundary and will be caught by a custom ESLint rule in Phase 1.
 
 ## API Reference
 
-> Full OpenAPI 3.1 specification is delivered in Phase 1 as `docs/API_SPECIFICATION.md`.
-> The endpoint catalogue below reflects the Phase 0 route scaffold.
+> Full OpenAPI 3.1 specification is delivered in Phase 1 as part of API contract definitions.
+> The endpoint catalogue below reflects Phase 1 API design (P1-ARCH-003/004/005/006).
 
 ### Base URL
 
 ```
-http://localhost:3001/api/v1
+http://localhost:4000/api/v1
 ```
 
 ### Endpoints
 
-| Method | Path                  | Description                                    | Phase   |
-| ------ | --------------------- | ---------------------------------------------- | ------- |
-| `GET`  | `/health`             | Service health + dependency status             | Phase 0 |
-| `GET`  | `/hacks`              | Paginated list of DeFi hack incidents          | Phase 2 |
-| `GET`  | `/hacks/:id`          | Single hack incident by ID                     | Phase 2 |
-| `GET`  | `/hacks/stats`        | Attack vector statistics + chain breakdown     | Phase 2 |
-| `POST` | `/hacks/sync`         | Trigger ETL sync from DefiLlama + DeFiHackLabs | Phase 2 |
-| `GET`  | `/skills`             | Paginated list of AI skill files               | Phase 3 |
-| `GET`  | `/skills/:id`         | Single skill file by ID                        | Phase 3 |
-| `POST` | `/skills/scan`        | Run safety scanner on a skill file             | Phase 3 |
-| `GET`  | `/skills/search`      | Full-text search across skill files            | Phase 3 |
-| `GET`  | `/forensics/:txHash`  | EVM transaction trace                          | Phase 5 |
-| `POST` | `/forensics/simulate` | Run Foundry POC simulation                     | Phase 5 |
+#### System & Gateway
+
+| Method | Path                 | Description                                      | Phase   |
+| ------ | -------------------- | ------------------------------------------------ | ------- |
+| `GET`  | `/health`            | Service health + dependency status               | Phase 0 |
+| `GET`  | `/health/detailed`   | Per-service health breakdown                     | Phase 1 |
+| `GET`  | `/meta`              | System metadata (version, uptime, feature flags) | Phase 1 |
+| `GET`  | `/rate-limit/status` | Current rate limit bucket state                  | Phase 1 |
+
+#### Engine α — Hacks Dashboard
+
+| Method | Path                    | Description                                            | Phase   |
+| ------ | ----------------------- | ------------------------------------------------------ | ------- |
+| `GET`  | `/hacks`                | Paginated list with full filter support                | Phase 2 |
+| `GET`  | `/hacks/:id`            | Single hack incident detail                            | Phase 2 |
+| `GET`  | `/hacks/stats`          | Aggregate statistics (total loss, by vector, by chain) | Phase 2 |
+| `GET`  | `/hacks/stats/timeline` | Time-series loss data for charts                       | Phase 2 |
+| `GET`  | `/hacks/vectors`        | Attack vector taxonomy with counts                     | Phase 2 |
+| `GET`  | `/hacks/chains`         | Chain breakdown with counts                            | Phase 2 |
+| `GET`  | `/hacks/search`         | Full-text protocol name search                         | Phase 2 |
+| `POST` | `/hacks/sync`           | Trigger ETL sync (admin only)                          | Phase 2 |
+
+#### Engine β — AI Skills Explorer
+
+| Method | Path                  | Description                                     | Phase   |
+| ------ | --------------------- | ----------------------------------------------- | ------- |
+| `GET`  | `/skills`             | Paginated list with filter support              | Phase 3 |
+| `GET`  | `/skills/:id`         | Single skill file detail (includes raw content) | Phase 3 |
+| `GET`  | `/skills/:id/content` | Raw skill file content for copy                 | Phase 3 |
+| `GET`  | `/skills/stats`       | Aggregate statistics (by platform, by safety)   | Phase 3 |
+| `GET`  | `/skills/platforms`   | Platform breakdown with counts                  | Phase 3 |
+| `GET`  | `/skills/languages`   | Language breakdown with counts                  | Phase 3 |
+| `GET`  | `/skills/:id/safety`  | Safety scan results for a specific skill        | Phase 3 |
+| `POST` | `/skills/:id/copy`    | Increment copy count                            | Phase 3 |
+| `POST` | `/skills/:id/star`    | Increment star count                            | Phase 3 |
+| `POST` | `/skills/scan`        | Trigger safety scan for a skill (admin)         | Phase 3 |
+| `POST` | `/skills/sync`        | Trigger GitHub scraper sync (admin)             | Phase 3 |
+
+#### Engine γ — Forensic Engine
+
+| Method | Path                         | Description                              | Phase   |
+| ------ | ---------------------------- | ---------------------------------------- | ------- |
+| `GET`  | `/forensics/pocs`            | List available Foundry POCs              | Phase 5 |
+| `GET`  | `/forensics/pocs/:id`        | POC detail with Solidity source          | Phase 5 |
+| `POST` | `/forensics/simulate`        | Trigger Foundry simulation of a POC      | Phase 5 |
+| `GET`  | `/forensics/simulate/:jobId` | Simulation status and results            | Phase 5 |
+| `POST` | `/forensics/trace`           | Trace a transaction on a given chain     | Phase 5 |
+| `GET`  | `/forensics/trace/:jobId`    | Trace results (call tree, storage diffs) | Phase 5 |
 
 ### Health Response Shape
 
