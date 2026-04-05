@@ -1,0 +1,891 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# AltFlex AEGIS v3.0 — Hacks Dashboard API Specification
+# OpenAPI 3.1.0 — Engine α (Hacks Dashboard)
+# ═══════════════════════════════════════════════════════════════════════════════
+# Task: P1-ARCH-003
+# Author: Senior API Design Engineer + Senior Technical Writer
+# Last Updated: 2026-04-05
+# ═══════════════════════════════════════════════════════════════════════════════
+
+openapi: 3.1.0
+info:
+  title: AltFlex AEGIS — Hacks Dashboard API
+  version: 3.0.0
+  description: |
+    RESTful API specification for the Hacks Dashboard (Engine α) of the
+    AltFlex AEGIS security intelligence platform.
+
+    This API provides paginated, filterable access to DeFi exploit incident data
+    aggregated from DefiLlama and DeFiHackLabs. It supports full-text search,
+    attack vector taxonomy breakdowns, chain statistics, and time-series loss charts.
+
+    **Base URL**: `http://localhost:4000`
+    **Authentication**: Public read-only (admin endpoints require `X-API-Key` header)
+  contact:
+    name: AltFlex AEGIS Engineering
+  license:
+    name: MIT
+
+servers:
+  - url: http://localhost:4000
+    description: Local Development
+
+tags:
+  - name: Hacks - List & Filter
+    description: Browse, search, and filter DeFi hack incidents
+  - name: Hacks - Statistics
+    description: Aggregate analytics, time-series data, and taxonomy breakdowns
+  - name: Hacks - Admin
+    description: Administrative operations (ETL sync triggers, require API key)
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PATHS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+paths:
+
+  # ── 1. GET /api/v1/hacks ────────────────────────────────────────────────────
+  /api/v1/hacks:
+    get:
+      operationId: listHacks
+      summary: List hack incidents with pagination and filtering
+      description: |
+        Returns a paginated list of DeFi hack incidents with comprehensive
+        filtering support. All filter parameters are optional — omitting a
+        filter means "no constraint on that dimension".
+
+        Supports filtering by attack vector, chain, date range, loss range,
+        Foundry POC availability, and full-text search.
+      tags: [Hacks - List & Filter]
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/PageSizeParam'
+        - $ref: '#/components/parameters/HackSortByParam'
+        - $ref: '#/components/parameters/SortOrderParam'
+        - name: attackVector
+          in: query
+          description: Filter by primary attack vector classification
+          schema:
+            $ref: '#/components/schemas/AttackVector'
+          example: flash-loan
+        - name: chain
+          in: query
+          description: Filter by blockchain network
+          schema:
+            $ref: '#/components/schemas/Chain'
+          example: ethereum
+        - name: dateFrom
+          in: query
+          description: Filter by date range start (inclusive, ISO 8601)
+          schema:
+            type: string
+            format: date
+          example: '2023-01-01'
+        - name: dateTo
+          in: query
+          description: Filter by date range end (inclusive, ISO 8601)
+          schema:
+            type: string
+            format: date
+          example: '2024-12-31'
+        - name: minLossUsd
+          in: query
+          description: Minimum loss amount in USD (inclusive)
+          schema:
+            type: number
+            minimum: 0
+          example: 1000000
+        - name: maxLossUsd
+          in: query
+          description: Maximum loss amount in USD (inclusive)
+          schema:
+            type: number
+            minimum: 0
+          example: 100000000
+        - name: hasFoundryPoc
+          in: query
+          description: Filter by Foundry POC availability
+          schema:
+            type: boolean
+          example: true
+        - name: search
+          in: query
+          description: Full-text search across protocol name and description
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 200
+          example: euler
+        - name: dataSource
+          in: query
+          description: Filter by data source origin
+          schema:
+            $ref: '#/components/schemas/DataSource'
+      responses:
+        '200':
+          description: Paginated list of hack incidents
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HackListResponse'
+              example:
+                data:
+                  - id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
+                    protocolName: 'Euler Finance'
+                    date: '2023-03-13T00:00:00.000Z'
+                    chain: ethereum
+                    attackVector: flash-loan
+                    lossUsd: 197000000
+                    fundsReturned: 197000000
+                    hasFoundryPoc: true
+                    dataSource: defillama
+                total: 847
+                page: 1
+                pageSize: 20
+                totalPages: 43
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimitError'
+
+  # ── 2. GET /api/v1/hacks/:id ────────────────────────────────────────────────
+  /api/v1/hacks/{id}:
+    get:
+      operationId: getHackDetail
+      summary: Get detailed hack incident information
+      description: |
+        Returns full details for a single hack incident, including computed
+        fields: net loss, recovery rate, impact classification, and
+        deduplicated attack vector list.
+      tags: [Hacks - List & Filter]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Hack incident UUID
+          schema:
+            type: string
+            format: uuid
+          example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
+      responses:
+        '200':
+          description: Hack incident detail with computed fields
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HackDetailResponse'
+              example:
+                id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
+                protocolName: 'Euler Finance'
+                date: '2023-03-13T00:00:00.000Z'
+                chain: ethereum
+                attackVector: flash-loan
+                lossUsd: 197000000
+                fundsReturned: 197000000
+                hasFoundryPoc: true
+                foundryTestPath: 'src/test/2023-03/Euler_exp.t.sol'
+                description: 'Flash loan attack exploiting a vulnerability in the donateToReserves function.'
+                netLossUsd: 0
+                recoveryRate: 100
+                isHighImpact: true
+                isFullyRecovered: true
+                allAttackVectors: [flash-loan]
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  # ── 3. GET /api/v1/hacks/stats ──────────────────────────────────────────────
+  /api/v1/hacks/stats:
+    get:
+      operationId: getHackStats
+      summary: Get aggregate dashboard statistics
+      description: |
+        Returns aggregate statistics for the dashboard header cards:
+        total incidents, total loss, recovery rate, POC coverage,
+        unique protocols, and unique chains.
+      tags: [Hacks - Statistics]
+      responses:
+        '200':
+          description: Dashboard statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HackStatsResponse'
+              example:
+                totalIncidents: 847
+                totalLossUsd: 12850000000
+                totalRecoveredUsd: 1250000000
+                avgLossUsd: 15177000
+                medianLossUsd: 2800000
+                pocCoverage: 23.5
+                uniqueProtocols: 612
+                uniqueChains: 14
+
+  # ── 4. GET /api/v1/hacks/stats/timeline ─────────────────────────────────────
+  /api/v1/hacks/stats/timeline:
+    get:
+      operationId: getHackTimeline
+      summary: Get time-series loss data for charts
+      description: |
+        Returns time-bucketed loss data for Recharts line/area charts.
+        Supports day, week, month, and year granularity with
+        optional date range filtering.
+      tags: [Hacks - Statistics]
+      parameters:
+        - name: granularity
+          in: query
+          description: Time bucket granularity
+          schema:
+            type: string
+            enum: [day, week, month, year]
+            default: month
+          example: month
+        - name: dateFrom
+          in: query
+          description: Start date filter (inclusive)
+          schema:
+            type: string
+            format: date
+          example: '2020-01-01'
+        - name: dateTo
+          in: query
+          description: End date filter (inclusive)
+          schema:
+            type: string
+            format: date
+          example: '2026-12-31'
+      responses:
+        '200':
+          description: Time-series loss data points
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HackTimelineResponse'
+              example:
+                granularity: month
+                data:
+                  - date: '2023-03-01T00:00:00.000Z'
+                    totalLossUsd: 215000000
+                    incidentCount: 3
+                    cumulativeLossUsd: 8750000000
+                  - date: '2023-04-01T00:00:00.000Z'
+                    totalLossUsd: 48000000
+                    incidentCount: 5
+                    cumulativeLossUsd: 8798000000
+                count: 2
+        '400':
+          $ref: '#/components/responses/ValidationError'
+
+  # ── 5. GET /api/v1/hacks/vectors ────────────────────────────────────────────
+  /api/v1/hacks/vectors:
+    get:
+      operationId: getHackVectors
+      summary: Get attack vector taxonomy with counts
+      description: |
+        Returns attack vector breakdown with incident counts, total loss,
+        average loss, and last incident date per vector. Used for
+        pie charts and taxonomy tables in the dashboard.
+      tags: [Hacks - Statistics]
+      responses:
+        '200':
+          description: Attack vector statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HackVectorsResponse'
+              example:
+                data:
+                  - attackVector: flash-loan
+                    count: 127
+                    totalLossUsd: 2150000000
+                    avgLossUsd: 16929000
+                    lastIncidentDate: '2026-02-14T00:00:00.000Z'
+                  - attackVector: reentrancy
+                    count: 98
+                    totalLossUsd: 1890000000
+                    avgLossUsd: 19285000
+                    lastIncidentDate: '2026-01-22T00:00:00.000Z'
+                  - attackVector: access-control
+                    count: 142
+                    totalLossUsd: 3420000000
+                    avgLossUsd: 24084000
+                    lastIncidentDate: '2026-03-05T00:00:00.000Z'
+                count: 16
+
+  # ── 6. GET /api/v1/hacks/chains ─────────────────────────────────────────────
+  /api/v1/hacks/chains:
+    get:
+      operationId: getHackChains
+      summary: Get chain breakdown with counts
+      description: |
+        Returns blockchain chain breakdown with incident counts, total loss,
+        and average loss per chain. Used for chain distribution charts.
+      tags: [Hacks - Statistics]
+      responses:
+        '200':
+          description: Chain statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HackChainsResponse'
+              example:
+                data:
+                  - chain: ethereum
+                    count: 389
+                    totalLossUsd: 7250000000
+                    avgLossUsd: 18638000
+                  - chain: bsc
+                    count: 198
+                    totalLossUsd: 2100000000
+                    avgLossUsd: 10606000
+                  - chain: polygon
+                    count: 67
+                    totalLossUsd: 450000000
+                    avgLossUsd: 6716000
+                count: 14
+
+  # ── 7. GET /api/v1/hacks/search ─────────────────────────────────────────────
+  /api/v1/hacks/search:
+    get:
+      operationId: searchHacks
+      summary: Full-text protocol name search
+      description: |
+        Searches hack incidents by protocol name and description using
+        PostgreSQL pg_trgm trigram matching. Returns paginated results.
+      tags: [Hacks - List & Filter]
+      parameters:
+        - name: search
+          in: query
+          required: true
+          description: Search query string (protocol name or description text)
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 200
+          example: euler
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/PageSizeParam'
+      responses:
+        '200':
+          description: Paginated search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HackListResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+
+  # ── 8. POST /api/v1/hacks/sync ──────────────────────────────────────────────
+  /api/v1/hacks/sync:
+    post:
+      operationId: triggerHackSync
+      summary: Trigger ETL sync from external sources
+      description: |
+        Triggers an asynchronous ETL sync from DefiLlama and/or DeFiHackLabs.
+        Returns a BullMQ job ID for status tracking.
+
+        **Admin only** — requires `X-API-Key` header.
+      tags: [Hacks - Admin]
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HackSyncRequest'
+            example:
+              source: defillama
+              force: false
+      responses:
+        '202':
+          description: ETL sync job queued successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HackSyncResponse'
+              example:
+                jobId: 'sync-hacks-1712345678'
+                status: queued
+                message: 'ETL sync job queued for source: defillama'
+                source: defillama
+                force: false
+                timestamp: '2026-04-05T14:39:00.000Z'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '409':
+          description: ETL sync already in progress
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardError'
+              example:
+                error: ETL_SYNC_IN_PROGRESS
+                code: AEGIS-409-001
+                message: An ETL sync is already in progress. Please wait for completion.
+                timestamp: '2026-04-05T14:39:00.000Z'
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# COMPONENTS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+components:
+
+  # ── Security Schemes ──────────────────────────────────────────────────────
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key for admin-only endpoints
+
+  # ── Reusable Parameters ───────────────────────────────────────────────────
+  parameters:
+    PageParam:
+      name: page
+      in: query
+      description: Page number (1-indexed)
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+      example: 1
+
+    PageSizeParam:
+      name: pageSize
+      in: query
+      description: Items per page (max 100)
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+      example: 20
+
+    HackSortByParam:
+      name: sortBy
+      in: query
+      description: Field to sort results by
+      schema:
+        type: string
+        enum: [date, lossUsd, protocolName]
+        default: date
+      example: lossUsd
+
+    SortOrderParam:
+      name: sortOrder
+      in: query
+      description: Sort direction
+      schema:
+        type: string
+        enum: [asc, desc]
+        default: desc
+      example: desc
+
+  # ── Reusable Responses ────────────────────────────────────────────────────
+  responses:
+    ValidationError:
+      description: Validation error — invalid query parameters or request body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+          example:
+            error: VALIDATION_ERROR
+            code: AEGIS-400-001
+            message: Invalid query parameters
+            details:
+              - field: page
+                message: Must be ≥ 1
+              - field: attackVector
+                message: Invalid enum value
+            timestamp: '2026-04-05T14:39:00.000Z'
+
+    NotFoundError:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+          example:
+            error: NOT_FOUND
+            code: AEGIS-404-001
+            message: Hack incident not found
+            timestamp: '2026-04-05T14:39:00.000Z'
+
+    UnauthorizedError:
+      description: Missing or invalid API key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+          example:
+            error: UNAUTHORIZED
+            code: AEGIS-401-001
+            message: Missing or invalid API key. Admin access required.
+            timestamp: '2026-04-05T14:39:00.000Z'
+
+    RateLimitError:
+      description: Rate limit exceeded
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+          example:
+            error: RATE_LIMIT_EXCEEDED
+            code: AEGIS-429-001
+            message: Rate limit exceeded. Try again later.
+            timestamp: '2026-04-05T14:39:00.000Z'
+
+  # ── Schemas ───────────────────────────────────────────────────────────────
+  schemas:
+
+    # ── Value Objects ─────────────────────────────────────────────────────
+    AttackVector:
+      type: string
+      enum:
+        - access-control
+        - arithmetic-overflow
+        - delegatecall-injection
+        - flash-loan
+        - oracle-manipulation
+        - reentrancy
+        - dao-governance
+        - frontrunning
+        - phishing
+        - dos
+        - replay
+        - self-destruct
+        - rug-pull
+        - bridge-exploit
+        - logic-error
+        - other
+      description: DeFi exploit attack vector classification (16 categories)
+
+    Chain:
+      type: string
+      enum:
+        - ethereum
+        - bsc
+        - avalanche
+        - fantom
+        - gnosis
+        - cronos
+        - polygon
+        - arbitrum
+        - optimism
+        - base
+        - solana
+        - cosmos
+        - near
+        - stellar
+        - multi
+        - unknown
+      description: Supported blockchain network identifiers (16 chains)
+
+    DataSource:
+      type: string
+      enum: [defillama, defihacklabs, manual, rekt-news]
+      description: ETL data source origin
+
+    # ── Entity Schemas ────────────────────────────────────────────────────
+    HackIncident:
+      type: object
+      required: [id, protocolName, date, chain, attackVector, lossUsd, dataSource]
+      properties:
+        id:
+          type: string
+          format: uuid
+        protocolName:
+          type: string
+          example: Euler Finance
+        protocolSlug:
+          type: string
+          example: euler-finance
+        date:
+          type: string
+          format: date-time
+          example: '2023-03-13T00:00:00.000Z'
+        chain:
+          $ref: '#/components/schemas/Chain'
+        attackVector:
+          $ref: '#/components/schemas/AttackVector'
+        secondaryVectors:
+          type: array
+          items:
+            $ref: '#/components/schemas/AttackVector'
+        lossUsd:
+          type: number
+          minimum: 0
+          example: 197000000
+        fundsReturned:
+          type: number
+          minimum: 0
+          example: 197000000
+        hasFoundryPoc:
+          type: boolean
+          example: true
+        foundryTestPath:
+          type: string
+          example: src/test/2023-03/Euler_exp.t.sol
+        description:
+          type: string
+        dataSource:
+          $ref: '#/components/schemas/DataSource'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    # ── Response Schemas ──────────────────────────────────────────────────
+    HackListResponse:
+      type: object
+      required: [data, total, page, pageSize, totalPages]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/HackIncident'
+        total:
+          type: integer
+          minimum: 0
+          example: 847
+        page:
+          type: integer
+          minimum: 1
+          example: 1
+        pageSize:
+          type: integer
+          minimum: 1
+          maximum: 100
+          example: 20
+        totalPages:
+          type: integer
+          minimum: 0
+          example: 43
+
+    HackDetailResponse:
+      allOf:
+        - $ref: '#/components/schemas/HackIncident'
+        - type: object
+          required: [netLossUsd, recoveryRate, isHighImpact, isFullyRecovered, allAttackVectors]
+          properties:
+            netLossUsd:
+              type: number
+              minimum: 0
+              description: Net loss after fund recovery (lossUsd - fundsReturned)
+            recoveryRate:
+              type: number
+              minimum: 0
+              maximum: 100
+              description: Fund recovery percentage
+            isHighImpact:
+              type: boolean
+              description: Whether loss ≥ $1M USD
+            isFullyRecovered:
+              type: boolean
+              description: Whether all funds were recovered
+            allAttackVectors:
+              type: array
+              items:
+                $ref: '#/components/schemas/AttackVector'
+              description: Primary + secondary vectors (deduplicated)
+
+    HackStatsResponse:
+      type: object
+      required: [totalIncidents, totalLossUsd, totalRecoveredUsd, avgLossUsd, medianLossUsd, pocCoverage, uniqueProtocols, uniqueChains]
+      properties:
+        totalIncidents:
+          type: integer
+          minimum: 0
+        totalLossUsd:
+          type: number
+          minimum: 0
+        totalRecoveredUsd:
+          type: number
+          minimum: 0
+        avgLossUsd:
+          type: number
+          minimum: 0
+        medianLossUsd:
+          type: number
+          minimum: 0
+        pocCoverage:
+          type: number
+          minimum: 0
+          maximum: 100
+        uniqueProtocols:
+          type: integer
+          minimum: 0
+        uniqueChains:
+          type: integer
+          minimum: 0
+
+    HackTimelineResponse:
+      type: object
+      required: [granularity, data, count]
+      properties:
+        granularity:
+          type: string
+          enum: [day, week, month, year]
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/LossTimeSeriesPoint'
+        count:
+          type: integer
+          minimum: 0
+
+    LossTimeSeriesPoint:
+      type: object
+      required: [date, totalLossUsd, incidentCount, cumulativeLossUsd]
+      properties:
+        date:
+          type: string
+          format: date-time
+        totalLossUsd:
+          type: number
+          minimum: 0
+        incidentCount:
+          type: integer
+          minimum: 0
+        cumulativeLossUsd:
+          type: number
+          minimum: 0
+
+    HackVectorsResponse:
+      type: object
+      required: [data, count]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AttackVectorStat'
+        count:
+          type: integer
+          minimum: 0
+
+    AttackVectorStat:
+      type: object
+      required: [attackVector, count, totalLossUsd, avgLossUsd, lastIncidentDate]
+      properties:
+        attackVector:
+          $ref: '#/components/schemas/AttackVector'
+        count:
+          type: integer
+          minimum: 0
+        totalLossUsd:
+          type: number
+          minimum: 0
+        avgLossUsd:
+          type: number
+          minimum: 0
+        lastIncidentDate:
+          type: string
+          format: date-time
+
+    HackChainsResponse:
+      type: object
+      required: [data, count]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChainStat'
+        count:
+          type: integer
+          minimum: 0
+
+    ChainStat:
+      type: object
+      required: [chain, count, totalLossUsd, avgLossUsd]
+      properties:
+        chain:
+          $ref: '#/components/schemas/Chain'
+        count:
+          type: integer
+          minimum: 0
+        totalLossUsd:
+          type: number
+          minimum: 0
+        avgLossUsd:
+          type: number
+          minimum: 0
+
+    HackSyncRequest:
+      type: object
+      properties:
+        source:
+          $ref: '#/components/schemas/DataSource'
+        force:
+          type: boolean
+          default: false
+          description: Force full re-sync (ignores lastSyncedAt)
+
+    HackSyncResponse:
+      type: object
+      required: [jobId, status, message, source, force, timestamp]
+      properties:
+        jobId:
+          type: string
+          description: BullMQ job identifier
+        status:
+          type: string
+          enum: [queued, active, completed, failed]
+        message:
+          type: string
+        source:
+          type: string
+        force:
+          type: boolean
+        timestamp:
+          type: string
+          format: date-time
+
+    # ── Error Schemas ─────────────────────────────────────────────────────
+    StandardError:
+      type: object
+      required: [error, code, message, timestamp]
+      properties:
+        error:
+          type: string
+          enum:
+            - VALIDATION_ERROR
+            - NOT_FOUND
+            - RATE_LIMIT_EXCEEDED
+            - UNAUTHORIZED
+            - FORBIDDEN
+            - INTERNAL_ERROR
+            - SERVICE_UNAVAILABLE
+            - ETL_SYNC_IN_PROGRESS
+            - CONFLICT
+            - BAD_REQUEST
+        code:
+          type: string
+          description: Structured error code (e.g., AEGIS-400-001)
+        message:
+          type: string
+          description: Human-readable error message
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationErrorDetail'
+        timestamp:
+          type: string
+          format: date-time
+
+    ValidationErrorDetail:
+      type: object
+      required: [field, message]
+      properties:
+        field:
+          type: string
+          description: Field path (e.g., "page", "attackVector")
+        message:
+          type: string
+          description: Human-readable error message for this field
