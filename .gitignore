@@ -152,6 +152,9 @@ lerna-debug.log*
 # ── AI Agent Configuration (Allowed for project consistency) ────────────
 # .claude/, .gemini/, and .opencode/ are intentionally tracked to share agentic skills
 
+.opencode/
+.opencode/skills/flexycode  
+
 # ── Next.js ───────────────────────────────────────────────────────────
 .next/
 .vercel
@@ -174,4 +177,20 @@ storybook-static/
 
 # ── Pull request text ───────────────────────────────────────────────────────
 pr_diff.txt
+
+
+# ── Docs Phase Development ───────────────────────────────────────────────────────
+
+docs/CODE_REVIEW_PHASE2.md
+docs/CODE_REVIEW_PHASE3.md
+docs/CODE_REVIEW_PHASE4.md
+docs/CODE_REVIEW_PHASE5.md
+docs/CODE_REVIEW_PHASE6.md
+
+
+docs/PHASE_2_DATA_PIPELINES_ETL.md
+docs/PHASE_3_AI_SAFETY_SCANNER.md
+docs/PHASE_4_FRONTEND_IMPLEMENTATION.md
+docs/PHASE_5_DEEP_EVM_INTEGRATION.md
+docs/PHASE_6_PRODUCTION_HARDENING.md
 
