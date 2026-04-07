@@ -16,6 +16,7 @@ import rateLimit from '@fastify/rate-limit';
 
 // ── Route Modules ────────────────────────────────────────────────────────────
 import { hacksRoutes } from './routes/hacks.routes.js';
+import { skillsRoutes } from './routes/skills.routes.js';
 
 // ── Configuration ────────────────────────────────────────────────────────────
 const PORT = parseInt(process.env['API_PORT'] ?? '4000', 10);
@@ -87,6 +88,9 @@ async function registerRoutes(): Promise<void> {
   // ── Domain Route Modules ─────────────────────────────────────────────────
   // P1-ARCH-003: Hacks Dashboard API (Engine α)
   await server.register(hacksRoutes);
+
+  // P1-ARCH-004: AI Skills Explorer API (Engine β)
+  await server.register(skillsRoutes);
 }
 
 // ── Bootstrap ────────────────────────────────────────────────────────────────

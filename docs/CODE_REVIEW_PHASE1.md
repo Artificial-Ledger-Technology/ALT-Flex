@@ -301,8 +301,10 @@ CREATE INDEX idx_etl_sync_source ON etl_sync_log(source, started_at DESC);
 | Estimated Hours | 4 |
 | Dependencies | P1-ARCH-007 |
 | Labels | `data`, `seed`, `hacks-engine` |
+
 **Description**:
 Curate a development seed dataset from DefiLlama's hacks API and DeFiHackLabs repository. This dataset enables frontend development and API testing without requiring live ETL pipelines.
+
 **Acceptance Criteria**:
 
 - [ ] Minimum 50 hack incidents from DefiLlama spanning 2020–2026
@@ -316,19 +318,20 @@ Curate a development seed dataset from DefiLlama's hacks API and DeFiHackLabs re
 - [ ] 10 sample AI skill files seeded for Skills Engine
 - [ ] Skill files include at least 1 per safety label (safe, suspicious, malicious)
 
-      **Top Hacks to Include** (minimum):
-      | Protocol | Loss | Vector | Chain | Year |
-      |----------|------|--------|-------|------|
-      | Ronin Network | $624M | Access Control | Ethereum | 2022 |
-      | Poly Network | $611M | Access Control | Multi | 2021 |
-      | Wormhole | $326M | Access Control | Solana | 2022 |
-      | Euler Finance | $197M | Flash Loan | Ethereum | 2023 |
-      | Mango Markets | $117M | Oracle Manipulation | Solana | 2022 |
-      | Cream Finance | $130M | Flash Loan | Ethereum | 2021 |
-      | Curve (July) | $73M | Reentrancy | Ethereum | 2023 |
-      | Nomad Bridge | $190M | Logic Error | Multi | 2022 |
-      | BNB Bridge | $586M | Access Control | BSC | 2022 |
-      | Wintermute | $160M | Access Control | Ethereum | 2022 |
+**Top Hacks to Include** (minimum):
+
+| Protocol      | Loss  | Vector              | Chain    | Year |
+| ------------- | ----- | ------------------- | -------- | ---- |
+| Ronin Network | $624M | Access Control      | Ethereum | 2022 |
+| Poly Network  | $611M | Access Control      | Multi    | 2021 |
+| Wormhole      | $326M | Access Control      | Solana   | 2022 |
+| Euler Finance | $197M | Flash Loan          | Ethereum | 2023 |
+| Mango Markets | $117M | Oracle Manipulation | Solana   | 2022 |
+| Cream Finance | $130M | Flash Loan          | Ethereum | 2021 |
+| Curve (July)  | $73M  | Reentrancy          | Ethereum | 2023 |
+| Nomad Bridge  | $190M | Logic Error         | Multi    | 2022 |
+| BNB Bridge    | $586M | Access Control      | BSC      | 2022 |
+| Wintermute    | $160M | Access Control      | Ethereum | 2022 |
 
 ---
 
@@ -341,8 +344,10 @@ Curate a development seed dataset from DefiLlama's hacks API and DeFiHackLabs re
 | Estimated Hours | 2 |
 | Dependencies | P1-ARCH-001 |
 | Labels | `infrastructure`, `typescript`, `monorepo` |
+
 **Description**:
 Wire up the actual TypeScript imports between packages. Each package must have clean barrel exports (`index.ts`) and TypeScript project references for incremental builds.
+
 **Acceptance Criteria**:
 
 - [ ] `@aegis/core/index.ts` — exports all entities, value objects, ports, utils
@@ -354,7 +359,8 @@ Wire up the actual TypeScript imports between packages. Each package must have c
 - [ ] TypeScript `composite` and `references` configured for all packages
 - [ ] `pnpm run build` builds packages in correct dependency order
 - [ ] `tsc --build` works from monorepo root
-      **Dependency Graph**:
+
+**Dependency Graph**:
 
 ```
 @aegis/core ←── @aegis/hacks-engine
@@ -377,8 +383,10 @@ apps/web (types only)
 | Estimated Hours | 3 |
 | Dependencies | P1-ARCH-009 |
 | Labels | `infrastructure`, `error-handling`, `logging` |
+
 **Description**:
 Implement the shared error handling hierarchy and structured logging system in `@aegis/core`. Every engine and app uses these — no ad-hoc error handling allowed.
+
 **Acceptance Criteria**:
 
 - [ ] `AegisError` — base error class with `code`, `statusCode`, `details`
@@ -392,7 +400,8 @@ Implement the shared error handling hierarchy and structured logging system in `
 - [ ] Winston logger configured with JSON format, log levels, and correlation IDs
 - [ ] Request-scoped correlation ID via `AsyncLocalStorage`
 - [ ] Error serialization for API responses (no stack traces in production)
-      **Error Hierarchy**:
+
+**Error Hierarchy**:
 
 ```typescript
 AegisError (abstract)
@@ -417,8 +426,10 @@ AegisError (abstract)
 | Estimated Hours | 4 |
 | Dependencies | P1-ARCH-006, P1-ARCH-010 |
 | Labels | `api-gateway`, `fastify`, `implementation` |
+
 **Description**:
 Build the API Gateway skeleton — a working Fastify server with all middleware configured and route stubs registered. No business logic yet, but the server boots, responds to health checks, and documents itself via Swagger.
+
 **Acceptance Criteria**:
 
 - [ ] Fastify server boots on configurable port (default `4000`)
