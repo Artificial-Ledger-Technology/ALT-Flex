@@ -171,11 +171,6 @@ storybook-static/
 *.tmp
 *.temp
 
-# ── IDE shits ──────────────────────────────────────────────────────────────
-.vscode
-.cursor
-
-
 # ── Docs Phase Development ───────────────────────────────────────────────────────
 
 docs/CODE_REVIEW_PHASE2.md
