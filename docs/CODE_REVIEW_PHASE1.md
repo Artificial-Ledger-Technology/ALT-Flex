@@ -315,6 +315,7 @@ Curate a development seed dataset from DefiLlama's hacks API and DeFiHackLabs re
 - [ ] Seed script is idempotent (safe to run multiple times)
 - [ ] 10 sample AI skill files seeded for Skills Engine
 - [ ] Skill files include at least 1 per safety label (safe, suspicious, malicious)
+
       **Top Hacks to Include** (minimum):
       | Protocol | Loss | Vector | Chain | Year |
       |----------|------|--------|-------|------|

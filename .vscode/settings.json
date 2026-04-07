@@ -4,5 +4,30 @@
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.organizeImports": "explicit"
+  },
+  "terminal.integrated.profiles.windows": {
+    "DevOps Terminal": {
+      "source": "PowerShell",
+      "icon": "server",
+      "color": "terminal.ansiYellow",
+      "args": ["-NoLogo"]
+    }
+  },
+  "terminal.integrated.defaultProfile.windows": "DevOps Terminal",
+  "terminal.integrated.cursorStyle": "block",
+  "terminal.integrated.cursorBlinking": true,
+  "terminal.integrated.fontFamily": "'MesloLGS NF', 'CaskaydiaCove Nerd Font', 'Cascadia Code NF', 'FiraCode Nerd Font', 'JetBrainsMono Nerd Font', 'Cascadia Code', Consolas, monospace",
+  "workbench.colorCustomizations": {
+    "terminal.background": "#0b0f19",
+    "terminal.foreground": "#e0e0e0",
+    "terminalCursor.foreground": "#FF9900",
+    "terminal.ansiBlack": "#1E1E1E",
+    "terminal.ansiRed": "#E83B46",
+    "terminal.ansiGreen": "#47D16E",
+    "terminal.ansiYellow": "#FFCC00",
+    "terminal.ansiBlue": "#0DB7ED",
+    "terminal.ansiMagenta": "#8E44AD",
+    "terminal.ansiCyan": "#00C4CC",
+    "terminal.ansiWhite": "#F0F0F0"
   }
 }

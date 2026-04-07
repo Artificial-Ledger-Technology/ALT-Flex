@@ -175,9 +175,6 @@ storybook-static/
 .vscode
 .cursor
 
-# ── Pull request text ───────────────────────────────────────────────────────
-pr_diff.txt
-
 
 # ── Docs Phase Development ───────────────────────────────────────────────────────
 
