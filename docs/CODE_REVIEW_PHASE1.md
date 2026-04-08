@@ -32,8 +32,10 @@ Phase 1 transforms the Phase 0 scaffold into a fully specified system. Every API
 | Estimated Hours | 6 |
 | Dependencies | Phase 0 complete |
 | Labels | `documentation`, `architecture`, `hexagonal` |
+
 **Description**:
 Create the master architecture document defining every system boundary, data flow, and integration point. This document serves dual purpose: **academic reference** (cited in Thesis 1 & 2) and **engineering blueprint** (developers build from this).
+
 **Acceptance Criteria**:
 
 - [ ] System context diagram (C4 Level 1) — AltFlex AEGIS within the Web3 ecosystem
@@ -71,8 +73,10 @@ Create the master architecture document defining every system boundary, data flo
 | Estimated Hours | 3 |
 | Dependencies | P1-ARCH-001 |
 | Labels | `documentation`, `branding`, `readme` |
+
 **Description**:
 Replace the existing v1/v2 README with a new hero page that reflects the AEGIS v3.0 identity. The README is the project's public face — it must immediately convey scale, sophistication, and dual-engine purpose.
+
 **Acceptance Criteria**:
 
 - [ ] New hero section with AEGIS branding and tagline
@@ -97,8 +101,11 @@ Replace the existing v1/v2 README with a new hero page that reflects the AEGIS v
 | Estimated Hours | 4 |
 | Dependencies | P1-ARCH-001 |
 | Labels | `api`, `hacks-engine`, `specification` |
+
 **Description**:
+
 Define every endpoint for the Hacks Dashboard API. These contracts are the interface between `apps/api-gateway`, `packages/hacks-engine`, and `apps/web`. All endpoints must support the dynamic filtering mechanics required to rival the SCH dashboard.
+
 **Acceptance Criteria**:
 
 - [ ] `GET /api/v1/hacks` — Paginated list with full filter support
@@ -114,7 +121,8 @@ Define every endpoint for the Hacks Dashboard API. These contracts are the inter
 - [ ] Pagination follows `{ data, total, page, pageSize, totalPages }` pattern
 - [ ] Filters: `attackVector`, `chain`, `dateFrom`, `dateTo`, `minLossUsd`, `maxLossUsd`, `hasFoundryPoc`, `search`
 - [ ] Sorting: `date`, `lossUsd`, `protocolName` (asc/desc)
-      **Filter Parameters** (query string):
+
+**Filter Parameters** (query string):
 
 ```
 GET /api/v1/hacks?
@@ -141,8 +149,10 @@ sortOrder=desc
 | Estimated Hours | 4 |
 | Dependencies | P1-ARCH-001 |
 | Labels | `api`, `skills-engine`, `specification` |
+
 **Description**:
 Define every endpoint for the AI Skills Explorer API. The filtering mechanics must support language, platform, safety label, and author. The one-click copy and safety badge systems are frontend features but require specific API response fields.
+
 **Acceptance Criteria**:
 
 - [ ] `GET /api/v1/skills` — Paginated list with filter support
@@ -158,7 +168,8 @@ Define every endpoint for the AI Skills Explorer API. The filtering mechanics mu
 - [ ] `GET /api/v1/skills/:id/safety` — Safety scan results for a specific skill
 - [ ] Filters: `platform`, `language`, `safetyLabel`, `author`, `format`, `search`
 - [ ] Sorting: `name`, `copyCount`, `starCount`, `createdAt` (asc/desc)
-      **Filter Parameters** (query string):
+
+**Filter Parameters** (query string):
 
 ```
 GET /api/v1/skills?
@@ -184,8 +195,10 @@ sortOrder=desc
 | Estimated Hours | 3 |
 | Dependencies | P1-ARCH-001 |
 | Labels | `api`, `forensic-engine`, `specification` |
+
 **Description**:
 Define endpoints for the Forensic Engine — the Foundry integration and EVM trace analysis layer. These endpoints power Phase 5 (Thesis 2) but the contracts must be designed now for forward compatibility.
+
 **Acceptance Criteria**:
 
 - [ ] `GET /api/v1/forensics/pocs` — List available Foundry POCs from DeFiHackLabs
@@ -208,8 +221,10 @@ Define endpoints for the Forensic Engine — the Foundry integration and EVM tra
 | Estimated Hours | 2 |
 | Dependencies | None |
 | Labels | `api`, `api-gateway`, `infrastructure` |
+
 **Description**:
 Define the API Gateway's own endpoints — health checks, authentication, rate limit status, and system metadata.
+
 **Acceptance Criteria**:
 
 - [ ] `GET /api/v1/health` — System health (all services + DB + Redis)
@@ -219,7 +234,8 @@ Define the API Gateway's own endpoints — health checks, authentication, rate l
 - [ ] `GET /api/v1/rate-limit/status` — Current rate limit bucket state
 - [ ] Error response format standardized: `{ error, code, message, details?, timestamp }`
 - [ ] Health response format: `{ status, version, uptime, services: { name, healthy, latencyMs }[] }`
-      **Standard Error Codes**:
+
+**Standard Error Codes**:
 
 ```typescript
 enum ErrorCode {
@@ -245,8 +261,10 @@ enum ErrorCode {
 | Estimated Hours | 3 |
 | Dependencies | P1-ARCH-003, P1-ARCH-004 |
 | Labels | `database`, `migrations`, `infrastructure` |
+
 **Description**:
 Write and validate all PostgreSQL migration files. These are the concrete implementations of the schema designs from Phase 0. Migrations must be idempotent and reversible.
+
 **Acceptance Criteria**:
 
 - [ ] `001_extensions.sql` — Enable `uuid-ossp`, `pg_trgm`
@@ -259,7 +277,8 @@ Write and validate all PostgreSQL migration files. These are the concrete implem
 - [ ] Down migrations (rollback) for every up migration
 - [ ] Migration runner script (`pnpm run migrate`)
 - [ ] Seed data script (`pnpm run seed`)
-      **Additional Tables**:
+
+**Additional Tables**:
 
 ```sql
 -- ETL Sync tracking
@@ -455,8 +474,10 @@ Build the API Gateway skeleton — a working Fastify server with all middleware 
 | Estimated Hours | 2 |
 | Dependencies | P1-ARCH-011, P1-ARCH-008 |
 | Labels | `validation`, `qa`, `gate` |
+
 **Description**:
 The final quality gate for Phase 1. If any criterion fails, Phase 1 is incomplete and Phase 2 cannot begin.
+
 **Acceptance Criteria**:
 
 - [ ] `ARCHITECTURE.md` — All 10 diagrams render correctly

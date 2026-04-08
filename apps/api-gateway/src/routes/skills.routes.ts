@@ -14,25 +14,25 @@
  * @task P1-ARCH-004
  */
 
-import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import {
-  SkillListQuerySchema,
-  SkillDetailParamsSchema,
   SkillContentParamsSchema,
   SkillCopyParamsSchema,
-  SkillStarParamsSchema,
-  SkillScanRequestSchema,
-  SkillSyncRequestSchema,
+  SkillDetailParamsSchema,
+  SkillListQuerySchema,
   SkillSafetyParamsSchema,
-  type SkillListQuery,
-  type SkillDetailParams,
+  SkillScanRequestSchema,
+  SkillStarParamsSchema,
+  SkillSyncRequestSchema,
   type SkillContentParams,
   type SkillCopyParams,
-  type SkillStarParams,
-  type SkillScanRequest,
-  type SkillSyncRequest,
+  type SkillDetailParams,
+  type SkillListQuery,
   type SkillSafetyParams,
+  type SkillScanRequest,
+  type SkillStarParams,
+  type SkillSyncRequest,
 } from '@aegis/core';
+import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // Constants
@@ -63,8 +63,8 @@ function notImplemented(_request: FastifyRequest, reply: FastifyReply): FastifyR
  * ├─────┼────────┼─────────────────────────────────┼──────────────────────────────────────┤
  * │  1  │ GET    │ /api/v1/skills                  │ Paginated list + filters             │
  * │  2  │ GET    │ /api/v1/skills/stats            │ Aggregate statistics                 │
- * │  3  │ GET    │ /api/v1/skills/platforms         │ Platform breakdown                   │
- * │  4  │ GET    │ /api/v1/skills/languages         │ Language breakdown                   │
+ * │  3  │ GET    │ /api/v1/skills/platforms        │ Platform breakdown                   │
+ * │  4  │ GET    │ /api/v1/skills/languages        │ Language breakdown                   │
  * │  5  │ POST   │ /api/v1/skills/scan             │ Trigger safety scan (admin)          │
  * │  6  │ POST   │ /api/v1/skills/sync             │ Trigger GitHub scraper sync (admin)  │
  * │  7  │ GET    │ /api/v1/skills/:id              │ Single skill detail                  │
