@@ -61,10 +61,15 @@ services:
     volumes:
       # Hot-reload: Mount source directories for live changes
       - ./apps/api-gateway/src:/app/apps/api-gateway/src
+      - ./apps/api-gateway/tsconfig.json:/app/apps/api-gateway/tsconfig.json
       - ./packages/core/src:/app/packages/core/src
+      - ./packages/core/tsconfig.json:/app/packages/core/tsconfig.json
       - ./packages/hacks-engine/src:/app/packages/hacks-engine/src
+      - ./packages/hacks-engine/tsconfig.json:/app/packages/hacks-engine/tsconfig.json
       - ./packages/skills-engine/src:/app/packages/skills-engine/src
+      - ./packages/skills-engine/tsconfig.json:/app/packages/skills-engine/tsconfig.json
       - ./packages/forensic-engine/src:/app/packages/forensic-engine/src
+      - ./packages/forensic-engine/tsconfig.json:/app/packages/forensic-engine/tsconfig.json
     env_file: .env
     environment:
       NODE_ENV: development
@@ -93,6 +98,7 @@ services:
       # Hot-reload: Mount source + public for live changes
       - ./apps/web/src:/app/apps/web/src
       - ./apps/web/public:/app/apps/web/public
+      - ./apps/web/tsconfig.json:/app/apps/web/tsconfig.json
     env_file: .env
     environment:
       NODE_ENV: development
@@ -113,7 +119,9 @@ services:
     volumes:
       # Hot-reload: Mount source for live changes
       - ./packages/hacks-engine/src:/app/packages/hacks-engine/src
+      - ./packages/hacks-engine/tsconfig.json:/app/packages/hacks-engine/tsconfig.json
       - ./packages/core/src:/app/packages/core/src
+      - ./packages/core/tsconfig.json:/app/packages/core/tsconfig.json
     env_file: .env
     environment:
       NODE_ENV: development
@@ -139,7 +147,9 @@ services:
     volumes:
       # Hot-reload: Mount source for live changes
       - ./packages/skills-engine/src:/app/packages/skills-engine/src
+      - ./packages/skills-engine/tsconfig.json:/app/packages/skills-engine/tsconfig.json
       - ./packages/core/src:/app/packages/core/src
+      - ./packages/core/tsconfig.json:/app/packages/core/tsconfig.json
     env_file: .env
     environment:
       NODE_ENV: development
