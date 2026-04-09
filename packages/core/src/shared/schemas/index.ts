@@ -89,3 +89,59 @@ export type {
   HackSyncRequest,
   HackSyncResponse,
 } from './hacks-api.schema.js';
+
+// ── Forensics API Schemas (Engine γ) ─────────────────────────────────────────
+export {
+  // Sort
+  FORENSIC_POC_SORT_FIELDS,
+  ForensicPocSortQuerySchema,
+  // Job status
+  ForensicJobStatusSchema,
+  ForensicJobProgressSchema,
+  // 1. List POCs
+  ForensicPocListQuerySchema,
+  ForensicPocListResponseSchema,
+  // 2. POC Detail
+  ForensicPocDetailParamsSchema,
+  ForensicPocDetailResponseSchema,
+  // 3. Simulate
+  ForensicSimulateRequestSchema,
+  ForensicSimulateResponseSchema,
+  // 4. Simulate Job Status
+  ForensicSimulateJobParamsSchema,
+  SimulationResultSchema,
+  ForensicSimulateJobResponseSchema,
+  // 5. Trace
+  ForensicTraceRequestSchema,
+  ForensicTraceResponseSchema,
+  // 6. Trace Job Status
+  ForensicTraceJobParamsSchema,
+  StorageDiffSchema,
+  CallTreeNodeSchema,
+  DecodedEventLogSchema,
+  TraceResultSchema,
+  ForensicTraceJobResponseSchema,
+} from './forensics-api.schema.js';
+
+export type {
+  ForensicPocSortField,
+  ForensicJobStatus,
+  ForensicJobProgress,
+  ForensicPocListQuery,
+  ForensicPocListResponse,
+  ForensicPocDetailParams,
+  ForensicPocDetailResponse,
+  ForensicSimulateRequest,
+  ForensicSimulateResponse,
+  ForensicSimulateJobParams,
+  SimulationResult,
+  ForensicSimulateJobResponse,
+  ForensicTraceRequest,
+  ForensicTraceResponse,
+  ForensicTraceJobParams,
+  StorageDiff,
+  CallTreeNode,
+  DecodedEventLog,
+  TraceResult,
+  ForensicTraceJobResponse,
+} from './forensics-api.schema.js';
