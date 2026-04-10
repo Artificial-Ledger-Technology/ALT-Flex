@@ -149,11 +149,16 @@ yarn-error.log*
 lerna-debug.log*
 
 
-# ── AI Agent Configuration (Allowed for project consistency) ────────────
-# .claude/, .gemini/, and .opencode/ are intentionally tracked to share agentic skills
+# ── AI Agent Configuration & IDEs ───────────────────────────────────────
+.claude/
+.gemini/
+.cursor/
 
 .opencode/
 .opencode/skills/flexycode  
+
+# ── PR Metadata ─────────────────────────────────────────────────────────
+pr_body.txt
 
 # ── Next.js ───────────────────────────────────────────────────────────
 .next/
