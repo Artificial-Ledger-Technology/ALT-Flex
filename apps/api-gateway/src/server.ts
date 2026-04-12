@@ -16,6 +16,7 @@ import rateLimit from '@fastify/rate-limit';
 
 // ── Route Modules ────────────────────────────────────────────────────────────
 import { hacksRoutes } from './routes/hacks.routes.js';
+import { systemRoutes } from './routes/system.routes.js';
 
 // ── Configuration ────────────────────────────────────────────────────────────
 const PORT = parseInt(process.env['API_PORT'] ?? '4000', 10);
@@ -52,37 +53,9 @@ async function registerPlugins(): Promise<void> {
 
 // ── Routes ───────────────────────────────────────────────────────────────────
 async function registerRoutes(): Promise<void> {
-  // Health check — used by Docker healthcheck + monitoring
-  server.get('/health', async (_request, _reply) => {
-    return {
-      status: 'ok',
-      service: 'aegis-api-gateway',
-      version: '3.0.0',
-      timestamp: new Date().toISOString(),
-      uptime: process.uptime(),
-    };
-  });
-
-  // Versioned health (matches Makefile health target)
-  server.get('/api/v1/health', async (_request, _reply) => {
-    return {
-      status: 'ok',
-      service: 'aegis-api-gateway',
-      version: '3.0.0',
-      timestamp: new Date().toISOString(),
-      uptime: process.uptime(),
-    };
-  });
-
-  // Root — service info
-  server.get('/', async (_request, _reply) => {
-    return {
-      name: 'AltFlex AEGIS API Gateway',
-      version: '3.0.0',
-      docs: '/documentation',
-      health: '/health',
-    };
-  });
+  // ── System & Gateway Routes (P1-ARCH-006) ───────────────────────────────
+  // Health checks, meta, auth, rate-limit status, root info
+  await server.register(systemRoutes);
 
   // ── Domain Route Modules ─────────────────────────────────────────────────
   // P1-ARCH-003: Hacks Dashboard API (Engine α)
