@@ -18,17 +18,14 @@ import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import {
   HackListQuerySchema,
   HackDetailParamsSchema,
-  HackStatsResponseSchema,
   HackTimelineQuerySchema,
   HackSearchQuerySchema,
   HackSyncRequestSchema,
-} from '@aegis/core';
-import type {
-  HackListQuery,
-  HackDetailParams,
-  HackTimelineQuery,
-  HackSearchQuery,
-  HackSyncRequest,
+  type HackListQuery,
+  type HackDetailParams,
+  type HackTimelineQuery,
+  type HackSearchQuery,
+  type HackSyncRequest,
 } from '@aegis/core';
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -38,7 +35,7 @@ import type {
 const ROUTE_PREFIX = '/api/v1/hacks';
 
 /** Standard 501 response for unimplemented endpoints */
-function notImplemented(_request: FastifyRequest, reply: FastifyReply) {
+function notImplemented(_request: FastifyRequest, reply: FastifyReply): FastifyReply {
   return reply.status(501).send({
     error: 'NOT_IMPLEMENTED',
     code: 'AEGIS-501-001',
@@ -68,6 +65,7 @@ function notImplemented(_request: FastifyRequest, reply: FastifyReply) {
  * │  8  │ POST   │ /api/v1/hacks/sync            │ Trigger ETL sync (admin)     │
  * └─────┴────────┴───────────────────────────────┴──────────────────────────────┘
  */
+// eslint-disable-next-line @typescript-eslint/require-await
 export async function hacksRoutes(server: FastifyInstance): Promise<void> {
   // ── 1. GET /api/v1/hacks — Paginated List with Filters ─────────────────────
   server.get(
@@ -210,7 +208,11 @@ export async function hacksRoutes(server: FastifyInstance): Promise<void> {
         querystring: {
           type: 'object',
           properties: {
-            granularity: { type: 'string', enum: ['day', 'week', 'month', 'year'], default: 'month' },
+            granularity: {
+              type: 'string',
+              enum: ['day', 'week', 'month', 'year'],
+              default: 'month',
+            },
             dateFrom: { type: 'string', format: 'date' },
             dateTo: { type: 'string', format: 'date' },
           },
@@ -355,7 +357,7 @@ export async function hacksRoutes(server: FastifyInstance): Promise<void> {
       const apiKey = request.headers['x-api-key'] as string | undefined;
       const validKeys = (process.env['API_KEYS'] ?? '').split(',').filter(Boolean);
 
-      if (!apiKey || !validKeys.includes(apiKey)) {
+      if (typeof apiKey !== 'string' || !validKeys.includes(apiKey)) {
         return reply.status(401).send({
           error: 'UNAUTHORIZED',
           code: 'AEGIS-401-001',
