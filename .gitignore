@@ -150,14 +150,8 @@ lerna-debug.log*
 
 
 # ── AI Agent Configuration & IDEs ───────────────────────────────────────
-.claude/
-.gemini/
-.cursor/
+# (Currently tracking these directories to preserve Agentic Skills)
 
-.opencode/
-.opencode/skills/flexycode  
-
-# ── PR Metadata ─────────────────────────────────────────────────────────
 pr_body.txt
 
 # ── Next.js ───────────────────────────────────────────────────────────
