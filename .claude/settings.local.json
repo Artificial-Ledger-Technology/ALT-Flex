@@ -1,0 +1,16 @@
+{
+  "developer": {
+    "name": "flexycode",
+    "role": "Blockchain Architect"
+  },
+  "environment": {
+    "os": "windows",
+    "shell": "pwsh",
+    "dockerBackend": "wsl2"
+  },
+  "preferences": {
+    "verboseOutput": true,
+    "autoFormat": true,
+    "showDiffBeforeApply": true
+  }
+}

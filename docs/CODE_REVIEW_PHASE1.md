@@ -32,8 +32,10 @@ Phase 1 transforms the Phase 0 scaffold into a fully specified system. Every API
 | Estimated Hours | 6 |
 | Dependencies | Phase 0 complete |
 | Labels | `documentation`, `architecture`, `hexagonal` |
+
 **Description**:
 Create the master architecture document defining every system boundary, data flow, and integration point. This document serves dual purpose: **academic reference** (cited in Thesis 1 & 2) and **engineering blueprint** (developers build from this).
+
 **Acceptance Criteria**:
 
 - [ ] System context diagram (C4 Level 1) — AltFlex AEGIS within the Web3 ecosystem
@@ -71,8 +73,10 @@ Create the master architecture document defining every system boundary, data flo
 | Estimated Hours | 3 |
 | Dependencies | P1-ARCH-001 |
 | Labels | `documentation`, `branding`, `readme` |
+
 **Description**:
 Replace the existing v1/v2 README with a new hero page that reflects the AEGIS v3.0 identity. The README is the project's public face — it must immediately convey scale, sophistication, and dual-engine purpose.
+
 **Acceptance Criteria**:
 
 - [ ] New hero section with AEGIS branding and tagline
@@ -97,8 +101,11 @@ Replace the existing v1/v2 README with a new hero page that reflects the AEGIS v
 | Estimated Hours | 4 |
 | Dependencies | P1-ARCH-001 |
 | Labels | `api`, `hacks-engine`, `specification` |
+
 **Description**:
+
 Define every endpoint for the Hacks Dashboard API. These contracts are the interface between `apps/api-gateway`, `packages/hacks-engine`, and `apps/web`. All endpoints must support the dynamic filtering mechanics required to rival the SCH dashboard.
+
 **Acceptance Criteria**:
 
 - [ ] `GET /api/v1/hacks` — Paginated list with full filter support
@@ -114,7 +121,8 @@ Define every endpoint for the Hacks Dashboard API. These contracts are the inter
 - [ ] Pagination follows `{ data, total, page, pageSize, totalPages }` pattern
 - [ ] Filters: `attackVector`, `chain`, `dateFrom`, `dateTo`, `minLossUsd`, `maxLossUsd`, `hasFoundryPoc`, `search`
 - [ ] Sorting: `date`, `lossUsd`, `protocolName` (asc/desc)
-      **Filter Parameters** (query string):
+
+**Filter Parameters** (query string):
 
 ```
 GET /api/v1/hacks?
@@ -141,8 +149,10 @@ sortOrder=desc
 | Estimated Hours | 4 |
 | Dependencies | P1-ARCH-001 |
 | Labels | `api`, `skills-engine`, `specification` |
+
 **Description**:
 Define every endpoint for the AI Skills Explorer API. The filtering mechanics must support language, platform, safety label, and author. The one-click copy and safety badge systems are frontend features but require specific API response fields.
+
 **Acceptance Criteria**:
 
 - [ ] `GET /api/v1/skills` — Paginated list with filter support
@@ -158,7 +168,8 @@ Define every endpoint for the AI Skills Explorer API. The filtering mechanics mu
 - [ ] `GET /api/v1/skills/:id/safety` — Safety scan results for a specific skill
 - [ ] Filters: `platform`, `language`, `safetyLabel`, `author`, `format`, `search`
 - [ ] Sorting: `name`, `copyCount`, `starCount`, `createdAt` (asc/desc)
-      **Filter Parameters** (query string):
+
+**Filter Parameters** (query string):
 
 ```
 GET /api/v1/skills?
@@ -184,8 +195,10 @@ sortOrder=desc
 | Estimated Hours | 3 |
 | Dependencies | P1-ARCH-001 |
 | Labels | `api`, `forensic-engine`, `specification` |
+
 **Description**:
 Define endpoints for the Forensic Engine — the Foundry integration and EVM trace analysis layer. These endpoints power Phase 5 (Thesis 2) but the contracts must be designed now for forward compatibility.
+
 **Acceptance Criteria**:
 
 - [ ] `GET /api/v1/forensics/pocs` — List available Foundry POCs from DeFiHackLabs
@@ -208,8 +221,10 @@ Define endpoints for the Forensic Engine — the Foundry integration and EVM tra
 | Estimated Hours | 2 |
 | Dependencies | None |
 | Labels | `api`, `api-gateway`, `infrastructure` |
+
 **Description**:
 Define the API Gateway's own endpoints — health checks, authentication, rate limit status, and system metadata.
+
 **Acceptance Criteria**:
 
 - [ ] `GET /api/v1/health` — System health (all services + DB + Redis)
@@ -219,7 +234,8 @@ Define the API Gateway's own endpoints — health checks, authentication, rate l
 - [ ] `GET /api/v1/rate-limit/status` — Current rate limit bucket state
 - [ ] Error response format standardized: `{ error, code, message, details?, timestamp }`
 - [ ] Health response format: `{ status, version, uptime, services: { name, healthy, latencyMs }[] }`
-      **Standard Error Codes**:
+
+**Standard Error Codes**:
 
 ```typescript
 enum ErrorCode {
@@ -245,8 +261,10 @@ enum ErrorCode {
 | Estimated Hours | 3 |
 | Dependencies | P1-ARCH-003, P1-ARCH-004 |
 | Labels | `database`, `migrations`, `infrastructure` |
+
 **Description**:
 Write and validate all PostgreSQL migration files. These are the concrete implementations of the schema designs from Phase 0. Migrations must be idempotent and reversible.
+
 **Acceptance Criteria**:
 
 - [ ] `001_extensions.sql` — Enable `uuid-ossp`, `pg_trgm`
@@ -259,7 +277,8 @@ Write and validate all PostgreSQL migration files. These are the concrete implem
 - [ ] Down migrations (rollback) for every up migration
 - [ ] Migration runner script (`pnpm run migrate`)
 - [ ] Seed data script (`pnpm run seed`)
-      **Additional Tables**:
+
+**Additional Tables**:
 
 ```sql
 -- ETL Sync tracking
@@ -301,8 +320,10 @@ CREATE INDEX idx_etl_sync_source ON etl_sync_log(source, started_at DESC);
 | Estimated Hours | 4 |
 | Dependencies | P1-ARCH-007 |
 | Labels | `data`, `seed`, `hacks-engine` |
+
 **Description**:
 Curate a development seed dataset from DefiLlama's hacks API and DeFiHackLabs repository. This dataset enables frontend development and API testing without requiring live ETL pipelines.
+
 **Acceptance Criteria**:
 
 - [ ] Minimum 50 hack incidents from DefiLlama spanning 2020–2026
@@ -316,19 +337,20 @@ Curate a development seed dataset from DefiLlama's hacks API and DeFiHackLabs re
 - [ ] 10 sample AI skill files seeded for Skills Engine
 - [ ] Skill files include at least 1 per safety label (safe, suspicious, malicious)
 
-      **Top Hacks to Include** (minimum):
-      | Protocol | Loss | Vector | Chain | Year |
-      |----------|------|--------|-------|------|
-      | Ronin Network | $624M | Access Control | Ethereum | 2022 |
-      | Poly Network | $611M | Access Control | Multi | 2021 |
-      | Wormhole | $326M | Access Control | Solana | 2022 |
-      | Euler Finance | $197M | Flash Loan | Ethereum | 2023 |
-      | Mango Markets | $117M | Oracle Manipulation | Solana | 2022 |
-      | Cream Finance | $130M | Flash Loan | Ethereum | 2021 |
-      | Curve (July) | $73M | Reentrancy | Ethereum | 2023 |
-      | Nomad Bridge | $190M | Logic Error | Multi | 2022 |
-      | BNB Bridge | $586M | Access Control | BSC | 2022 |
-      | Wintermute | $160M | Access Control | Ethereum | 2022 |
+**Top Hacks to Include** (minimum):
+
+| Protocol      | Loss  | Vector              | Chain    | Year |
+| ------------- | ----- | ------------------- | -------- | ---- |
+| Ronin Network | $624M | Access Control      | Ethereum | 2022 |
+| Poly Network  | $611M | Access Control      | Multi    | 2021 |
+| Wormhole      | $326M | Access Control      | Solana   | 2022 |
+| Euler Finance | $197M | Flash Loan          | Ethereum | 2023 |
+| Mango Markets | $117M | Oracle Manipulation | Solana   | 2022 |
+| Cream Finance | $130M | Flash Loan          | Ethereum | 2021 |
+| Curve (July)  | $73M  | Reentrancy          | Ethereum | 2023 |
+| Nomad Bridge  | $190M | Logic Error         | Multi    | 2022 |
+| BNB Bridge    | $586M | Access Control      | BSC      | 2022 |
+| Wintermute    | $160M | Access Control      | Ethereum | 2022 |
 
 ---
 
@@ -341,8 +363,10 @@ Curate a development seed dataset from DefiLlama's hacks API and DeFiHackLabs re
 | Estimated Hours | 2 |
 | Dependencies | P1-ARCH-001 |
 | Labels | `infrastructure`, `typescript`, `monorepo` |
+
 **Description**:
 Wire up the actual TypeScript imports between packages. Each package must have clean barrel exports (`index.ts`) and TypeScript project references for incremental builds.
+
 **Acceptance Criteria**:
 
 - [ ] `@aegis/core/index.ts` — exports all entities, value objects, ports, utils
@@ -354,7 +378,8 @@ Wire up the actual TypeScript imports between packages. Each package must have c
 - [ ] TypeScript `composite` and `references` configured for all packages
 - [ ] `pnpm run build` builds packages in correct dependency order
 - [ ] `tsc --build` works from monorepo root
-      **Dependency Graph**:
+
+**Dependency Graph**:
 
 ```
 @aegis/core ←── @aegis/hacks-engine
@@ -377,8 +402,10 @@ apps/web (types only)
 | Estimated Hours | 3 |
 | Dependencies | P1-ARCH-009 |
 | Labels | `infrastructure`, `error-handling`, `logging` |
+
 **Description**:
 Implement the shared error handling hierarchy and structured logging system in `@aegis/core`. Every engine and app uses these — no ad-hoc error handling allowed.
+
 **Acceptance Criteria**:
 
 - [ ] `AegisError` — base error class with `code`, `statusCode`, `details`
@@ -392,7 +419,8 @@ Implement the shared error handling hierarchy and structured logging system in `
 - [ ] Winston logger configured with JSON format, log levels, and correlation IDs
 - [ ] Request-scoped correlation ID via `AsyncLocalStorage`
 - [ ] Error serialization for API responses (no stack traces in production)
-      **Error Hierarchy**:
+
+**Error Hierarchy**:
 
 ```typescript
 AegisError (abstract)
@@ -417,8 +445,10 @@ AegisError (abstract)
 | Estimated Hours | 4 |
 | Dependencies | P1-ARCH-006, P1-ARCH-010 |
 | Labels | `api-gateway`, `fastify`, `implementation` |
+
 **Description**:
 Build the API Gateway skeleton — a working Fastify server with all middleware configured and route stubs registered. No business logic yet, but the server boots, responds to health checks, and documents itself via Swagger.
+
 **Acceptance Criteria**:
 
 - [ ] Fastify server boots on configurable port (default `4000`)
@@ -444,8 +474,10 @@ Build the API Gateway skeleton — a working Fastify server with all middleware 
 | Estimated Hours | 2 |
 | Dependencies | P1-ARCH-011, P1-ARCH-008 |
 | Labels | `validation`, `qa`, `gate` |
+
 **Description**:
 The final quality gate for Phase 1. If any criterion fails, Phase 1 is incomplete and Phase 2 cannot begin.
+
 **Acceptance Criteria**:
 
 - [ ] `ARCHITECTURE.md` — All 10 diagrams render correctly

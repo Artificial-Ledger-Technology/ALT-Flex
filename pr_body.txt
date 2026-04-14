@@ -1,0 +1,64 @@
+## 🎯 Overview
+
+Implements **P1-ARCH-004: Define API Contracts — AI Skills Explorer Endpoints (Engine β)**, the final Phase 1 architectural milestone. Establishes 11 complete endpoint contracts, Zod validation schemas, Fastify route stubs, and barrel exports as the single source of truth for the Skills domain across AEGIS v3.0.
+
+---
+
+## 📦 Deliverables
+
+### New: `skills-api.schema.ts` (~540 LOC)
+Zod contracts for all 11 Skills Explorer endpoints, composing from `AISkillFile`, `SafetyLabel`, and `SafetyScanResult` domain entities.
+
+| Endpoint | Key Schema |
+|---|---|
+| `GET /api/v1/skills` | `SkillListQuerySchema` (7 filters + pagination + sort) |
+| `GET /api/v1/skills/stats` | `SkillStatsResponseSchema` |
+| `GET /api/v1/skills/platforms` | `SkillPlatformsResponseSchema` |
+| `GET /api/v1/skills/languages` | `SkillLanguagesResponseSchema` |
+| `POST /api/v1/skills/scan` | `SkillScanRequestSchema` (admin + async job) |
+| `POST /api/v1/skills/sync` | `SkillSyncRequestSchema` (admin + async job) |
+| `GET /api/v1/skills/:id` | `SkillDetailResponseSchema` (+5 computed fields) |
+| `GET /api/v1/skills/:id/content` | `SkillContentResponseSchema` |
+| `GET /api/v1/skills/:id/safety` | `SkillSafetyResponseSchema` (full history) |
+| `POST /api/v1/skills/:id/copy` | `SkillCopyResponseSchema` |
+| `POST /api/v1/skills/:id/star` | `SkillStarResponseSchema` |
+
+### New: `skills.routes.ts` (~400 LOC)
+11 Fastify route stubs with Zod validation, `x-api-key` admin guards, RFC 7807 error envelopes, full OpenAPI 3.1 descriptions, and 501 Not Implemented stubs for Phase 2 wiring.
+
+### Modified Files
+- `schemas/index.ts` — barrel-exports 23 schemas + 21 types via `@aegis/core`
+- `server.ts` — registers `skillsRoutes` (P1-ARCH-004 Engine β)
+- `hacks.routes.ts` — fixed: duplicate imports, strict-boolean, return types, require-await, unused import
+
+---
+
+## ✅ Validation Gates
+
+| Gate | Status |
+|---|---|
+| `pnpm run build` | ✅ 6/6 workspaces, 0 errors |
+| `pnpm run lint` | ✅ 6/6 workspaces, 0 errors |
+| `tsc --noEmit` | ✅ 0 type errors monorepo-wide |
+
+---
+
+## 🏛️ Architecture Compliance
+
+- **Hexagonal Architecture**: Route layer depends only on Port interfaces — zero coupling to adapters
+- **Domain-First Schemas**: All Zod types compose from `AISkillFile`, `SafetyLabel`, `SafetyScanResult` — no field duplication
+- **Zero Business Logic**: All stubs return `501` — 100% deferred to Phase 2 use-cases
+- **RFC 7807**: All error responses follow `{error, code, message, details, timestamp}` envelope
+
+---
+
+## 🚀 Phase 2 Unblocked
+
+With P1-ARCH-003 + P1-ARCH-004 complete, Phase 2 ETL pipeline implementation may now begin:
+- Implement `ListSkillsUseCase`, `GetSkillDetailUseCase`, `IncrementCopyCountUseCase`
+- Wire concrete `ISkillDataPort` adapters (PostgreSQL + Redis)
+- Implement the GitHub scraper and AEGIS Safety Scanner
+
+---
+
+**Task-ID**: P1-ARCH-004 | **Depends-on**: P1-ARCH-001, P1-ARCH-003 | **Labels**: `api`, `skills-engine`, `specification`, `phase-1`
