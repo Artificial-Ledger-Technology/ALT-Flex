@@ -187,14 +187,14 @@ sortOrder=desc
 Define endpoints for the Forensic Engine — the Foundry integration and EVM trace analysis layer. These endpoints power Phase 5 (Thesis 2) but the contracts must be designed now for forward compatibility.
 **Acceptance Criteria**:
 
-- [ ] `GET /api/v1/forensics/pocs` — List available Foundry POCs from DeFiHackLabs
-- [ ] `GET /api/v1/forensics/pocs/:id` — POC detail with Solidity source
-- [ ] `POST /api/v1/forensics/simulate` — Trigger Foundry simulation of a POC
-- [ ] `GET /api/v1/forensics/simulate/:jobId` — Simulation status and results
-- [ ] `POST /api/v1/forensics/trace` — Trace a transaction on a given chain
-- [ ] `GET /api/v1/forensics/trace/:jobId` — Trace results (call tree, storage diffs)
-- [ ] All long-running operations use async job pattern (BullMQ)
-- [ ] Job status follows `{ jobId, status, result?, error?, progress }` pattern
+- [x] `GET /api/v1/forensics/pocs` — List available Foundry POCs from DeFiHackLabs
+- [x] `GET /api/v1/forensics/pocs/:id` — POC detail with Solidity source
+- [x] `POST /api/v1/forensics/simulate` — Trigger Foundry simulation of a POC
+- [x] `GET /api/v1/forensics/simulate/:jobId` — Simulation status and results
+- [x] `POST /api/v1/forensics/trace` — Trace a transaction on a given chain
+- [x] `GET /api/v1/forensics/trace/:jobId` — Trace results (call tree, storage diffs)
+- [x] All long-running operations use async job pattern (BullMQ)
+- [x] Job status follows `{ jobId, status, result?, error?, progress }` pattern
 
 ---
 
@@ -493,7 +493,7 @@ style P012 fill:#2ecc71,color:#fff
 | README.md       | AEGIS branding, architecture overview | ⬜     |
 | Hacks API       | 8 endpoints fully specified           | ⬜     |
 | Skills API      | 11 endpoints fully specified          | ⬜     |
-| Forensics API   | 6 endpoints fully specified           | ⬜     |
+| Forensics API   | 6 endpoints fully specified           | ✅     |
 | System API      | 5 endpoints fully specified           | ⬜     |
 | DB Migrations   | 6 migration files, tested             | ⬜     |
 | Seed Data       | 50+ hacks, 10+ skills                 | ⬜     |
