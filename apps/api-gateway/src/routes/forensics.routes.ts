@@ -74,6 +74,12 @@ function notImplemented(
  */
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin registration requires async; actual awaits added in Phase 5
 export async function forensicsRoutes(server: FastifyInstance): Promise<void> {
+  /**
+   * Admin API keys — parsed once at registration from comma-separated env var.
+   * Evaluated here (not module scope) so env vars are available at registration time.
+   * Phase 5: Replace with a constant-time comparison helper or Auth Adapter.
+   */
+  const validKeys = (process.env['API_KEYS'] ?? '').split(',').filter(Boolean);
   // ── 1. GET /api/v1/forensics/pocs — List Available Foundry POCs ──────────
   server.get(
     `${ROUTE_PREFIX}/pocs`,
@@ -230,7 +236,6 @@ export async function forensicsRoutes(server: FastifyInstance): Promise<void> {
     async (request: FastifyRequest<{ Body: ForensicSimulateRequest }>, reply) => {
       // Admin API key check (Phase 5: replace with proper auth middleware)
       const apiKey = request.headers['x-api-key'] as string | undefined;
-      const validKeys = (process.env['API_KEYS'] ?? '').split(',').filter(Boolean);
 
       if (apiKey === undefined || apiKey === '' || !validKeys.includes(apiKey)) {
         return reply.status(401).send({
@@ -351,7 +356,6 @@ export async function forensicsRoutes(server: FastifyInstance): Promise<void> {
     async (request: FastifyRequest<{ Body: ForensicTraceRequest }>, reply) => {
       // Admin API key check (Phase 5: replace with proper auth middleware)
       const apiKey = request.headers['x-api-key'] as string | undefined;
-      const validKeys = (process.env['API_KEYS'] ?? '').split(',').filter(Boolean);
 
       if (apiKey === undefined || apiKey === '' || !validKeys.includes(apiKey)) {
         return reply.status(401).send({
