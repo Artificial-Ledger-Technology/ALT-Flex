@@ -1,0 +1,65 @@
+## Overview
+
+This pull request implements **P1-ARCH-007: Write PostgreSQL Migrations**, establishing the foundation of the database layer for the AltFlex AEGIS v3.0 platform. These migrations map the Phase 0 Zod domain entities to production-ready, idempotent PostgreSQL schemas.
+
+By executing this PR, we provision the core datastores required by the Hacks Dashboard (Engine α) and AI Skills Explorer (Engine β), entirely removing the blocker for the subsequent seed data implementation (P1-ARCH-008). 
+
+## Architecture & Implementation Details
+
+### 1. Database Extensions
+- **`001_extensions.sql`**: Enables `uuid-ossp` for decentralized `UUIDv4` primary key generation and `pg_trgm` for optimized fuzzy text searching across protocol and skill names.
+
+### 2. Core Domain Tables
+- **`002_create_hack_incidents.sql`**: Provisions the `hack_incidents` table. Includes native constraint validation (`loss_usd >= 0`, `funds_returned <= loss_usd`) and GIN indexes for the `protocol_name`. Employs a partial index specifically for rows where `has_foundry_poc = TRUE` to drastically speed up queries for our Foundry engine endpoints.
+- **`003_create_ai_skill_files.sql`**: Provisions the `ai_skill_files` table mapping. Adheres to natural key deduplication via a composite `UNIQUE` constraint on `(source_repo, file_path)` and isolated content deduplication via a `UNIQUE` `content_hash`.
+- **`004_create_safety_scan_results.sql`**: Provisions the output space for the Safety Scanner. Features a strict `ON DELETE CASCADE` foreign key relation to the skill files, denormalized severity counts to spare aggregation costs during runtime, and full manual review lifecycle tracking columns.
+
+### 3. Infrastructure Operations Tables
+- **`005_create_etl_sync_log.sql`**: Implements the required event sourcing table for ETL job monitoring.
+- **`006_create_api_usage_log.sql`**: Implements the traffic analytics matrix mapping endpoints and `INET` types. Covered by composite indexing across endpoint name and time. 
+
+### 4. Custom Migration Mechanics
+- Provided a lightweight TypeScript-based migration runner (`migrate.ts`).
+- Reads all `.sql` scripts serially, partitioning `UP` and `DOWN` blocks dynamically via the `-- DOWN` delimiter.
+- Fully idempotent: Keeps track of historical runs in an auto-provisioned `schema_migrations` table to prevent re-execution drifts. 
+- Integrated directly into root via the `pnpm run migrate` and `pnpm run migrate:down` scripts. 
+
+## QA Integration Testing Guide
+
+To validate this infrastructure component locally or on staging:
+
+1. **Database Container Readiness**:
+   Ensure your local PostgreSQL 16 image is up running: 
+   ```bash
+   docker compose up postgres -d
+   ```
+2. **Apply Migrations**:
+   Expect to see standard execution logs for all 6 tables without thrown errors:
+   ```bash
+   pnpm run migrate
+   ```
+3. **Idempotency Assertions**:
+   Re-running the script must result in a clean skip pattern:
+   ```bash
+   pnpm run migrate
+   # Output: "All migrations are already applied. Nothing to do."
+   ```
+4. **Schema Validations**:
+   Connect via Psql and ensure indexing is generated:
+   ```bash
+   psql -c "\d hack_incidents"
+   psql -c "\di"
+   ```
+5. **Rollback Validations**:
+   Confirm that zero residual tables persist after execution except potentially the system defaults. 
+   ```bash
+   pnpm run migrate:down
+   ```
+6. **Execution of Stubbed Seed**:
+   Run the newly piped seed script to ensure Node pathing is resolved. (Data population to arrive in P1-ARCH-008). 
+   ```bash
+   pnpm run seed
+   ```
+
+## Dependencies Updated
+- Added `pg` engine package and `@types/pg` dev bindings directly into the `@aegis/core` ecosystem.
