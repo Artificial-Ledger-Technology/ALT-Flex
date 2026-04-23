@@ -18,7 +18,10 @@
     "test:coverage": "turbo run test:coverage",
     "clean": "turbo run clean && rm -rf node_modules",
     "typecheck": "turbo run typecheck",
-    "prepare": "husky"
+    "prepare": "husky",
+    "migrate": "tsx packages/core/src/database/migrate.ts",
+    "migrate:down": "tsx packages/core/src/database/migrate.ts --rollback",
+    "seed": "tsx packages/core/src/database/seed.ts"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
