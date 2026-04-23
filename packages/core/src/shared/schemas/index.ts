@@ -90,6 +90,38 @@ export type {
   HackSyncResponse,
 } from './hacks-api.schema.js';
 
+// ── System & Gateway API Schemas (P1-ARCH-006) ─────────────────────────────
+export {
+  // Health
+  HealthStatusSchema,
+  ServiceHealthSchema,
+  SystemHealthResponseSchema,
+  // Detailed health
+  DetailedServiceHealthSchema,
+  DetailedHealthResponseSchema,
+  // Meta
+  FeatureFlagSchema,
+  SystemMetaResponseSchema,
+  // Auth (future)
+  AuthTokenRequestSchema,
+  AuthTokenResponseSchema,
+  // Rate limit
+  RateLimitStatusResponseSchema,
+} from './system-api.schema.js';
+
+export type {
+  HealthStatus,
+  ServiceHealth,
+  SystemHealthResponse,
+  DetailedServiceHealth,
+  DetailedHealthResponse,
+  FeatureFlag,
+  SystemMetaResponse,
+  AuthTokenRequest,
+  AuthTokenResponse,
+  RateLimitStatusResponse,
+} from './system-api.schema.js';
+
 // ── Forensics API Schemas (Engine γ) ─────────────────────────────────────────
 export {
   // Sort
