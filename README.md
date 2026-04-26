@@ -197,10 +197,15 @@ ALT-Flex/                               ← Git root / pnpm workspace root
 │   ├── core/                           ← 🧬 @aegis/core — Shared Kernel
 │   │   └── src/
 │   │       ├── domain/
-│   │       │   ├── entities/           ← HackIncident, AISkillFile, ExploitPOC
+│   │       │   ├── entities/           ← HackIncident, AISkillFile, ExploitPOC, SafetyScanResult
 │   │       │   ├── value-objects/      ← AttackVector, Chain, SafetyLabel
 │   │       │   └── ports/              ← IHackDataPort, ISkillDataPort,
 │   │       │                             IChainDataPort, ISafetyScannerPort, ICachePort
+│   │       ├── database/
+│   │       │   ├── migrate.ts          ← Migration runner (P1-ARCH-007 ✅)
+│   │       │   ├── seed.ts             ← Seed runner (P1-ARCH-008 ✅)
+│   │       │   ├── migrations/         ← 6 SQL migration files
+│   │       │   └── seeds/              ← TypeScript seed data (55 hacks, 12 skills, 10 scans)
 │   │       └── shared/
 │   │           ├── types/              ← Global TypeScript types
 │   │           ├── utils/              ← Pure utility functions
@@ -481,15 +486,29 @@ export class FoundryAdapter implements IForensicRunnerPort {
 
 ## Phase Roadmap
 
-| Phase                        | Timeline   | Status             | Key Deliverables                                                                                     |
-| ---------------------------- | ---------- | ------------------ | ---------------------------------------------------------------------------------------------------- |
-| **Phase 0 — Init**           | Week 1–2   | ✅ **Done**        | Monorepo scaffold · pnpm workspace · Turbo config · Domain blueprints · Docker Compose · Dev tooling |
-| **Phase 1 — Architecture**   | Week 3–4   | 🔄 **In Progress** | `ARCHITECTURE.md` ✅ · README Hero ✅ · API contracts · DB migrations · Seed data                    |
-| **Phase 2 — ETL Pipeline**   | Week 5–8   | ⏳ Planned         | DefiLlama sync worker · DeFiHackLabs scraper · BullMQ queues · PostgreSQL pipeline                   |
-| **Phase 3 — Safety Scanner** | Week 9–16  | ⏳ Planned         | AST parser · Heuristic safety rules · Safety label classifier **(Thesis 1 core)**                    |
-| **Phase 4 — Frontend**       | Week 17–22 | ⏳ Planned         | Hacks Dashboard · AI Skills Explorer · Forensic trace viewer · AEGIS design system                   |
-| **Phase 5 — EVM Forensics**  | Week 23–32 | ⏳ Planned         | Foundry POC integration · Trace visualization · Root-cause mapping **(Thesis 2 core)**               |
-| **Phase 6 — Production**     | Week 33–40 | ⏳ Planned         | Terraform · CI/CD · Production deployment · Performance evaluation                                   |
+| Phase                        | Timeline   | Status             | Key Deliverables                                                                                                              |
+| ---------------------------- | ---------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| **Phase 0 — Init**           | Week 1–2   | ✅ **Done**        | Monorepo scaffold · pnpm workspace · Turbo config · Domain blueprints · Docker Compose · Dev tooling                          |
+| **Phase 1 — Architecture**   | Week 3–4   | 🔄 **In Progress** | `ARCHITECTURE.md` ✅ · API contracts ✅ · DB migrations ✅ · Seed data ✅ · Integration tests ✅ · P1-ARCH-009 remaining     |
+| **Phase 2 — ETL Pipeline**   | Week 5–8   | ⏳ Planned         | DefiLlama sync worker · DeFiHackLabs scraper · BullMQ queues · PostgreSQL pipeline                                            |
+| **Phase 3 — Safety Scanner** | Week 9–16  | ⏳ Planned         | AST parser · Heuristic safety rules · Safety label classifier **(Thesis 1 core)**                                             |
+| **Phase 4 — Frontend**       | Week 17–22 | ⏳ Planned         | Hacks Dashboard · AI Skills Explorer · Forensic trace viewer · AEGIS design system                                            |
+| **Phase 5 — EVM Forensics**  | Week 23–32 | ⏳ Planned         | Foundry POC integration · Trace visualization · Root-cause mapping **(Thesis 2 core)**                                        |
+| **Phase 6 — Production**     | Week 33–40 | ⏳ Planned         | Terraform · CI/CD · Production deployment · Performance evaluation                                                            |
+
+### Phase 1 Task Tracker
+
+| Task ID       | Title                                      | Status          | PR    | Assignee                    |
+| ------------- | ------------------------------------------ | --------------- | ----- | --------------------------- |
+| P1-ARCH-001   | Hexagonal Architecture Documentation       | ✅ Complete     | #44   | Sr. Blockchain Architect    |
+| P1-ARCH-002   | README Hero Overhaul                       | ✅ Complete     | #45   | Sr. Technical Writer        |
+| P1-ARCH-003   | Hacks Dashboard API Contracts              | ✅ Complete     | #46   | Sr. API Design Engineer     |
+| P1-ARCH-004   | AI Skills Explorer API Contracts           | ✅ Complete     | #47   | Sr. API Design Engineer     |
+| P1-ARCH-005   | Forensic Engine API Contracts              | ✅ Complete     | #48   | Sr. API Design Engineer     |
+| P1-ARCH-006   | System & Gateway Endpoints                 | ✅ Complete     | #48   | Sr. Software Engineer       |
+| P1-ARCH-007   | PostgreSQL Migrations & Seed Infra         | ✅ Complete     | #49   | Sr. Data Architect          |
+| P1-ARCH-008   | Create Seed Data (DefiLlama/DeFiHackLabs)  | ✅ Complete     | —     | Sr. Data Architect          |
+| P1-ARCH-009   | Final Phase Gate Review                    | 🔄 In Progress  | —     | Sr. Code Reviewer           |
 
 ---
 
@@ -618,23 +637,26 @@ If you prefer to run the Node.js services locally on your host machine (using Do
 
 ## Development Commands
 
-| Command                                            | Description                               |
-| -------------------------------------------------- | ----------------------------------------- |
-| `pnpm dev`                                         | Start all apps and packages in watch mode |
-| `pnpm build`                                       | Build all packages and apps via Turbo     |
-| `pnpm test`                                        | Run all test suites via Turbo             |
-| `pnpm lint`                                        | Lint all packages via Turbo               |
-| `pnpm typecheck`                                   | Type-check all packages via Turbo         |
-| `pnpm format`                                      | Format all files with Prettier            |
-| `pnpm format:check`                                | Check formatting without writing          |
-| `pnpm clean`                                       | Remove all `dist/` and `node_modules/`    |
-| `pnpm --filter @aegis/core build`                  | Build a single package                    |
-| `pnpm --filter @aegis/hacks-engine test`           | Test a single package                     |
-| `pnpm --filter @aegis/web dev`                     | Run only the web app                      |
-| `pnpm --filter @aegis/api-gateway dev`             | Run only the API gateway                  |
-| `docker compose -f docker-compose.dev.yml up -d`   | Start PostgreSQL + Redis                  |
-| `docker compose -f docker-compose.dev.yml down`    | Stop all infrastructure                   |
-| `docker compose -f docker-compose.dev.yml logs -f` | Tail all service logs                     |
+| Command                                            | Description                                  |
+| -------------------------------------------------- | -------------------------------------------- |
+| `pnpm dev`                                         | Start all apps and packages in watch mode    |
+| `pnpm build`                                       | Build all packages and apps via Turbo        |
+| `pnpm test`                                        | Run all test suites via Turbo                |
+| `pnpm lint`                                        | Lint all packages via Turbo                  |
+| `pnpm typecheck`                                   | Type-check all packages via Turbo            |
+| `pnpm format`                                      | Format all files with Prettier               |
+| `pnpm format:check`                                | Check formatting without writing             |
+| `pnpm clean`                                       | Remove all `dist/` and `node_modules/`       |
+| `pnpm run migrate`                                 | Run PostgreSQL migrations (sequential)       |
+| `pnpm run seed`                                    | Seed database (idempotent UPSERT)            |
+| `pnpm run seed -- --clean`                         | Truncate tables + reseed from scratch        |
+| `pnpm --filter @aegis/core build`                  | Build a single package                       |
+| `pnpm --filter @aegis/hacks-engine test`           | Test a single package                        |
+| `pnpm --filter @aegis/web dev`                     | Run only the web app                         |
+| `pnpm --filter @aegis/api-gateway dev`             | Run only the API gateway                     |
+| `docker compose -f docker-compose.dev.yml up -d`   | Start PostgreSQL + Redis                     |
+| `docker compose -f docker-compose.dev.yml down`    | Stop all infrastructure                      |
+| `docker compose -f docker-compose.dev.yml logs -f` | Tail all service logs                        |
 
 ### Common Troubleshooting
 
@@ -833,7 +855,49 @@ git push origin feature/P1-ARCH-001-hex-diagrams
 
 ## Changelogs
 
-### 🛡️ [03.0.0] — 2026-03-XX · Phase 0 🔄 **In Progress**
+### 🛡️ [03.1.0] — 2026-04-26 · Phase 1 — Architecture 🔄 **In Progress**
+
+#### Architecture Documentation (P1-ARCH-001 → P1-ARCH-002)
+
+- Published comprehensive `ARCHITECTURE.md` with 11 Mermaid diagrams (C4, hexagonal, data flow)
+- Overhauled README with engine feature matrix, domain models, and API reference
+
+#### API Contract Definitions (P1-ARCH-003 → P1-ARCH-006)
+
+- Implemented Zod schemas for Hacks Dashboard, AI Skills Explorer, and Forensic Engine APIs
+- Created Fastify route stubs with full request/response validation
+- Added system endpoints: `/health/detailed`, `/meta`, `/rate-limit/status`
+- Registered all routes in API Gateway with modular plugin architecture
+
+#### Database Infrastructure (P1-ARCH-007)
+
+- Created 6 sequential PostgreSQL migration files (extensions, hack_incidents, ai_skill_files, safety_scan_results, etl_sync_log, schema_migrations)
+- Built TypeScript migration runner with idempotent execution and rollback support
+- Comprehensive index strategy: B-tree, GIN (JSONB/trigram), partial, and composite indexes
+
+#### Seed Data Engineering (P1-ARCH-008)
+
+- Curated **55 real-world DeFi hack incidents** from DefiLlama, DeFiHackLabs, and rekt.news
+  - All **16 AttackVector** enum values covered (reentrancy, flash-loan, oracle-manipulation, etc.)
+  - **12 blockchain chains** represented (Ethereum, BSC, Solana, Polygon, Arbitrum, etc.)
+  - **12 DeFiHackLabs Foundry POC** cross-references with valid test paths
+  - Top 10 largest hacks included (Ronin $624M, Poly Network $611M, BNB Bridge $586M, etc.)
+  - Date range spanning 2016–2024
+- Created **12 AI skill files** with realistic content and full SafetyLabel coverage
+  - 5 safe, 3 suspicious, 2 malicious, 2 unanalyzed
+  - Multi-platform: Claude, Cursor, Gemini, Copilot, Generic
+  - Multi-language: Solidity, Rust, Vyper, Multi
+- Created **10 safety scan results** with realistic findings and severity classifications
+- Built production-grade seed runner with idempotent UPSERT and `--clean` mode
+
+#### Agentic Squad Expansion
+
+- Created **Senior Data Engineer** role in `.claude/` and `.gemini/` skill directories
+- Agentic squad now has **20 specialized roles** for god-level code generation
+
+---
+
+### 🛡️ [03.0.0] — 2026-03-XX · Phase 0 — Initialization ✅ **Complete**
 
 #### Rebrand & Architecture
 
