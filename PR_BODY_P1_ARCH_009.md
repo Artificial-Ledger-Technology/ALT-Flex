@@ -1,4 +1,4 @@
-## 🚀 PR Title: feat(architecture): Wire Inter-Package Dependencies (P1-ARCH-009)
+feat(infra): wire inter-package dependencies (P1-ARCH-009)
 
 ### 📌 Problem Statement
 
