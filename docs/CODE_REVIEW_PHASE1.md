@@ -26,12 +26,13 @@ Phase 1 transforms the Phase 0 scaffold into a fully specified system. Every API
 ### P1-ARCH-001: Create ARCHITECTURE.md — System Architecture Document
 
 **Title**: Author Comprehensive Hexagonal Architecture Documentation with Mermaid Diagrams
-| Field | Value |
-|-------|-------|
-| Priority | P0 — Critical |
-| Estimated Hours | 6 |
-| Dependencies | Phase 0 complete |
-| Labels | `documentation`, `architecture`, `hexagonal` |
+
+| Field           | Value                                        |
+| --------------- | -------------------------------------------- |
+| Priority        | P0 — Critical                                |
+| Estimated Hours | 6                                            |
+| Dependencies    | Phase 0 complete                             |
+| Labels          | `documentation`, `architecture`, `hexagonal` |
 
 **Description**:
 Create the master architecture document defining every system boundary, data flow, and integration point. This document serves dual purpose: **academic reference** (cited in Thesis 1 & 2) and **engineering blueprint** (developers build from this).
@@ -49,30 +50,32 @@ Create the master architecture document defining every system boundary, data flo
 - [ ] All diagrams use Mermaid for portability and version control
 
 **Required Diagrams**:
-| Diagram | Type | Purpose |
-|---------|------|---------|
-| System Context | C4 L1 | Shows AEGIS in the broader Web3 ecosystem |
-| Container Overview | C4 L2 | Shows all 6 services, 2 databases, external APIs |
-| Hacks Engine Internals | Hexagonal | Ports, adapters, use cases for Engine α |
-| Skills Engine Internals | Hexagonal | Ports, adapters, use cases for Engine β |
-| Forensic Engine Internals | Hexagonal | Foundry integration, RPC adapters |
-| ETL Data Flow | Flowchart | DefiLlama → Normalize → PostgreSQL → Cache |
-| Safety Scanner Pipeline | Flowchart | GitHub → Parse → AST Scan → Label → Store |
-| Hack Search Flow | Sequence | User → Web → Gateway → Hacks Engine → DB |
-| Skill Copy Flow | Sequence | User → Web → Gateway → Skills Engine → DB |
-| Exploit Simulation | Sequence | User → Web → Gateway → Forensic → Foundry |
+
+| Diagram                   | Type      | Purpose                                          |
+| ------------------------- | --------- | ------------------------------------------------ |
+| System Context            | C4 L1     | Shows AEGIS in the broader Web3 ecosystem        |
+| Container Overview        | C4 L2     | Shows all 6 services, 2 databases, external APIs |
+| Hacks Engine Internals    | Hexagonal | Ports, adapters, use cases for Engine α          |
+| Skills Engine Internals   | Hexagonal | Ports, adapters, use cases for Engine β          |
+| Forensic Engine Internals | Hexagonal | Foundry integration, RPC adapters                |
+| ETL Data Flow             | Flowchart | DefiLlama → Normalize → PostgreSQL → Cache       |
+| Safety Scanner Pipeline   | Flowchart | GitHub → Parse → AST Scan → Label → Store        |
+| Hack Search Flow          | Sequence  | User → Web → Gateway → Hacks Engine → DB         |
+| Skill Copy Flow           | Sequence  | User → Web → Gateway → Skills Engine → DB        |
+| Exploit Simulation        | Sequence  | User → Web → Gateway → Forensic → Foundry        |
 
 ---
 
 ### P1-ARCH-002: Design & Create README.md — AEGIS Hero Page
 
 **Title**: Author Production-Grade README with Branding, Architecture, and Quick-Start Guide
-| Field | Value |
-|-------|-------|
-| Priority | P0 — Critical |
-| Estimated Hours | 3 |
-| Dependencies | P1-ARCH-001 |
-| Labels | `documentation`, `branding`, `readme` |
+
+| Field           | Value                                 |
+| --------------- | ------------------------------------- |
+| Priority        | P0 — Critical                         |
+| Estimated Hours | 3                                     |
+| Dependencies    | P1-ARCH-001                           |
+| Labels          | `documentation`, `branding`, `readme` |
 
 **Description**:
 Replace the existing v1/v2 README with a new hero page that reflects the AEGIS v3.0 identity. The README is the project's public face — it must immediately convey scale, sophistication, and dual-engine purpose.
@@ -95,12 +98,13 @@ Replace the existing v1/v2 README with a new hero page that reflects the AEGIS v
 ### P1-ARCH-003: Define API Contracts — Hacks Dashboard Endpoints
 
 **Title**: Design RESTful API Specification for Hacks Dashboard (Engine α)
-| Field | Value |
-|-------|-------|
-| Priority | P0 — Critical |
-| Estimated Hours | 4 |
-| Dependencies | P1-ARCH-001 |
-| Labels | `api`, `hacks-engine`, `specification` |
+
+| Field           | Value                                  |
+| --------------- | -------------------------------------- |
+| Priority        | P0 — Critical                          |
+| Estimated Hours | 4                                      |
+| Dependencies    | P1-ARCH-001                            |
+| Labels          | `api`, `hacks-engine`, `specification` |
 
 **Description**:
 
@@ -124,7 +128,7 @@ Define every endpoint for the Hacks Dashboard API. These contracts are the inter
 
 **Filter Parameters** (query string):
 
-```
+```http
 GET /api/v1/hacks?
 attackVector=flash-loan&
 chain=ethereum&
@@ -143,12 +147,13 @@ sortOrder=desc
 ### P1-ARCH-004: Define API Contracts — AI Skills Explorer Endpoints
 
 **Title**: Design RESTful API Specification for AI Skills Explorer (Engine β)
-| Field | Value |
-|-------|-------|
-| Priority | P0 — Critical |
-| Estimated Hours | 4 |
-| Dependencies | P1-ARCH-001 |
-| Labels | `api`, `skills-engine`, `specification` |
+
+| Field           | Value                                   |
+| --------------- | --------------------------------------- |
+| Priority        | P0 — Critical                           |
+| Estimated Hours | 4                                       |
+| Dependencies    | P1-ARCH-001                             |
+| Labels          | `api`, `skills-engine`, `specification` |
 
 **Description**:
 Define every endpoint for the AI Skills Explorer API. The filtering mechanics must support language, platform, safety label, and author. The one-click copy and safety badge systems are frontend features but require specific API response fields.
@@ -171,7 +176,7 @@ Define every endpoint for the AI Skills Explorer API. The filtering mechanics mu
 
 **Filter Parameters** (query string):
 
-```
+```http
 GET /api/v1/skills?
 platform=claude&
 language=solidity&
@@ -189,12 +194,13 @@ sortOrder=desc
 ### P1-ARCH-005: Define API Contracts — Forensic Engine Endpoints
 
 **Title**: Design RESTful API Specification for Forensic Engine (Foundry/EVM)
-| Field | Value |
-|-------|-------|
-| Priority | P1 — High |
-| Estimated Hours | 3 |
-| Dependencies | P1-ARCH-001 |
-| Labels | `api`, `forensic-engine`, `specification` |
+
+| Field           | Value                                     |
+| --------------- | ----------------------------------------- |
+| Priority        | P1 — High                                 |
+| Estimated Hours | 3                                         |
+| Dependencies    | P1-ARCH-001                               |
+| Labels          | `api`, `forensic-engine`, `specification` |
 
 **Description**:
 Define endpoints for the Forensic Engine — the Foundry integration and EVM trace analysis layer. These endpoints power Phase 5 (Thesis 2) but the contracts must be designed now for forward compatibility.
@@ -215,12 +221,13 @@ Define endpoints for the Forensic Engine — the Foundry integration and EVM tra
 ### P1-ARCH-006: Define API Contracts — System & Gateway Endpoints
 
 **Title**: Design Health, Auth, and Meta Endpoints for the API Gateway
-| Field | Value |
-|-------|-------|
-| Priority | P0 — Critical |
-| Estimated Hours | 2 |
-| Dependencies | None |
-| Labels | `api`, `api-gateway`, `infrastructure` |
+
+| Field           | Value                                  |
+| --------------- | -------------------------------------- |
+| Priority        | P0 — Critical                          |
+| Estimated Hours | 2                                      |
+| Dependencies    | None                                   |
+| Labels          | `api`, `api-gateway`, `infrastructure` |
 
 **Description**:
 Define the API Gateway's own endpoints — health checks, authentication, rate limit status, and system metadata.
@@ -255,12 +262,13 @@ enum ErrorCode {
 ### P1-ARCH-007: Write PostgreSQL Migrations
 
 **Title**: Create Production-Ready Database Migrations for Both Engines
-| Field | Value |
-|-------|-------|
-| Priority | P0 — Critical |
-| Estimated Hours | 3 |
-| Dependencies | P1-ARCH-003, P1-ARCH-004 |
-| Labels | `database`, `migrations`, `infrastructure` |
+
+| Field           | Value                                      |
+| --------------- | ------------------------------------------ |
+| Priority        | P0 — Critical                              |
+| Estimated Hours | 3                                          |
+| Dependencies    | P1-ARCH-003, P1-ARCH-004                   |
+| Labels          | `database`, `migrations`, `infrastructure` |
 
 **Description**:
 Write and validate all PostgreSQL migration files. These are the concrete implementations of the schema designs from Phase 0. Migrations must be idempotent and reversible.
@@ -314,12 +322,13 @@ CREATE INDEX idx_etl_sync_source ON etl_sync_log(source, started_at DESC);
 ### P1-ARCH-008: Create Seed Data from DefiLlama & DeFiHackLabs
 
 **Title**: Prepare Development Seed Dataset with Real-World Hack Incidents
-| Field | Value |
-|-------|-------|
-| Priority | P1 — High |
-| Estimated Hours | 4 |
-| Dependencies | P1-ARCH-007 |
-| Labels | `data`, `seed`, `hacks-engine` |
+
+| Field           | Value                          |
+| --------------- | ------------------------------ |
+| Priority        | P1 — High                      |
+| Estimated Hours | 4                              |
+| Dependencies    | P1-ARCH-007                    |
+| Labels          | `data`, `seed`, `hacks-engine` |
 
 **Description**:
 Curate a development seed dataset from DefiLlama's hacks API and DeFiHackLabs repository. This dataset enables frontend development and API testing without requiring live ETL pipelines.
@@ -357,12 +366,13 @@ Curate a development seed dataset from DefiLlama's hacks API and DeFiHackLabs re
 ### P1-ARCH-009: Wire Inter-Package Dependencies
 
 **Title**: Configure Package Imports, Barrel Exports, and TypeScript Project References
-| Field | Value |
-|-------|-------|
-| Priority | P0 — Critical |
-| Estimated Hours | 2 |
-| Dependencies | P1-ARCH-001 |
-| Labels | `infrastructure`, `typescript`, `monorepo` |
+
+| Field           | Value                                      |
+| --------------- | ------------------------------------------ |
+| Priority        | P0 — Critical                              |
+| Estimated Hours | 2                                          |
+| Dependencies    | P1-ARCH-001                                |
+| Labels          | `infrastructure`, `typescript`, `monorepo` |
 
 **Description**:
 Wire up the actual TypeScript imports between packages. Each package must have clean barrel exports (`index.ts`) and TypeScript project references for incremental builds.
@@ -381,7 +391,7 @@ Wire up the actual TypeScript imports between packages. Each package must have c
 
 **Dependency Graph**:
 
-```
+```text
 @aegis/core ←── @aegis/hacks-engine
 ←── @aegis/skills-engine
 ←── @aegis/forensic-engine
@@ -396,12 +406,13 @@ apps/web (types only)
 ### P1-ARCH-010: Implement Shared Error Handling & Logging Framework
 
 **Title**: Build Cross-Cutting Error Hierarchy and Structured Logging System
-| Field | Value |
-|-------|-------|
-| Priority | P1 — High |
-| Estimated Hours | 3 |
-| Dependencies | P1-ARCH-009 |
-| Labels | `infrastructure`, `error-handling`, `logging` |
+
+| Field           | Value                                         |
+| --------------- | --------------------------------------------- |
+| Priority        | P1 — High                                     |
+| Estimated Hours | 3                                             |
+| Dependencies    | P1-ARCH-009                                   |
+| Labels          | `infrastructure`, `error-handling`, `logging` |
 
 **Description**:
 Implement the shared error handling hierarchy and structured logging system in `@aegis/core`. Every engine and app uses these — no ad-hoc error handling allowed.
@@ -439,12 +450,13 @@ AegisError (abstract)
 ### P1-ARCH-011: Implement API Gateway Skeleton with Fastify
 
 **Title**: Bootstrap Fastify Server with CORS, Rate Limiting, Swagger, and Route Registration
-| Field | Value |
-|-------|-------|
-| Priority | P0 — Critical |
-| Estimated Hours | 4 |
-| Dependencies | P1-ARCH-006, P1-ARCH-010 |
-| Labels | `api-gateway`, `fastify`, `implementation` |
+
+| Field           | Value                                      |
+| --------------- | ------------------------------------------ |
+| Priority        | P0 — Critical                              |
+| Estimated Hours | 4                                          |
+| Dependencies    | P1-ARCH-006, P1-ARCH-010                   |
+| Labels          | `api-gateway`, `fastify`, `implementation` |
 
 **Description**:
 Build the API Gateway skeleton — a working Fastify server with all middleware configured and route stubs registered. No business logic yet, but the server boots, responds to health checks, and documents itself via Swagger.
@@ -468,12 +480,13 @@ Build the API Gateway skeleton — a working Fastify server with all middleware 
 ### P1-ARCH-012: Validation & Phase Gate
 
 **Title**: Full Phase 1 Validation — Architecture Docs Complete, API Contracts Frozen, Gateway Boots
-| Field | Value |
-|-------|-------|
-| Priority | P0 — Critical |
-| Estimated Hours | 2 |
-| Dependencies | P1-ARCH-011, P1-ARCH-008 |
-| Labels | `validation`, `qa`, `gate` |
+
+| Field           | Value                      |
+| --------------- | -------------------------- |
+| Priority        | P0 — Critical              |
+| Estimated Hours | 2                          |
+| Dependencies    | P1-ARCH-011, P1-ARCH-008   |
+| Labels          | `validation`, `qa`, `gate` |
 
 **Description**:
 The final quality gate for Phase 1. If any criterion fails, Phase 1 is incomplete and Phase 2 cannot begin.
