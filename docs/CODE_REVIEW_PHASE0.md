@@ -95,7 +95,7 @@ Create the root project structure using **pnpm workspaces** with strict service 
 
 **Files to Create**:
 
-```
+```text
 pnpm-workspace.yaml
 tsconfig.base.json
 package.json
@@ -240,12 +240,13 @@ Install all core runtime and development dependencies. This is a controlled, aud
 - [ ] `pnpm-lock.yaml` committed and reproducible
 
 **Dependency Philosophy**:
-| Category | Principle |
-|----------|-----------|
-| Runtime | Zero unnecessary dependencies — every dep serves a measured purpose |
-| Types | `@types/*` pinned alongside their package |
-| Security | `pnpm audit` passes with 0 critical/high vulnerabilities |
-| Versioning | Caret ranges (`^`) for dev deps, tilde ranges (`~`) for runtime |
+
+| Category   | Principle                                                           |
+| ---------- | ------------------------------------------------------------------- |
+| Runtime    | Zero unnecessary dependencies — every dep serves a measured purpose |
+| Types      | `@types/*` pinned alongside their package                           |
+| Security   | `pnpm audit` passes with 0 critical/high vulnerabilities            |
+| Versioning | Caret ranges (`^`) for dev deps, tilde ranges (`~`) for runtime     |
 
 ---
 
@@ -274,7 +275,7 @@ Enforce code quality at the commit level. No malformed code can enter `main`. Th
 
 **Conventional Commits Pattern**:
 
-```
+```text
 feat(hacks-engine): add DefiLlama ETL adapter
 fix(skills-engine): handle malformed YAML in safety scanner
 docs(phase-0): finalize initialization guide
