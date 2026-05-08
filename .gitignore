@@ -172,12 +172,15 @@ storybook-static/
 
 # ── Docs Phase Development ───────────────────────────────────────────────────────
 
-docs/CODE_REVIEW_PHASE2.md
-docs/CODE_REVIEW_PHASE3.md
-docs/CODE_REVIEW_PHASE4.md
-docs/CODE_REVIEW_PHASE5.md
-docs/CODE_REVIEW_PHASE6.md
+pre_phase*.js
+fix*.js
+check*.js
+*.txt
 
+CODE_REVIEW_PHASE3.md
+CODE_REVIEW_PHASE4.md
+CODE_REVIEW_PHASE5.md
+CODE_REVIEW_PHASE6.md
 
 docs/PHASE_2_DATA_PIPELINES_ETL.md
 docs/PHASE_3_AI_SAFETY_SCANNER.md
