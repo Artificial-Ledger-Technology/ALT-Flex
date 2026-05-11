@@ -34,6 +34,9 @@ The four pillars:
 | Priority        | P0 — Critical                              |
 | Estimated Hours | 5                                          |
 | Dependencies    | Phase 4 complete                           |
+| Assigned Agent  | `senior_blockchain_engineer`               |
+| QA Agent        | `senior_security_test_engineer`            |
+| Review Agent    | `senior_smart_contract_auditor`            |
 | Labels          | `forensic-engine`, `rpc`, `infrastructure` |
 
 **Description**:
@@ -76,6 +79,9 @@ interface IRpcPort {
 | Priority        | P0 — Critical                                          |
 | Estimated Hours | 10                                                     |
 | Dependencies    | P5-EVM-001                                             |
+| Assigned Agent  | `senior_blockchain_engineer`                           |
+| QA Agent        | `senior_security_test_engineer`                        |
+| Review Agent    | `senior_smart_contract_auditor`                        |
 | Labels          | `forensic-engine`, `foundry`, `simulation`, `thesis-2` |
 
 **Description**:
@@ -134,6 +140,9 @@ interface ForgeTrace {
 | Priority        | P0 — Critical                                   |
 | Estimated Hours | 8                                               |
 | Dependencies    | P5-EVM-001                                      |
+| Assigned Agent  | `senior_blockchain_engineer`                    |
+| QA Agent        | `senior_security_test_engineer`                 |
+| Review Agent    | `senior_smart_contract_auditor`                 |
 | Labels          | `forensic-engine`, `tracing`, `evm`, `thesis-2` |
 
 **Description**:
@@ -192,6 +201,9 @@ type CallType = 'CALL' | 'STATICCALL' | 'DELEGATECALL' | 'CREATE' | 'CREATE2' | 
 | Priority        | P0 — Critical                                        |
 | Estimated Hours | 7                                                    |
 | Dependencies    | P5-EVM-001                                           |
+| Assigned Agent  | `senior_blockchain_engineer`                         |
+| QA Agent        | `senior_security_test_engineer`                      |
+| Review Agent    | `senior_smart_contract_auditor`                      |
 | Labels          | `forensic-engine`, `storage`, `analysis`, `thesis-2` |
 
 **Description**:
@@ -244,6 +256,9 @@ interface StorageChange {
 | Priority        | P0 — Critical                                                          |
 | Estimated Hours | 8                                                                      |
 | Dependencies    | P5-EVM-003, P5-EVM-004                                                 |
+| Assigned Agent  | `senior_blockchain_engineer`                                           |
+| QA Agent        | `senior_penetration_tester`                                            |
+| Review Agent    | `senior_smart_contract_auditor`                                        |
 | Labels          | `forensic-engine`, `pattern-recognition`, `classification`, `thesis-2` |
 
 **Description**:
@@ -324,6 +339,9 @@ const flashLoanDetector: PatternDetector = {
 | Priority        | P0 — Critical                                              |
 | Estimated Hours | 5                                                          |
 | Dependencies    | P5-EVM-002 through P5-EVM-005                              |
+| Assigned Agent  | `senior_software_engineer`                                 |
+| QA Agent        | `senior_qa_engineer`                                       |
+| Review Agent    | `senior_code_reviewer`                                     |
 | Labels          | `use-case`, `forensic-engine`, `orchestration`, `thesis-2` |
 
 **Description**:
@@ -395,6 +413,9 @@ interface ForensicReport {
 | Priority        | P0 — Critical                           |
 | Estimated Hours | 4                                       |
 | Dependencies    | P5-EVM-006                              |
+| Assigned Agent  | `senior_api_design_engineer`            |
+| QA Agent        | `senior_security_test_engineer`         |
+| Review Agent    | `senior_code_reviewer`                  |
 | Labels          | `api`, `forensic-engine`, `integration` |
 
 **Description**:
@@ -427,6 +448,9 @@ Connect forensic analysis capabilities to the API Gateway for frontend consumpti
 | Priority        | P0 — Critical                                                 |
 | Estimated Hours | 8                                                             |
 | Dependencies    | P5-EVM-007, Phase 4 design system                             |
+| Assigned Agent  | `senior_frontend_engineer`                                    |
+| QA Agent        | `senior_qa_engineer`                                          |
+| Review Agent    | `senior_code_reviewer`                                        |
 | Labels          | `frontend`, `forensic-dashboard`, `visualization`, `thesis-2` |
 
 **Description**:
@@ -464,6 +488,9 @@ Build the interactive transaction trace viewer — a collapsible tree visualizat
 | Priority        | P1 — High                                   |
 | Estimated Hours | 5                                           |
 | Dependencies    | P5-EVM-008                                  |
+| Assigned Agent  | `senior_frontend_engineer`                  |
+| QA Agent        | `senior_qa_engineer`                        |
+| Review Agent    | `senior_code_reviewer`                      |
 | Labels          | `frontend`, `forensic-dashboard`, `storage` |
 
 **Description**:
@@ -492,6 +519,9 @@ Build the storage diff inspector — a side-by-side comparison view showing what
 | Priority        | P1 — High                                    |
 | Estimated Hours | 4                                            |
 | Dependencies    | P5-EVM-008                                   |
+| Assigned Agent  | `senior_frontend_engineer`                   |
+| QA Agent        | `senior_qa_engineer`                         |
+| Review Agent    | `senior_code_reviewer`                       |
 | Labels          | `frontend`, `forensic-dashboard`, `patterns` |
 
 **Description**:
@@ -522,6 +552,9 @@ Build the pattern report UI — displays detected exploit patterns with evidence
 | Priority        | P0 — Critical                       |
 | Estimated Hours | 6                                   |
 | Dependencies    | P5-EVM-005                          |
+| Assigned Agent  | `senior_qa_engineer`                |
+| QA Agent        | `senior_penetration_tester`         |
+| Review Agent    | `senior_code_reviewer`              |
 | Labels          | `dataset`, `evaluation`, `thesis-2` |
 
 **Description**:
@@ -576,6 +609,9 @@ Create a labeled dataset of historical exploit transactions with human-assigned 
 | Priority        | P0 — Critical                       |
 | Estimated Hours | 5                                   |
 | Dependencies    | P5-EVM-005, P5-EVM-011              |
+| Assigned Agent  | `senior_sdet`                       |
+| QA Agent        | `senior_qa_engineer`                |
+| Review Agent    | `senior_code_reviewer`              |
 | Labels          | `evaluation`, `metrics`, `thesis-2` |
 
 **Description**:
@@ -605,6 +641,9 @@ Build the evaluation framework for the Exploit Pattern Recognizer — measures c
 | Priority        | P0 — Critical                          |
 | Estimated Hours | 5                                      |
 | Dependencies    | All P5-EVM tasks                       |
+| Assigned Agent  | `senior_qa_engineer`                   |
+| QA Agent        | `senior_sdet`                          |
+| Review Agent    | `senior_code_reviewer`                 |
 | Labels          | `validation`, `qa`, `gate`, `thesis-2` |
 
 **Description**:

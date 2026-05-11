@@ -34,6 +34,9 @@ The four pillars:
 | Priority        | P0 — Critical                        |
 | Estimated Hours | 6                                    |
 | Dependencies    | Phase 5 complete                     |
+| Assigned Agent  | `senior_devops_engineer`             |
+| QA Agent        | `senior_devsecops_engineer`          |
+| Review Agent    | `senior_code_reviewer`               |
 | Labels          | `devops`, `docker`, `infrastructure` |
 
 **Description**:
@@ -65,6 +68,9 @@ Create optimized Dockerfiles for the API Gateway, ETL Workers, and Forensic Engi
 | Priority        | P0 — Critical                        |
 | Estimated Hours | 5                                    |
 | Dependencies    | P6-PROD-001                          |
+| Assigned Agent  | `senior_devops_engineer`             |
+| QA Agent        | `senior_sdet`                        |
+| Review Agent    | `senior_code_reviewer`               |
 | Labels          | `ci-cd`, `github-actions`, `testing` |
 
 **Description**:
@@ -92,6 +98,9 @@ Set up a GitHub Actions workflow that runs on every pull request to ensure code 
 | Priority        | P0 — Critical                           |
 | Estimated Hours | 6                                       |
 | Dependencies    | P6-PROD-002                             |
+| Assigned Agent  | `senior_devops_engineer`                |
+| QA Agent        | `senior_devsecops_engineer`             |
+| Review Agent    | `senior_code_reviewer`                  |
 | Labels          | `ci-cd`, `github-actions`, `deployment` |
 
 **Description**:
@@ -118,6 +127,9 @@ Set up automated deployment for the backend services upon merging to the `main` 
 | Priority        | P0 — Critical                      |
 | Estimated Hours | 3                                  |
 | Dependencies    | Phase 4 complete                   |
+| Assigned Agent  | `senior_devops_engineer`           |
+| QA Agent        | `senior_qa_engineer`               |
+| Review Agent    | `senior_code_reviewer`             |
 | Labels          | `frontend`, `deployment`, `vercel` |
 
 **Description**:
@@ -143,6 +155,9 @@ Connect the GitHub repository to Vercel for automated, seamless frontend deploym
 | Priority        | P1 — High                                |
 | Estimated Hours | 5                                        |
 | Dependencies    | -                                        |
+| Assigned Agent  | `senior_devops_engineer`                 |
+| QA Agent        | `senior_sdet`                            |
+| Review Agent    | `senior_code_reviewer`                   |
 | Labels          | `observability`, `metrics`, `prometheus` |
 
 **Description**:
@@ -172,6 +187,9 @@ Instrument the Node.js backend services to expose custom and system metrics for 
 | Priority        | P1 — High                  |
 | Estimated Hours | 4                          |
 | Dependencies    | P6-PROD-005                |
+| Assigned Agent  | `senior_devops_engineer`   |
+| QA Agent        | `senior_qa_engineer`       |
+| Review Agent    | `senior_code_reviewer`     |
 | Labels          | `observability`, `grafana` |
 
 **Description**:
@@ -197,6 +215,9 @@ Configure Grafana to visualize the metrics exposed by Prometheus, providing a si
 | Priority        | P1 — High                  |
 | Estimated Hours | 3                          |
 | Dependencies    | -                          |
+| Assigned Agent  | `senior_devops_engineer`   |
+| QA Agent        | `senior_security_reviewer` |
+| Review Agent    | `senior_code_reviewer`     |
 | Labels          | `observability`, `logging` |
 
 **Description**:
@@ -216,12 +237,15 @@ Ensure all logs are structured (JSON) and contain necessary context for easy que
 
 **Title**: Review and Harden API Security and Rate Limits
 
-| Field           | Value                   |
-| --------------- | ----------------------- |
-| Priority        | P0 — Critical           |
-| Estimated Hours | 5                       |
-| Dependencies    | Phase 1 & 5             |
-| Labels          | `security`, `hardening` |
+| Field           | Value                       |
+| --------------- | --------------------------- |
+| Priority        | P0 — Critical               |
+| Estimated Hours | 5                           |
+| Dependencies    | Phase 1 & 5                 |
+| Assigned Agent  | `senior_devsecops_engineer` |
+| QA Agent        | `senior_penetration_tester` |
+| Review Agent    | `senior_security_reviewer`  |
+| Labels          | `security`, `hardening`     |
 
 **Description**:
 Perform a final review of API security measures before going live.
@@ -247,6 +271,9 @@ Perform a final review of API security measures before going live.
 | Priority        | P0 — Critical                |
 | Estimated Hours | 3                            |
 | Dependencies    | Phase 1                      |
+| Assigned Agent  | `senior_data_architect`      |
+| QA Agent        | `senior_devsecops_engineer`  |
+| Review Agent    | `senior_code_reviewer`       |
 | Labels          | `database`, `infrastructure` |
 
 **Description**:
@@ -269,6 +296,9 @@ Ensure migrations run safely during deployment and database backups are automate
 | Priority        | P0 — Critical              |
 | Estimated Hours | 8                          |
 | Dependencies    | All P6-PROD tasks          |
+| Assigned Agent  | `senior_qa_engineer`       |
+| QA Agent        | `senior_sdet`              |
+| Review Agent    | `senior_code_reviewer`     |
 | Labels          | `validation`, `qa`, `gate` |
 
 **Description**:

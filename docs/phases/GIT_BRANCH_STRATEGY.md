@@ -207,27 +207,107 @@ thesis/2/defense-presentation-demo
 
 ## Commit Convention
 
-All commits follow **Conventional Commits** (enforced by Husky + commitlint):
+All commits follow **Icon-Prefixed Conventional Commits** (enforced by Husky + commitlint).
+
+> **Governed by**: `senior_git_operations_engineer` — see `.claude/skills/flexycode/senior-git-operations-engineer/SKILL.md`
+
+### Format
 
 ```
-<type>(<scope>): <subject>
+<icon> <type>(<scope>): <subject>
 
-[optional body]
+<body>
 
-[optional footer(s)]
+<footer>
 ```
 
-**Types:** `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
+### Icon Assignment Table
 
-**Examples:**
+| Icon | Type         | When to Use                                     |
+| ---- | ------------ | ----------------------------------------------- |
+| 🎨   | `style`      | Brand tokens, design system, UI theming, CSS    |
+| 🏗️   | `chore`      | Scaffolding, project structure, monorepo setup  |
+| 📝   | `docs`       | Documentation, README, guides, comments         |
+| ✨   | `feat`       | New feature implementation                      |
+| 🐛   | `fix`        | Bug fix                                         |
+| ♻️   | `refactor`   | Code restructuring without behavior change      |
+| 🔧   | `config`     | Configuration files (tsconfig, eslint, env)     |
+| 📦   | `deps`       | Dependency installation or updates              |
+| 🧪   | `test`       | Test files added or modified                    |
+| 🔒   | `security`   | Security improvements, env vars, auth           |
+| 🚀   | `deploy`     | Deployment, CI/CD pipeline changes              |
+| 🗃️   | `schema`     | Database schema, migrations                     |
+| 🌐   | `web`        | Web portal-specific code (Next.js)              |
+| ⚡   | `perf`       | Performance optimization                        |
+| 🧹   | `cleanup`    | Dead code removal, file organization            |
+| 🏷️   | `types`      | TypeScript type definitions, interfaces         |
+| 🎯   | `core`       | Core domain logic, business rules               |
+| ⛓️   | `blockchain` | Smart contract, EVM, Foundry-specific code      |
+| 🔬   | `forensic`   | Forensic engine, trace analysis, POC simulation |
+| 🧠   | `agent`      | AI agent skill files, prompts                   |
+| 📋   | `plan`       | Planning documents, phase reviews               |
+| 🎓   | `academic`   | Academic deliverables, thesis content           |
+
+**Rule**: No two consecutive commits in a PR should share the same icon.
+
+### Examples
 
 ```
-feat(hacks-engine): add DefiLlama ETL adapter with retry logic
-fix(skills-engine): handle malformed YAML in safety scanner
-docs(phase-0): finalize initialization guide
-test(forensic-engine): add Foundry trace parser unit tests
-ci(infra): add Docker layer caching to GitHub Actions
+✨ feat(hacks-engine): add DefiLlama ETL adapter with retry logic
+
+Implement DefiLlamaAdapter behind IHackSourcePort interface with
+exponential backoff, chain normalization, and Zod validation.
+
+Ref: P2-ETL-001
 ```
+
+```
+🐛 fix(skills-engine): handle malformed YAML in safety scanner
+
+Add try-catch around gray-matter parsing with fallback to raw content
+extraction when frontmatter is invalid or missing.
+
+Ref: P3-SCAN-002
+```
+
+```
+📝 docs(phase-0): finalize initialization guide
+🧪 test(forensic-engine): add Foundry trace parser unit tests
+🚀 ci(infra): add Docker layer caching to GitHub Actions
+🧠 agent(agents): create Senior Git Operations Engineer skill
+```
+
+---
+
+## Phase-Aware Branch Naming
+
+In addition to the standard branch naming convention above, branches should reference the phase and task ID from `CODE_REVIEW_PHASEn.md`:
+
+### Pattern
+
+```
+<type>/<phase>/<task-id>-<short-description>
+```
+
+### Examples
+
+```
+feat/phase0/P0-INIT-002-monorepo-scaffold
+feat/phase1/P1-ARCH-001-architecture-docs
+feat/phase2/P2-ETL-001-defillama-adapter
+fix/phase3/P3-SCAN-003-regex-matcher-fix
+docs/phase1/P1-ARCH-002-readme-hero
+chore/phase0/P0-INIT-005-code-quality
+release/v3.1.0-phase1
+```
+
+### Rules
+
+1. Always lowercase, kebab-case
+2. Always include the phase identifier (`phase0`, `phase1`, etc.)
+3. Always include the task ID from `CODE_REVIEW_PHASEn.md`
+4. Keep the short description to 3–5 words maximum
+5. Never reuse a branch name — append `-v2` if reworking
 
 ---
 
