@@ -3,21 +3,48 @@ module.exports = {
   extends: ['@commitlint/config-conventional'],
   rules: {
     // ── Allowed Commit Types ─────────────────────────────────────────
+    // Governed by: Senior Git Operations Engineer
+    // Ref: .claude/skills/flexycode/senior-git-operations-engineer/SKILL.md
     'type-enum': [
       2,
       'always',
       [
-        'feat',     // New feature
-        'fix',      // Bug fix
-        'docs',     // Documentation only
-        'style',    // Formatting, missing semicolons, etc.
-        'refactor', // Code change that neither fixes a bug nor adds a feature
-        'perf',     // Performance improvement
-        'test',     // Adding or correcting tests
+        // Standard Conventional Commits
+        'feat',     // ✨ New feature
+        'fix',      // 🐛 Bug fix
+        'docs',     // 📝 Documentation only
+        'style',    // 🎨 Formatting, design tokens, CSS
+        'refactor', // ♻️ Code change that neither fixes a bug nor adds a feature
+        'perf',     // ⚡ Performance improvement
+        'test',     // 🧪 Adding or correcting tests
         'build',    // Build system or external dependencies
-        'ci',       // CI/CD configuration
-        'chore',    // Maintenance tasks
+        'ci',       // 🚀 CI/CD configuration
+        'chore',    // 🏗️ Maintenance tasks
         'revert',   // Reverts a previous commit
+
+        // Extended AEGIS Types (icon-prefixed convention)
+        'config',     // 🔧 Configuration files (tsconfig, eslint, env)
+        'deps',       // 📦 Dependency installation or updates
+        'security',   // 🔒 Security improvements, env vars, auth
+        'deploy',     // 🚀 Deployment, CI/CD pipeline changes
+        'schema',     // 🗃️ Database schema, migrations
+        'web',        // 🌐 Web portal-specific code (Next.js)
+        'cleanup',    // 🧹 Dead code removal, file organization
+        'types',      // 🏷️ TypeScript type definitions, interfaces
+        'core',       // 🎯 Core domain logic, business rules
+        'ai',         // 🤖 ML/AI related code, safety scanning
+        'validation', // 🛡️ Zod schemas, input validation
+        'data',       // 💾 Seed data, fixtures, mock data
+        'assets',     // 🖼️ Images, icons, fonts, static files
+        'hooks',      // 🪝 Git hooks, Husky, pre-commit
+        'lint',       // 📐 Linting rules, Prettier config
+        'docker',     // 🐳 Docker, containers, compose files
+        'env',        // 🔑 Environment variables, secrets config
+        'agent',      // 🧠 AI agent skill files, prompts
+        'plan',       // 📋 Planning documents, phase reviews
+        'academic',   // 🎓 Academic deliverables, thesis content
+        'blockchain', // ⛓️ Smart contract, EVM, Foundry code
+        'forensic',   // 🔬 Forensic engine, trace analysis
       ],
     ],
 
@@ -42,6 +69,8 @@ module.exports = {
         'deps',
         'ci',
         'docs',
+        'agents',   // .claude/skills/, .gemini/
+        'root',     // Root config files
 
         // Phase tracking (academic alignment)
         'phase-0',

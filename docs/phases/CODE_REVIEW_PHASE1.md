@@ -32,6 +32,9 @@ Phase 1 transforms the Phase 0 scaffold into a fully specified system. Every API
 | Priority        | P0 — Critical                                |
 | Estimated Hours | 6                                            |
 | Dependencies    | Phase 0 complete                             |
+| Assigned Agent  | `senior_blockchain_architect`                |
+| QA Agent        | `senior_qa_engineer`                         |
+| Review Agent    | `senior_code_reviewer`                       |
 | Labels          | `documentation`, `architecture`, `hexagonal` |
 
 **Description**:
@@ -75,6 +78,9 @@ Create the master architecture document defining every system boundary, data flo
 | Priority        | P0 — Critical                         |
 | Estimated Hours | 3                                     |
 | Dependencies    | P1-ARCH-001                           |
+| Assigned Agent  | `senior_technical_writer`             |
+| QA Agent        | `senior_qa_engineer`                  |
+| Review Agent    | `senior_code_reviewer`                |
 | Labels          | `documentation`, `branding`, `readme` |
 
 **Description**:
@@ -104,6 +110,9 @@ Replace the existing v1/v2 README with a new hero page that reflects the AEGIS v
 | Priority        | P0 — Critical                          |
 | Estimated Hours | 4                                      |
 | Dependencies    | P1-ARCH-001                            |
+| Assigned Agent  | `senior_api_design_engineer`           |
+| QA Agent        | `senior_security_test_engineer`        |
+| Review Agent    | `senior_code_reviewer`                 |
 | Labels          | `api`, `hacks-engine`, `specification` |
 
 **Description**:
@@ -153,6 +162,9 @@ sortOrder=desc
 | Priority        | P0 — Critical                           |
 | Estimated Hours | 4                                       |
 | Dependencies    | P1-ARCH-001                             |
+| Assigned Agent  | `senior_api_design_engineer`            |
+| QA Agent        | `senior_security_test_engineer`         |
+| Review Agent    | `senior_code_reviewer`                  |
 | Labels          | `api`, `skills-engine`, `specification` |
 
 **Description**:
@@ -200,6 +212,9 @@ sortOrder=desc
 | Priority        | P1 — High                                 |
 | Estimated Hours | 3                                         |
 | Dependencies    | P1-ARCH-001                               |
+| Assigned Agent  | `senior_api_design_engineer`              |
+| QA Agent        | `senior_security_test_engineer`           |
+| Review Agent    | `senior_code_reviewer`                    |
 | Labels          | `api`, `forensic-engine`, `specification` |
 
 **Description**:
@@ -227,6 +242,9 @@ Define endpoints for the Forensic Engine — the Foundry integration and EVM tra
 | Priority        | P0 — Critical                          |
 | Estimated Hours | 2                                      |
 | Dependencies    | None                                   |
+| Assigned Agent  | `senior_api_design_engineer`           |
+| QA Agent        | `senior_penetration_tester`            |
+| Review Agent    | `senior_security_reviewer`             |
 | Labels          | `api`, `api-gateway`, `infrastructure` |
 
 **Description**:
@@ -268,6 +286,9 @@ enum ErrorCode {
 | Priority        | P0 — Critical                              |
 | Estimated Hours | 3                                          |
 | Dependencies    | P1-ARCH-003, P1-ARCH-004                   |
+| Assigned Agent  | `senior_data_architect`                    |
+| QA Agent        | `senior_security_test_engineer`            |
+| Review Agent    | `senior_code_reviewer`                     |
 | Labels          | `database`, `migrations`, `infrastructure` |
 
 **Description**:
@@ -328,6 +349,9 @@ CREATE INDEX idx_etl_sync_source ON etl_sync_log(source, started_at DESC);
 | Priority        | P1 — High                      |
 | Estimated Hours | 4                              |
 | Dependencies    | P1-ARCH-007                    |
+| Assigned Agent  | `senior_data_architect`        |
+| QA Agent        | `senior_qa_engineer`           |
+| Review Agent    | `senior_code_reviewer`         |
 | Labels          | `data`, `seed`, `hacks-engine` |
 
 **Description**:
@@ -372,6 +396,9 @@ Curate a development seed dataset from DefiLlama's hacks API and DeFiHackLabs re
 | Priority        | P0 — Critical                              |
 | Estimated Hours | 2                                          |
 | Dependencies    | P1-ARCH-001                                |
+| Assigned Agent  | `senior_software_engineer`                 |
+| QA Agent        | `senior_sdet`                              |
+| Review Agent    | `senior_code_reviewer`                     |
 | Labels          | `infrastructure`, `typescript`, `monorepo` |
 
 **Description**:
@@ -412,6 +439,9 @@ apps/web (types only)
 | Priority        | P1 — High                                     |
 | Estimated Hours | 3                                             |
 | Dependencies    | P1-ARCH-009                                   |
+| Assigned Agent  | `senior_software_engineer`                    |
+| QA Agent        | `senior_security_reviewer`                    |
+| Review Agent    | `senior_code_reviewer`                        |
 | Labels          | `infrastructure`, `error-handling`, `logging` |
 
 **Description**:
@@ -456,6 +486,9 @@ AegisError (abstract)
 | Priority        | P0 — Critical                              |
 | Estimated Hours | 4                                          |
 | Dependencies    | P1-ARCH-006, P1-ARCH-010                   |
+| Assigned Agent  | `senior_software_engineer`                 |
+| QA Agent        | `senior_security_test_engineer`            |
+| Review Agent    | `senior_code_reviewer`                     |
 | Labels          | `api-gateway`, `fastify`, `implementation` |
 
 **Description**:
@@ -486,6 +519,9 @@ Build the API Gateway skeleton — a working Fastify server with all middleware 
 | Priority        | P0 — Critical              |
 | Estimated Hours | 2                          |
 | Dependencies    | P1-ARCH-011, P1-ARCH-008   |
+| Assigned Agent  | `senior_qa_engineer`       |
+| QA Agent        | `senior_sdet`              |
+| Review Agent    | `senior_code_reviewer`     |
 | Labels          | `validation`, `qa`, `gate` |
 
 **Description**:

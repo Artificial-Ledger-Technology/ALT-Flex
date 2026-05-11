@@ -36,6 +36,9 @@ The scanner operates as a multi-stage pipeline:
 | Priority        | P0 — Critical                                         |
 | Estimated Hours | 6                                                     |
 | Dependencies    | Phase 2 complete, skill files indexed                 |
+| Assigned Agent  | `senior_software_engineer`                            |
+| QA Agent        | `senior_security_test_engineer`                       |
+| Review Agent    | `senior_code_reviewer`                                |
 | Labels          | `safety-scanner`, `rules`, `architecture`, `thesis-1` |
 
 **Description**:
@@ -80,6 +83,9 @@ interface SafetyRule {
 | Priority        | P0 — Critical                          |
 | Estimated Hours | 5                                      |
 | Dependencies    | P3-SCAN-001                            |
+| Assigned Agent  | `senior_software_engineer`             |
+| QA Agent        | `senior_security_test_engineer`        |
+| Review Agent    | `senior_code_reviewer`                 |
 | Labels          | `safety-scanner`, `parser`, `thesis-1` |
 
 **Description**:
@@ -109,6 +115,9 @@ Implement the content parser that extracts analyzable sections from skill files 
 | Priority        | P0 — Critical                                      |
 | Estimated Hours | 5                                                  |
 | Dependencies    | P3-SCAN-001, P3-SCAN-002                           |
+| Assigned Agent  | `senior_software_engineer`                         |
+| QA Agent        | `senior_security_test_engineer`                    |
+| Review Agent    | `senior_code_reviewer`                             |
 | Labels          | `safety-scanner`, `regex`, `detection`, `thesis-1` |
 
 **Description**:
@@ -151,6 +160,9 @@ Implement the regex-based rule matcher — the first detection layer. It scans p
 | Priority        | P0 — Critical                                             |
 | Estimated Hours | 8                                                         |
 | Dependencies    | P3-SCAN-001, P3-SCAN-002                                  |
+| Assigned Agent  | `senior_software_engineer`                                |
+| QA Agent        | `senior_security_test_engineer`                           |
+| Review Agent    | `senior_code_reviewer`                                    |
 | Labels          | `safety-scanner`, `ast`, `acorn`, `detection`, `thesis-1` |
 
 **Description**:
@@ -214,6 +226,9 @@ const DANGEROUS_MEMBER_OBJECTS = [
 | Priority        | P1 — High                                       |
 | Estimated Hours | 6                                               |
 | Dependencies    | P3-SCAN-002                                     |
+| Assigned Agent  | `senior_software_engineer`                      |
+| QA Agent        | `senior_security_test_engineer`                 |
+| Review Agent    | `senior_code_reviewer`                          |
 | Labels          | `safety-scanner`, `semantic`, `nlp`, `thesis-1` |
 
 **Description**:
@@ -274,6 +289,9 @@ const INJECTION_PATTERNS = [
 | Priority        | P0 — Critical                                       |
 | Estimated Hours | 4                                                   |
 | Dependencies    | P3-SCAN-003, P3-SCAN-004, P3-SCAN-005               |
+| Assigned Agent  | `senior_software_engineer`                          |
+| QA Agent        | `senior_qa_engineer`                                |
+| Review Agent    | `senior_code_reviewer`                              |
 | Labels          | `safety-scanner`, `scoring`, `labeling`, `thesis-1` |
 
 **Description**:
@@ -337,6 +355,9 @@ interface Finding {
 | Priority        | P0 — Critical                                            |
 | Estimated Hours | 4                                                        |
 | Dependencies    | P3-SCAN-002 through P3-SCAN-006                          |
+| Assigned Agent  | `senior_software_engineer`                               |
+| QA Agent        | `senior_security_test_engineer`                          |
+| Review Agent    | `senior_code_reviewer`                                   |
 | Labels          | `use-case`, `skills-engine`, `orchestration`, `thesis-1` |
 
 **Description**:
@@ -368,6 +389,9 @@ Implement the `ScanSkillSafetyUseCase` — the application-layer orchestrator th
 | Priority        | P0 — Critical                       |
 | Estimated Hours | 8                                   |
 | Dependencies    | P3-SCAN-001                         |
+| Assigned Agent  | `senior_qa_engineer`                |
+| QA Agent        | `senior_security_test_engineer`     |
+| Review Agent    | `senior_code_reviewer`              |
 | Labels          | `dataset`, `evaluation`, `thesis-1` |
 
 **Description**:
@@ -403,6 +427,9 @@ Create a labeled evaluation dataset of AI skill files with known safety classifi
 | Priority        | P0 — Critical                       |
 | Estimated Hours | 5                                   |
 | Dependencies    | P3-SCAN-007, P3-SCAN-008            |
+| Assigned Agent  | `senior_sdet`                       |
+| QA Agent        | `senior_qa_engineer`                |
+| Review Agent    | `senior_code_reviewer`              |
 | Labels          | `evaluation`, `metrics`, `thesis-1` |
 
 **Description**:
@@ -460,6 +487,9 @@ Mal │ 0 │ 3 │ 22 │
 | Priority        | P0 — Critical                          |
 | Estimated Hours | 3                                      |
 | Dependencies    | P3-SCAN-007                            |
+| Assigned Agent  | `senior_api_design_engineer`           |
+| QA Agent        | `senior_penetration_tester`            |
+| Review Agent    | `senior_code_reviewer`                 |
 | Labels          | `api`, `safety-scanner`, `integration` |
 
 **Description**:
@@ -489,6 +519,9 @@ Connect the safety scanner to the API Gateway endpoints defined in Phase 1, enab
 | Priority        | P1 — High                                    |
 | Estimated Hours | 4                                            |
 | Dependencies    | P3-SCAN-007, P3-SCAN-009                     |
+| Assigned Agent  | `senior_software_engineer`                   |
+| QA Agent        | `senior_qa_engineer`                         |
+| Review Agent    | `senior_code_reviewer`                       |
 | Labels          | `api`, `analytics`, `monitoring`, `thesis-1` |
 
 **Description**:
@@ -518,6 +551,9 @@ Build endpoints that expose safety scanning analytics — rule hit rates, label 
 | Priority        | P0 — Critical                          |
 | Estimated Hours | 4                                      |
 | Dependencies    | All P3-SCAN tasks                      |
+| Assigned Agent  | `senior_qa_engineer`                   |
+| QA Agent        | `senior_sdet`                          |
+| Review Agent    | `senior_code_reviewer`                 |
 | Labels          | `validation`, `qa`, `gate`, `thesis-1` |
 
 **Description**:
