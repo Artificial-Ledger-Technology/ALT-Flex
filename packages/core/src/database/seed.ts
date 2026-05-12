@@ -101,11 +101,23 @@ async function seedHackIncidents(client: pg.Client): Promise<void> {
         )
         ON CONFLICT (id) DO UPDATE SET
           protocol_name = EXCLUDED.protocol_name,
+          protocol_slug = EXCLUDED.protocol_slug,
+          date = EXCLUDED.date,
+          chain = EXCLUDED.chain,
+          attack_vector = EXCLUDED.attack_vector,
+          secondary_vectors = EXCLUDED.secondary_vectors,
           loss_usd = EXCLUDED.loss_usd,
           funds_returned = EXCLUDED.funds_returned,
+          tx_hashes = EXCLUDED.tx_hashes,
+          sources = EXCLUDED.sources,
           description = EXCLUDED.description,
           has_foundry_poc = EXCLUDED.has_foundry_poc,
           foundry_test_path = EXCLUDED.foundry_test_path,
+          target_contracts = EXCLUDED.target_contracts,
+          protocol_category = EXCLUDED.protocol_category,
+          was_audited = EXCLUDED.was_audited,
+          audit_firms = EXCLUDED.audit_firms,
+          data_source = EXCLUDED.data_source,
           updated_at = NOW()
         RETURNING (xmax = 0) AS is_insert`,
         [
@@ -163,10 +175,23 @@ async function seedAISkillFiles(client: pg.Client): Promise<void> {
         ON CONFLICT (id) DO UPDATE SET
           name = EXCLUDED.name,
           description = EXCLUDED.description,
+          category = EXCLUDED.category,
+          tags = EXCLUDED.tags,
+          version = EXCLUDED.version,
+          source_repo = EXCLUDED.source_repo,
+          file_path = EXCLUDED.file_path,
+          raw_url = EXCLUDED.raw_url,
+          commit_sha = EXCLUDED.commit_sha,
+          license = EXCLUDED.license,
+          platform = EXCLUDED.platform,
+          language = EXCLUDED.language,
           content = EXCLUDED.content,
+          format = EXCLUDED.format,
           content_hash = EXCLUDED.content_hash,
           content_size_bytes = EXCLUDED.content_size_bytes,
           safety_label = EXCLUDED.safety_label,
+          author = EXCLUDED.author,
+          author_url = EXCLUDED.author_url,
           copy_count = EXCLUDED.copy_count,
           star_count = EXCLUDED.star_count,
           view_count = EXCLUDED.view_count,
@@ -222,14 +247,21 @@ async function seedSafetyScanResults(client: pg.Client): Promise<void> {
           $17, NOW()
         )
         ON CONFLICT (id) DO UPDATE SET
+          scan_duration_ms = EXCLUDED.scan_duration_ms,
+          scanner_version = EXCLUDED.scanner_version,
+          total_rules_evaluated = EXCLUDED.total_rules_evaluated,
           final_label = EXCLUDED.final_label,
           findings = EXCLUDED.findings,
+          rule_matches = EXCLUDED.rule_matches,
           critical_count = EXCLUDED.critical_count,
           high_count = EXCLUDED.high_count,
           medium_count = EXCLUDED.medium_count,
+          low_count = EXCLUDED.low_count,
+          info_count = EXCLUDED.info_count,
           manual_review_status = EXCLUDED.manual_review_status,
           reviewed_by = EXCLUDED.reviewed_by,
-          review_notes = EXCLUDED.review_notes
+          review_notes = EXCLUDED.review_notes,
+          content_hash_at_scan = EXCLUDED.content_hash_at_scan
         RETURNING (xmax = 0) AS is_insert`,
         [
           r.id, r.skill_file_id, r.scan_duration_ms, r.scanner_version,
