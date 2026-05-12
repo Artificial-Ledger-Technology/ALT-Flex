@@ -99,6 +99,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@aegis/core':
+        specifier: workspace:*
+        version: link:../../packages/core
       framer-motion:
         specifier: ~11.0.0
         version: 11.0.28(react-dom@19.0.4(react@19.0.4))(react@19.0.4)

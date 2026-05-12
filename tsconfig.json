@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.base.json",
+  "files": [],
+  "references": [
+    { "path": "packages/core" },
+    { "path": "packages/hacks-engine" },
+    { "path": "packages/skills-engine" },
+    { "path": "packages/forensic-engine" },
+    { "path": "apps/api-gateway" },
+    { "path": "apps/web" }
+  ]
+}
