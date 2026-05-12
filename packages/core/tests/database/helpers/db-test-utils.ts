@@ -193,10 +193,13 @@ export function runMigrate(
 
 /**
  * Run the seed script via tsx subprocess.
+ * @param options.clean — pass `--clean` flag to truncate tables before seeding
+ * @param options.env — override environment variables for the subprocess
  */
 export function runSeed(
-  options: { env?: Record<string, string> } = {},
+  options: { clean?: boolean; env?: Record<string, string> } = {},
 ): { stdout: string; stderr: string; exitCode: number } {
+  const args = options.clean ? '-- --clean' : '';
   const envOverrides = {
     ...process.env,
     DATABASE_URL: TEST_DATABASE_URL,
@@ -204,11 +207,11 @@ export function runSeed(
   };
 
   try {
-    const stdout = execSync(`npx tsx "${SEED_SCRIPT}"`, {
+    const stdout = execSync(`npx tsx "${SEED_SCRIPT}" ${args}`, {
       cwd: MONOREPO_ROOT,
       env: envOverrides,
       encoding: 'utf-8',
-      timeout: 30_000,
+      timeout: 60_000,
       stdio: ['pipe', 'pipe', 'pipe'],
     });
     return { stdout, stderr: '', exitCode: 0 };

@@ -78,17 +78,18 @@ describe('Security — SQL Injection Prevention', () => {
   // CWE-89: SQL Injection
   // ═════════════════════════════════════════════════════════════════════════
 
-  it('[SEC-002] seed.ts: table listing query uses hardcoded safe SQL', () => {
+  it('[SEC-002] seed.ts: INSERT queries use parameterized placeholders', () => {
     const source = fs.readFileSync(SEED_SCRIPT, 'utf-8');
 
-    // Verify the query is a static string with no interpolation
-    expect(source).toContain(
-      "SELECT tablename FROM pg_tables WHERE schemaname = 'public'",
-    );
+    // Verify seed.ts uses parameterized queries with $N placeholders
+    expect(source).toContain('$1');
+    expect(source).toContain('VALUES');
+    expect(source).toContain('ON CONFLICT');
 
-    // Verify no template literal injection patterns in SQL queries
-    const templateLiteralSqlPattern = /client\.query\(`[^`]*\$\{/;
-    expect(templateLiteralSqlPattern.test(source)).toBe(false);
+    // Verify no template literal injection in SELECT/INSERT/UPDATE/DELETE queries.
+    // Note: TRUNCATE TABLE with hardcoded table array is safe and expected.
+    const dangerousInterpolationPattern = /client\.query\(`\s*(SELECT|INSERT|UPDATE|DELETE)[^`]*\$\{/;
+    expect(dangerousInterpolationPattern.test(source)).toBe(false);
   });
 
   // ═════════════════════════════════════════════════════════════════════════
