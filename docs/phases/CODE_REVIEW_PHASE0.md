@@ -45,6 +45,9 @@ Every task in this phase is a **hard blocker** for Phase 1 (Architecture & API D
 | Priority        | P0 — Critical                       |
 | Estimated Hours | 1                                   |
 | Dependencies    | None                                |
+| Assigned Agent  | `senior_technical_writer`           |
+| QA Agent        | `senior_qa_engineer`                |
+| Review Agent    | `senior_code_reviewer`              |
 | Labels          | `branding`, `meta`, `documentation` |
 
 **Description**:  
@@ -73,6 +76,9 @@ Formally define the v3.0 product identity. The project transitions from "AltFlex
 | Priority        | P0 — Critical                          |
 | Estimated Hours | 2                                      |
 | Dependencies    | P0-INIT-001                            |
+| Assigned Agent  | `senior_software_engineer`             |
+| QA Agent        | `senior_sdet`                          |
+| Review Agent    | `senior_code_reviewer`                 |
 | Labels          | `setup`, `infrastructure`, `hexagonal` |
 
 **Description**:  
@@ -172,6 +178,9 @@ research/
 | Priority        | P0 — Critical                          |
 | Estimated Hours | 1.5                                    |
 | Dependencies    | P0-INIT-002                            |
+| Assigned Agent  | `senior_software_engineer`             |
+| QA Agent        | `senior_sdet`                          |
+| Review Agent    | `senior_code_reviewer`                 |
 | Labels          | `setup`, `typescript`, `configuration` |
 
 **Description**:  
@@ -222,6 +231,9 @@ Establish a base `tsconfig.base.json` with strict compiler options. Each package
 | Priority        | P0 — Critical                      |
 | Estimated Hours | 2                                  |
 | Dependencies    | P0-INIT-003                        |
+| Assigned Agent  | `senior_software_engineer`         |
+| QA Agent        | `senior_devsecops_engineer`        |
+| Review Agent    | `senior_code_reviewer`             |
 | Labels          | `setup`, `dependencies`, `tooling` |
 
 **Description**:  
@@ -259,6 +271,9 @@ Install all core runtime and development dependencies. This is a controlled, aud
 | Priority        | P0 — Critical              |
 | Estimated Hours | 1.5                        |
 | Dependencies    | P0-INIT-004                |
+| Assigned Agent  | `senior_devops_engineer`   |
+| QA Agent        | `senior_sdet`              |
+| Review Agent    | `senior_code_reviewer`     |
 | Labels          | `quality`, `linting`, `ci` |
 
 **Description**:  
@@ -293,6 +308,9 @@ test(forensic-engine): add Foundry trace parser unit tests
 | Priority        | P0 — Critical                                 |
 | Estimated Hours | 1                                             |
 | Dependencies    | P0-INIT-002                                   |
+| Assigned Agent  | `senior_devsecops_engineer`                   |
+| QA Agent        | `senior_security_test_engineer`               |
+| Review Agent    | `senior_security_reviewer`                    |
 | Labels          | `security`, `configuration`, `infrastructure` |
 
 **Description**:  
@@ -372,6 +390,9 @@ NEXT_PUBLIC_APP_NAME=AltFlex AEGIS
 | Priority        | P0 — High                            |
 | Estimated Hours | 2                                    |
 | Dependencies    | P0-INIT-006                          |
+| Assigned Agent  | `senior_devops_engineer`             |
+| QA Agent        | `senior_devsecops_engineer`          |
+| Review Agent    | `senior_code_reviewer`               |
 | Labels          | `infrastructure`, `docker`, `devops` |
 
 **Description**:  
@@ -407,12 +428,15 @@ services:
 
 **Title**: Initialize Git Configuration, Branch Protection, and CI Hooks
 
-| Field           | Value                   |
-| --------------- | ----------------------- |
-| Priority        | P0 — High               |
-| Estimated Hours | 1                       |
-| Dependencies    | P0-INIT-005             |
-| Labels          | `git`, `ci`, `workflow` |
+| Field           | Value                            |
+| --------------- | -------------------------------- |
+| Priority        | P0 — High                        |
+| Estimated Hours | 1                                |
+| Dependencies    | P0-INIT-005                      |
+| Assigned Agent  | `senior_git_operations_engineer` |
+| QA Agent        | `senior_qa_engineer`             |
+| Review Agent    | `senior_code_reviewer`           |
+| Labels          | `git`, `ci`, `workflow`          |
 
 **Description**:  
 Define the branching strategy and Git workflow that supports both academic review cycles and rapid development.
@@ -442,6 +466,9 @@ Define the branching strategy and Git workflow that supports both academic revie
 | Priority        | P0 — Critical                          |
 | Estimated Hours | 3                                      |
 | Dependencies    | P0-INIT-003                            |
+| Assigned Agent  | `senior_blockchain_architect`          |
+| QA Agent        | `senior_qa_engineer`                   |
+| Review Agent    | `senior_code_reviewer`                 |
 | Labels          | `domain`, `architecture`, `data-model` |
 
 **Description**:  
@@ -491,6 +518,9 @@ enum AttackVector {
 | Priority        | P0 — Critical                         |
 | Estimated Hours | 2                                     |
 | Dependencies    | P0-INIT-007, P0-INIT-008, P0-INIT-009 |
+| Assigned Agent  | `senior_qa_engineer`                  |
+| QA Agent        | `senior_sdet`                         |
+| Review Agent    | `senior_code_reviewer`                |
 | Labels          | `validation`, `testing`, `qa`         |
 
 **Description**:  

@@ -38,6 +38,9 @@ Three primary views:
 | Priority        | P0 — Critical                      |
 | Estimated Hours | 6                                  |
 | Dependencies    | Phase 3 complete                   |
+| Assigned Agent  | `senior_frontend_engineer`         |
+| QA Agent        | `senior_qa_engineer`               |
+| Review Agent    | `senior_code_reviewer`             |
 | Labels          | `frontend`, `design-system`, `css` |
 
 **Description**:
@@ -91,6 +94,9 @@ Establish the visual foundation — CSS custom properties (design tokens), color
 | Priority        | P0 — Critical                      |
 | Estimated Hours | 5                                  |
 | Dependencies    | P4-FE-001                          |
+| Assigned Agent  | `senior_frontend_engineer`         |
+| QA Agent        | `senior_qa_engineer`               |
+| Review Agent    | `senior_code_reviewer`             |
 | Labels          | `frontend`, `layout`, `navigation` |
 
 **Description**:
@@ -123,6 +129,9 @@ Build the persistent app shell — collapsible sidebar navigation, top header ba
 | Priority        | P0 — Critical                          |
 | Estimated Hours | 8                                      |
 | Dependencies    | P4-FE-002                              |
+| Assigned Agent  | `senior_frontend_engineer`             |
+| QA Agent        | `senior_qa_engineer`                   |
+| Review Agent    | `senior_code_reviewer`                 |
 | Labels          | `frontend`, `hacks-dashboard`, `table` |
 
 **Description**:
@@ -156,6 +165,9 @@ Build the primary data table for the Hacks Dashboard. This is the centerpiece of
 | Priority        | P0 — Critical                            |
 | Estimated Hours | 6                                        |
 | Dependencies    | P4-FE-003                                |
+| Assigned Agent  | `senior_frontend_engineer`               |
+| QA Agent        | `senior_qa_engineer`                     |
+| Review Agent    | `senior_code_reviewer`                   |
 | Labels          | `frontend`, `hacks-dashboard`, `filters` |
 
 **Description**:
@@ -187,6 +199,9 @@ Build the filter sidebar that mirrors the SCH dashboard filtering mechanics. Fil
 | Priority        | P0 — Critical                                            |
 | Estimated Hours | 7                                                        |
 | Dependencies    | P4-FE-003                                                |
+| Assigned Agent  | `senior_frontend_engineer`                               |
+| QA Agent        | `senior_qa_engineer`                                     |
+| Review Agent    | `senior_code_reviewer`                                   |
 | Labels          | `frontend`, `hacks-dashboard`, `charts`, `visualization` |
 
 **Description**:
@@ -220,6 +235,9 @@ Build the stats overview cards and interactive charts above the data table. Thes
 | Priority        | P0 — Critical                          |
 | Estimated Hours | 7                                      |
 | Dependencies    | P4-FE-002                              |
+| Assigned Agent  | `senior_frontend_engineer`             |
+| QA Agent        | `senior_qa_engineer`                   |
+| Review Agent    | `senior_code_reviewer`                 |
 | Labels          | `frontend`, `skills-explorer`, `cards` |
 
 **Description**:
@@ -258,6 +276,9 @@ Build the AI Skills Explorer page — a filterable card grid displaying AI audit
 | Priority        | P0 — Critical                                     |
 | Estimated Hours | 5                                                 |
 | Dependencies    | P4-FE-006                                         |
+| Assigned Agent  | `senior_frontend_engineer`                        |
+| QA Agent        | `senior_qa_engineer`                              |
+| Review Agent    | `senior_code_reviewer`                            |
 | Labels          | `frontend`, `skills-explorer`, `filters`, `modal` |
 
 **Description**:
@@ -295,6 +316,9 @@ Build the filter bar for the Skills Explorer and the skill detail modal/page tha
 | Priority        | P1 — High                                               |
 | Estimated Hours | 6                                                       |
 | Dependencies    | P4-FE-005 (chart components reusable)                   |
+| Assigned Agent  | `senior_frontend_engineer`                              |
+| QA Agent        | `senior_security_test_engineer`                         |
+| Review Agent    | `senior_code_reviewer`                                  |
 | Labels          | `frontend`, `safety-dashboard`, `analytics`, `thesis-1` |
 
 **Description**:
@@ -326,6 +350,9 @@ Build the Safety Dashboard — a dedicated view showing safety scanning analytic
 | Priority        | P0 — Critical                      |
 | Estimated Hours | 4                                  |
 | Dependencies    | P4-FE-002                          |
+| Assigned Agent  | `senior_software_engineer`         |
+| QA Agent        | `senior_sdet`                      |
+| Review Agent    | `senior_code_reviewer`             |
 | Labels          | `frontend`, `api`, `data-fetching` |
 
 **Description**:
@@ -360,6 +387,9 @@ Build the frontend API client layer — type-safe functions for calling all back
 | Priority        | P1 — High                                 |
 | Estimated Hours | 5                                         |
 | Dependencies    | P4-FE-003 through P4-FE-008               |
+| Assigned Agent  | `senior_frontend_engineer`                |
+| QA Agent        | `senior_qa_engineer`                      |
+| Review Agent    | `senior_code_reviewer`                    |
 | Labels          | `frontend`, `responsive`, `accessibility` |
 
 **Description**:
@@ -391,6 +421,9 @@ Audit and refine all pages for mobile/tablet responsiveness and accessibility co
 | Priority        | P1 — High                      |
 | Estimated Hours | 4                              |
 | Dependencies    | P4-FE-003 through P4-FE-008    |
+| Assigned Agent  | `senior_frontend_engineer`     |
+| QA Agent        | `senior_qa_engineer`           |
+| Review Agent    | `senior_code_reviewer`         |
 | Labels          | `frontend`, `animations`, `ux` |
 
 **Description**:
@@ -421,6 +454,9 @@ Add micro-animations that bring the interface to life — card entrance animatio
 | Priority        | P0 — Critical              |
 | Estimated Hours | 4                          |
 | Dependencies    | All P4-FE tasks            |
+| Assigned Agent  | `senior_qa_engineer`       |
+| QA Agent        | `senior_sdet`              |
+| Review Agent    | `senior_code_reviewer`     |
 | Labels          | `validation`, `qa`, `gate` |
 
 **Description**:

@@ -33,6 +33,9 @@ The three pipelines:
 | Priority        | P0 — Critical                                 |
 | Estimated Hours | 6                                             |
 | Dependencies    | Phase 1 API contracts frozen                  |
+| Assigned Agent  | `senior_software_engineer`                    |
+| QA Agent        | `senior_qa_engineer`                          |
+| Review Agent    | `senior_code_reviewer`                        |
 | Labels          | `etl`, `hacks-engine`, `adapter`, `defillama` |
 
 **Description**:
@@ -101,6 +104,9 @@ const CHAIN_NORMALIZATION: Record<string, Chain> = {
 | Priority        | P0 — Critical                                    |
 | Estimated Hours | 8                                                |
 | Dependencies    | P2-ETL-001                                       |
+| Assigned Agent  | `senior_software_engineer`                       |
+| QA Agent        | `senior_qa_engineer`                             |
+| Review Agent    | `senior_code_reviewer`                           |
 | Labels          | `etl`, `hacks-engine`, `adapter`, `defihacklabs` |
 
 **Description**:
@@ -160,6 +166,9 @@ const TABLE_ROW_REGEX =
 | Priority        | P0 — Critical                               |
 | Estimated Hours | 8                                           |
 | Dependencies    | Phase 1 API contracts frozen                |
+| Assigned Agent  | `senior_software_engineer`                  |
+| QA Agent        | `senior_security_test_engineer`             |
+| Review Agent    | `senior_code_reviewer`                      |
 | Labels          | `etl`, `skills-engine`, `adapter`, `github` |
 
 **Description**:
@@ -228,6 +237,9 @@ const SKILL_SOURCES: SkillSource[] = [
 | Priority        | P0 — Critical                       |
 | Estimated Hours | 6                                   |
 | Dependencies    | P1-ARCH-007 (Migrations)            |
+| Assigned Agent  | `senior_data_architect`             |
+| QA Agent        | `senior_qa_engineer`                |
+| Review Agent    | `senior_code_reviewer`              |
 | Labels          | `database`, `repository`, `adapter` |
 
 **Description**:
@@ -305,6 +317,9 @@ function buildHackWhereClause(filters: HackFilters): {
 | Priority        | P1 — High                        |
 | Estimated Hours | 3                                |
 | Dependencies    | Phase 1 caching strategy defined |
+| Assigned Agent  | `senior_software_engineer`       |
+| QA Agent        | `senior_security_test_engineer`  |
+| Review Agent    | `senior_code_reviewer`           |
 | Labels          | `cache`, `redis`, `adapter`      |
 
 **Description**:
@@ -334,6 +349,9 @@ Implement the `RedisCacheAdapter` — a concrete implementation of `ICachePort` 
 | Priority        | P0 — Critical                      |
 | Estimated Hours | 6                                  |
 | Dependencies    | P2-ETL-001, P2-ETL-002, P2-ETL-003 |
+| Assigned Agent  | `senior_devops_engineer`           |
+| QA Agent        | `senior_sdet`                      |
+| Review Agent    | `senior_code_reviewer`             |
 | Labels          | `jobs`, `bullmq`, `infrastructure` |
 
 **Description**:
@@ -404,6 +422,9 @@ await hacksSyncQueue.add(
 | Priority        | P0 — Critical                        |
 | Estimated Hours | 5                                    |
 | Dependencies    | P2-ETL-001, P2-ETL-003               |
+| Assigned Agent  | `senior_software_engineer`           |
+| QA Agent        | `senior_qa_engineer`                 |
+| Review Agent    | `senior_code_reviewer`               |
 | Labels          | `etl`, `normalization`, `validation` |
 
 **Description**:
@@ -472,6 +493,9 @@ const VECTOR_KEYWORDS: Record<AttackVector, string[]> = {
 | Priority        | P0 — Critical                                  |
 | Estimated Hours | 4                                              |
 | Dependencies    | P2-ETL-001, P2-ETL-002, P2-ETL-004, P2-ETL-007 |
+| Assigned Agent  | `senior_software_engineer`                     |
+| QA Agent        | `senior_qa_engineer`                           |
+| Review Agent    | `senior_code_reviewer`                         |
 | Labels          | `use-case`, `hacks-engine`, `application`      |
 
 **Description**:
@@ -503,6 +527,9 @@ Implement the `SyncHacksUseCase` — the application-layer orchestrator that coo
 | Priority        | P0 — Critical                              |
 | Estimated Hours | 4                                          |
 | Dependencies    | P2-ETL-003, P2-ETL-004, P2-ETL-007         |
+| Assigned Agent  | `senior_software_engineer`                 |
+| QA Agent        | `senior_qa_engineer`                       |
+| Review Agent    | `senior_code_reviewer`                     |
 | Labels          | `use-case`, `skills-engine`, `application` |
 
 **Description**:
@@ -533,6 +560,9 @@ Implement the `IndexSkillsUseCase` — the application-layer orchestrator that c
 | Priority        | P1 — High                          |
 | Estimated Hours | 3                                  |
 | Dependencies    | P2-ETL-006, P2-ETL-008, P2-ETL-009 |
+| Assigned Agent  | `senior_software_engineer`         |
+| QA Agent        | `senior_security_test_engineer`    |
+| Review Agent    | `senior_code_reviewer`             |
 | Labels          | `api`, `admin`, `integration`      |
 
 **Description**:
@@ -560,6 +590,9 @@ Wire the admin API endpoints (`POST /api/v1/hacks/sync`, `POST /api/v1/skills/sy
 | Priority        | P0 — Critical              |
 | Estimated Hours | 3                          |
 | Dependencies    | All P2-ETL tasks           |
+| Assigned Agent  | `senior_qa_engineer`       |
+| QA Agent        | `senior_sdet`              |
+| Review Agent    | `senior_code_reviewer`     |
 | Labels          | `validation`, `qa`, `gate` |
 
 **Description**:
