@@ -23,7 +23,7 @@
   "dependencies": {
     "date-fns": "~3.3.0",
     "pg": "^8.13.0",
-    "winston": "~3.11.0",
+    "pino": "~9.6.0",
     "zod": "~3.22.0"
   },
   "devDependencies": {

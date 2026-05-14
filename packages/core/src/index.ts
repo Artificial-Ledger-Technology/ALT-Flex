@@ -55,3 +55,13 @@ export type {
 // Request/response Zod schemas for all API endpoints.
 // These compose domain types — never duplicate them.
 export * from './shared/schemas/index.js';
+
+// ── Error Hierarchy (P1-ARCH-010) ───────────────────────────────────────────
+// Typed error classes — every engine and app uses these.
+// Maps 1:1 to ErrorCodeSchema values from common.schema.
+export * from './errors/index.js';
+
+// ── Logging Framework (P1-ARCH-010) ─────────────────────────────────────────
+// Pino-based structured logging with AsyncLocalStorage correlation IDs.
+// Domain layers depend on LoggerPort interface, not Pino directly.
+export * from './logging/index.js';
