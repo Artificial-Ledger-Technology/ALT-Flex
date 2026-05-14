@@ -16,16 +16,27 @@ import pino from 'pino';
 import { getCorrelationId } from './correlation-context.js';
 import type { LoggerPort } from './logger-port.js';
 
+/** Known Pino log levels — constrains LoggerOptions to valid values. */
+export type LogLevel = 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace' | 'silent';
+
 /** Options for creating a logger instance. */
 export interface LoggerOptions {
   /** Minimum log level. Defaults to `process.env.LOG_LEVEL ?? 'info'`. */
-  readonly level?: string;
+  readonly level?: LogLevel;
   /** Logger name — appears in every log entry as `name` field. */
   readonly name?: string;
 }
 
-/** Paths to redact in log output — prevents accidental secret leakage. */
+/**
+ * Paths to redact in log output — prevents accidental secret leakage.
+ *
+ * SECURITY (CWE-532): Covers top-level, one-level nested (`*.field`),
+ * and array-nested (`[*].field`) paths. Includes credentials, PII,
+ * and auth-related fields. Pino does NOT support `**` deep-glob syntax,
+ * so we explicitly list common nesting patterns.
+ */
 const REDACT_PATHS = [
+  // ── Credentials & Secrets ──────────────────────────────────────────
   'password',
   'secret',
   'token',
@@ -38,6 +49,42 @@ const REDACT_PATHS = [
   '*.authorization',
   '*.cookie',
   '*.apiKey',
+  '[*].password',
+  '[*].secret',
+  '[*].token',
+  '[*].authorization',
+  '[*].cookie',
+  '[*].apiKey',
+
+  // ── Auth Tokens ────────────────────────────────────────────────────
+  'accessToken',
+  'refreshToken',
+  'sessionId',
+  '*.accessToken',
+  '*.refreshToken',
+  '*.sessionId',
+  '[*].accessToken',
+  '[*].refreshToken',
+  '[*].sessionId',
+
+  // ── PII Fields ─────────────────────────────────────────────────────
+  'email',
+  'ssn',
+  'creditCard',
+  'phoneNumber',
+  '*.email',
+  '*.ssn',
+  '*.creditCard',
+  '*.phoneNumber',
+  '[*].email',
+  '[*].ssn',
+  '[*].creditCard',
+  '[*].phoneNumber',
+
+  // ── Fastify Request Headers ────────────────────────────────────────
+  'req.headers.authorization',
+  'req.headers.cookie',
+  'req.headers["x-api-key"]',
 ];
 
 /**
@@ -48,6 +95,13 @@ const REDACT_PATHS = [
  */
 function wrapPinoLogger(pinoLogger: pino.Logger): LoggerPort {
   return {
+    fatal(message: string, meta?: Record<string, unknown>): void {
+      if (meta) {
+        pinoLogger.fatal(meta, message);
+      } else {
+        pinoLogger.fatal(message);
+      }
+    },
     error(message: string, meta?: Record<string, unknown>): void {
       if (meta) {
         pinoLogger.error(meta, message);
