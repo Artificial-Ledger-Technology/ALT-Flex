@@ -73,6 +73,7 @@ describe('correlation-context', () => {
 describe('createLogger', () => {
   it('returns object with all LoggerPort methods', () => {
     const logger = createLogger({ level: 'silent' });
+    expect(typeof logger.fatal).toBe('function');
     expect(typeof logger.error).toBe('function');
     expect(typeof logger.warn).toBe('function');
     expect(typeof logger.info).toBe('function');
@@ -83,6 +84,7 @@ describe('createLogger', () => {
   it('child() returns a LoggerPort with all methods', () => {
     const logger = createLogger({ level: 'silent' });
     const child = logger.child({ service: 'test' });
+    expect(typeof child.fatal).toBe('function');
     expect(typeof child.error).toBe('function');
     expect(typeof child.warn).toBe('function');
     expect(typeof child.info).toBe('function');
@@ -98,6 +100,7 @@ describe('createLogger', () => {
 
   it('methods do not throw when called with message only', () => {
     const logger = createLogger({ level: 'silent' });
+    expect(() => logger.fatal('test')).not.toThrow();
     expect(() => logger.error('test')).not.toThrow();
     expect(() => logger.warn('test')).not.toThrow();
     expect(() => logger.info('test')).not.toThrow();
@@ -106,6 +109,7 @@ describe('createLogger', () => {
 
   it('methods do not throw when called with message and meta', () => {
     const logger = createLogger({ level: 'silent' });
+    expect(() => logger.fatal('test', { key: 'value' })).not.toThrow();
     expect(() => logger.error('test', { key: 'value' })).not.toThrow();
     expect(() => logger.warn('test', { key: 'value' })).not.toThrow();
     expect(() => logger.info('test', { key: 'value' })).not.toThrow();

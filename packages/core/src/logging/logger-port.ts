@@ -16,6 +16,10 @@
  * Implemented by the Pino-based logger in `logger.ts`.
  * Consumed by use cases, domain services, and adapters.
  *
+ * **SECURITY (CWE-117)**: Implementations MUST produce structured
+ * JSON output (e.g., NDJSON). Plaintext loggers are vulnerable to
+ * log injection via newline characters in message strings.
+ *
  * @example
  * ```typescript
  * class SearchHacksUseCase {
@@ -29,6 +33,12 @@
  * ```
  */
 export interface LoggerPort {
+  /**
+   * Log a fatal-level message — indicates the process MUST terminate.
+   * Use for unrecoverable errors (uncaught exceptions, unhandled rejections).
+   */
+  fatal(message: string, meta?: Record<string, unknown>): void;
+
   /** Log an error-level message. */
   error(message: string, meta?: Record<string, unknown>): void;
 
