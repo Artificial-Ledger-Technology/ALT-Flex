@@ -15,104 +15,37 @@
  * Architecture:
  *  - All tests use Fastify server.inject() — zero TCP ports opened
  *  - Rate limit exhaustion tests use an isolated low-limit server instance
- *  - Response schemas are stripped to prevent fast-json-stringify issues
- *  - Correlation ID logic is inlined (avoids fastify-plugin CJS resolution issue)
+ *  - Server factory is shared via test-utils/build-test-server.ts
  *
  * @module tests/middleware-integration
- * @task P1-ARCH-011 QA Integration Testing
+ * @task P1-ARCH-011 | Code Review Remediation (leirk04)
  */
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import Fastify, { type FastifyInstance } from 'fastify';
-import cors from '@fastify/cors';
-import rateLimit from '@fastify/rate-limit';
+import type { FastifyInstance } from 'fastify';
+import { buildTestServer } from './test-utils/build-test-server.js';
+import { correlationIdMiddleware } from '../src/middleware/correlation-id.middleware.js';
 import { systemRoutes } from '../src/routes/system.routes.js';
 import { hacksRoutes } from '../src/routes/hacks.routes.js';
 import { forensicsRoutes } from '../src/routes/forensics.routes.js';
 import { skillsRoutes } from '../src/routes/skills.routes.js';
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// Test Server Factory — mirrors production plugin order
+// Helpers
 // ═══════════════════════════════════════════════════════════════════════════════
 
-async function buildFullServer(
-  overrides?: { rateLimitMax?: number },
-): Promise<FastifyInstance> {
-  const server = Fastify({
-    logger: false,
-    requestIdHeader: 'x-correlation-id',
-    requestIdLogLabel: 'correlationId',
-  });
-
-  // Strip response schemas to prevent fast-json-stringify issues in test env
-  server.addHook('onRoute', (routeOptions) => {
-    if (routeOptions.schema?.response) {
-      delete routeOptions.schema.response;
-    }
-  });
-
-  // Inline correlation ID hook (mirrors correlation-id.middleware.ts)
-  // Using inline instead of importing the plugin to avoid fastify-plugin
-  // CJS resolution issues in the Vitest ESM test environment.
-  server.addHook('onRequest', async (request, reply) => {
-    const incomingId = request.headers['x-correlation-id'];
-    const correlationId =
-      typeof incomingId === 'string' && incomingId.length > 0
-        ? incomingId
-        : crypto.randomUUID();
-    request.id = correlationId;
-    void reply.header('x-correlation-id', correlationId);
-  });
-
-  // Production plugin order: correlation → CORS → rate limit → routes
-  await server.register(cors, {
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-    credentials: true,
-  });
-  await server.register(rateLimit, {
-    max: overrides?.rateLimitMax ?? 100,
-    timeWindow: 60000,
-  });
-
-  // Route modules
+async function buildFullServer(overrides?: { rateLimitMax?: number }): Promise<FastifyInstance> {
+  const server = await buildTestServer({ rateLimitMax: overrides?.rateLimitMax });
   await server.register(systemRoutes);
   await server.register(hacksRoutes);
   await server.register(forensicsRoutes);
   await server.register(skillsRoutes);
-
-  // Inline error handler (mirrors error-handler.ts)
-  server.setErrorHandler((error, request, reply) => {
-    const correlationId = request.id ?? 'unknown';
-
-    // Fastify validation error
-    const fastifyError = error as Record<string, unknown>;
-    if (Array.isArray(fastifyError['validation'])) {
-      return reply.status(400).send({
-        error: 'VALIDATION_ERROR',
-        code: 'AEGIS-400',
-        message: 'Request validation failed',
-        correlationId,
-        timestamp: new Date().toISOString(),
-      });
-    }
-
-    // Unknown error — mask everything
-    return reply.status(500).send({
-      error: 'INTERNAL_ERROR',
-      code: 'AEGIS-500',
-      message: 'An unexpected error occurred',
-      correlationId,
-      timestamp: new Date().toISOString(),
-    });
-  });
-
   await server.ready();
   return server;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// Test Suite: CORS, Rate Limit, Routes, Plugin Order
+// Test Suite
 // ═══════════════════════════════════════════════════════════════════════════════
 
 describe('Middleware Integration — P1-ARCH-011', () => {
@@ -186,7 +119,6 @@ describe('Middleware Integration — P1-ARCH-011', () => {
         url: '/health',
         headers: { origin: 'http://localhost:3000' },
       });
-      // Must not be wildcard — credentials require specific origin
       expect(res.headers['access-control-allow-origin']).not.toBe('*');
     });
   });
@@ -221,12 +153,35 @@ describe('Middleware Integration — P1-ARCH-011', () => {
     });
   });
 
-  // Rate limit exhaustion — isolated low-limit server
+  // Rate limit exhaustion — fully isolated standalone server
   describe('Rate Limit Exhaustion', () => {
     let limitedServer: FastifyInstance;
 
     beforeAll(async () => {
-      limitedServer = await buildFullServer({ rateLimitMax: 3 });
+      // Build a completely standalone Fastify instance with max:3 and a
+      // unique keyGenerator to guarantee isolation from the outer server's counters.
+      const Fastify2 = (await import('fastify')).default;
+      const corsPlugin = (await import('@fastify/cors')).default;
+      const rateLimitPlugin = (await import('@fastify/rate-limit')).default;
+
+      const srv = Fastify2({ logger: false, requestIdLogLabel: 'correlationId' });
+      srv.addHook('onRoute', (ro) => {
+        if (ro.schema?.response) delete ro.schema.response;
+      });
+      await srv.register(correlationIdMiddleware);
+      await srv.register(corsPlugin, {
+        origin: 'http://localhost:3000',
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+        credentials: true,
+      });
+      await srv.register(rateLimitPlugin, {
+        max: 3,
+        timeWindow: 60000,
+        keyGenerator: () => 'rate-limit-exhaustion-isolated',
+      });
+      await srv.register(systemRoutes);
+      await srv.ready();
+      limitedServer = srv;
     });
 
     afterAll(async () => {
@@ -234,22 +189,20 @@ describe('Middleware Integration — P1-ARCH-011', () => {
     });
 
     it('[RATE-004] returns 429 after exceeding rate limit max', async () => {
-      // Exhaust the limit: 3 requests
+      // Exhaust the limit: 3 requests consume the budget
       await limitedServer.inject({ method: 'GET', url: '/health' });
       await limitedServer.inject({ method: 'GET', url: '/health' });
       await limitedServer.inject({ method: 'GET', url: '/health' });
-
-      // 4th request should be rate limited
+      // 4th request must be rate limited
       const res = await limitedServer.inject({ method: 'GET', url: '/health' });
       expect(res.statusCode).toBe(429);
     });
 
     it('[RATE-005] 429 response includes retry-after header', async () => {
+      // Server is already exhausted by RATE-004 (3 prior requests consumed the limit)
       const res = await limitedServer.inject({ method: 'GET', url: '/health' });
-      // Server is already exhausted from previous test
-      if (res.statusCode === 429) {
-        expect(res.headers['retry-after']).toBeDefined();
-      }
+      expect(res.statusCode).toBe(429);
+      expect(res.headers['retry-after']).toBeDefined();
     });
   });
 
@@ -265,7 +218,6 @@ describe('Middleware Integration — P1-ARCH-011', () => {
 
     it('[ROUTE-002] hacksRoutes registered — GET /api/v1/hacks responds', async () => {
       const res = await server.inject({ method: 'GET', url: '/api/v1/hacks' });
-      // Stub returns 501, live returns 200 — both are valid
       expect([200, 501]).toContain(res.statusCode);
     });
 
@@ -301,7 +253,6 @@ describe('Middleware Integration — P1-ARCH-011', () => {
     });
 
     it('[ORDER-003] rate limit headers present on registered route errors', async () => {
-      // Use a registered route that returns an error (501 stub)
       const res = await server.inject({ method: 'GET', url: '/api/v1/hacks' });
       expect(res.headers['x-ratelimit-limit']).toBeDefined();
     });

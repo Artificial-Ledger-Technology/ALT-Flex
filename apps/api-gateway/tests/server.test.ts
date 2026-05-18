@@ -31,7 +31,11 @@ async function buildIntegrationServer(): Promise<FastifyInstance> {
 
   // Register plugins in production order
   await server.register(correlationIdMiddleware);
-  await server.register(cors, { origin: '*' });
+  await server.register(cors, {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    credentials: true,
+  });
   await registerSwagger(server);
   await server.register(systemRoutes);
   registerErrorHandler(server);

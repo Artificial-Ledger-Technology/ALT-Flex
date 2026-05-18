@@ -54,8 +54,9 @@ const loggerConfig = isDev
 
 const server = Fastify({
   logger: loggerConfig,
-  // Use incoming x-correlation-id header as Fastify's native request ID
-  requestIdHeader: 'x-correlation-id',
+  // requestIdLogLabel: label used by Pino to log the request ID as 'correlationId'
+  // requestIdHeader intentionally omitted — the correlation ID middleware owns the
+  // full x-correlation-id lifecycle including validation and sanitization.
   requestIdLogLabel: 'correlationId',
 });
 

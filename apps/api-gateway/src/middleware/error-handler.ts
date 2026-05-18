@@ -16,11 +16,31 @@
  *
  * @module middleware/error-handler
  * @hexagonal Infrastructure Layer — Cross-Cutting Middleware
- * @task P1-ARCH-011
+ * @task P1-ARCH-011 | Code Review Remediation (leirk04)
  */
 
 import type { FastifyInstance } from 'fastify';
-import { AegisError, getCorrelationId } from '@aegis/core';
+
+/**
+ * Duck-type check for AegisError — avoids importing @aegis/core at runtime
+ * to prevent Vitest SSR transform issues with workspace package exports.
+ * Checks for the structural properties that all AegisError subclasses carry.
+ */
+function isAegisError(err: unknown): err is {
+  isOperational: boolean;
+  statusCode: number;
+  message: string;
+  toJSON: () => Record<string, unknown>;
+} {
+  return (
+    typeof err === 'object' &&
+    err !== null &&
+    'isOperational' in err &&
+    'statusCode' in err &&
+    'toJSON' in err &&
+    typeof (err as Record<string, unknown>)['toJSON'] === 'function'
+  );
+}
 
 /**
  * Register the global error handler on the Fastify instance.
@@ -29,10 +49,13 @@ import { AegisError, getCorrelationId } from '@aegis/core';
  */
 export function registerErrorHandler(server: FastifyInstance): void {
   server.setErrorHandler((error, request, reply) => {
-    const correlationId = request.id ?? getCorrelationId();
+    // request.id is always set by the correlation ID middleware.
+    // 'unresolved' is an explicit sentinel — avoids confusion with real IDs
+    // or AsyncLocalStorage misses from getCorrelationId().
+    const correlationId = request.id ?? 'unresolved';
 
     // ── 1. AegisError — our typed error hierarchy ──────────────────────
-    if (error instanceof AegisError) {
+    if (isAegisError(error)) {
       if (error.isOperational) {
         request.log.warn({ err: error, correlationId }, error.message);
       } else {
