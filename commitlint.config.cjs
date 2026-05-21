@@ -1,6 +1,12 @@
 /** @type {import('@commitlint/types').UserConfig} */
 module.exports = {
   extends: ['@commitlint/config-conventional'],
+  parserPreset: {
+    parserOpts: {
+      headerPattern: /^(?:[^\w\s]+\s+)?(\w+)(?:\(([^)]+)\))?: (.*)$/,
+      headerCorrespondence: ['type', 'scope', 'subject'],
+    },
+  },
   rules: {
     // ── Allowed Commit Types ─────────────────────────────────────────
     // Governed by: Senior Git Operations Engineer

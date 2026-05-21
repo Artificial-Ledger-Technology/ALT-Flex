@@ -25,6 +25,9 @@ COPY packages/forensic-engine/package.json ./packages/forensic-engine/
 COPY apps/api-gateway/package.json ./apps/api-gateway/
 COPY apps/web/package.json ./apps/web/
 
+# Enable hoisting so that all dependencies are in the root node_modules for production COPY
+RUN echo "shamefully-hoist=true" > .npmrc
+
 # Install ALL dependencies (dev + prod needed for build stage)
 RUN pnpm install --frozen-lockfile
 
@@ -50,7 +53,7 @@ COPY apps/api-gateway/tsconfig.json ./apps/api-gateway/
 RUN pnpm turbo run build --filter=@aegis/api-gateway...
 
 # Prune dev dependencies for production
-RUN pnpm prune --prod
+RUN CI=true pnpm prune --prod --ignore-scripts
 
 # ── Stage 3: Production Runner ───────────────────────────────────────────────
 FROM node:20.11-alpine AS runner
@@ -84,6 +87,6 @@ EXPOSE 4000
 USER aegis
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD ["wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:4000/api/v1/health"]
+  CMD ["wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:4000/api/v1/health"]
 
 CMD ["node", "apps/api-gateway/dist/server.js"]

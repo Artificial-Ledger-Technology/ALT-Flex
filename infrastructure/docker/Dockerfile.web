@@ -34,11 +34,13 @@ FROM deps AS builder
 
 WORKDIR /app
 
-# Copy web app source
+# Copy core package source and web app source
+COPY packages/core/src ./packages/core/src
+COPY packages/core/tsconfig.json ./packages/core/
 COPY apps/web/ ./apps/web/
 
-# Build Next.js (standalone output mode)
-RUN pnpm --filter @aegis/web build
+# Build Next.js and workspace dependencies using Turborepo
+RUN pnpm turbo run build --filter=@aegis/web...
 
 # ── Stage 3: Production Runner ───────────────────────────────────────────────
 FROM node:20.11-alpine AS runner
@@ -68,6 +70,6 @@ EXPOSE 3000
 USER nextjs
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-  CMD ["wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+  CMD ["wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3000"]
 
 CMD ["node", "apps/web/server.js"]

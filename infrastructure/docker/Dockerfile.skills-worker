@@ -28,6 +28,9 @@ COPY packages/forensic-engine/package.json ./packages/forensic-engine/
 COPY apps/api-gateway/package.json ./apps/api-gateway/
 COPY apps/web/package.json ./apps/web/
 
+# Enable hoisting so that all dependencies are in the root node_modules for production COPY
+RUN echo "shamefully-hoist=true" > .npmrc
+
 # Install ALL dependencies (dev + prod needed for build stage)
 RUN pnpm install --frozen-lockfile
 
@@ -46,7 +49,7 @@ COPY packages/skills-engine/tsconfig.json ./packages/skills-engine/
 RUN pnpm turbo run build --filter=@aegis/skills-engine...
 
 # Prune dev dependencies for production
-RUN pnpm prune --prod
+RUN CI=true pnpm prune --prod --ignore-scripts
 
 # ── Stage 3: Production Runner ───────────────────────────────────────────────
 FROM node:20.11-alpine AS runner
