@@ -4,14 +4,14 @@
 # ═══════════════════════════════════════════════════════════════════════════════
 
 # ── Dependencies (installed fresh inside container) ──────────────────────────
-node_modules
-.pnpm-store
+**/node_modules
+**/.pnpm-store
 
 # ── Build Outputs (rebuilt inside container) ─────────────────────────────────
-dist
-.next
-out
-*.tsbuildinfo
+**/dist
+**/.next
+**/out
+**/*.tsbuildinfo
 
 # ── Environment & Secrets ────────────────────────────────────────────────────
 .env
@@ -47,7 +47,7 @@ desktop.ini
 coverage
 
 # ── Turbo Cache ──────────────────────────────────────────────────────────────
-.turbo
+**/.turbo
 
 # ── Logs ─────────────────────────────────────────────────────────────────────
 *.log
