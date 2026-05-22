@@ -11,6 +11,4 @@
  * @hexagonal Adapter Layer — Engine α (Driven/Secondary)
  */
 
-// Adapters will be added in Phase 2+ as ETL pipelines are implemented.
-// Examples: PostgresHackRepository, DefiLlamaClient, RedisHackCache
-export {};
+export { PostgresHackRepository } from './postgres-hack.repository.js';
