@@ -1,0 +1,29 @@
+/* apps/web/src/components/layout/AppShell.module.css */
+.appShell {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  position: relative;
+}
+
+.mainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* Prevents flex children from overflowing */
+  background-color: var(--bg-primary);
+}
+
+.pageContainer {
+  flex: 1;
+  padding: var(--space-6);
+  max-width: 1600px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .pageContainer {
+    padding: var(--space-4);
+  }
+}

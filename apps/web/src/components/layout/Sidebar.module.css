@@ -1,0 +1,91 @@
+/* apps/web/src/components/layout/Sidebar.module.css */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 260px;
+  height: 100vh;
+  background-color: var(--bg-secondary);
+  border-right: 1px solid var(--border-subtle);
+  transition: width var(--duration-normal) var(--ease-out);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  height: 72px; /* Matches header height */
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.logoText {
+  font-family: var(--font-display, system-ui);
+  font-weight: 700;
+  font-size: var(--font-size-xl);
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.logoAccent {
+  color: var(--accent-cyan);
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-6) var(--space-4);
+  flex: 1;
+  overflow-y: auto;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-weight: 500;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.navLink:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.navLinkActive {
+  background-color: var(--bg-tertiary);
+  color: var(--accent-cyan);
+}
+
+.navLinkDisabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.navLinkDisabled:hover {
+  background-color: transparent;
+  color: var(--text-secondary);
+}
+
+.navIcon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 1024px) {
+  .sidebar {
+    position: fixed;
+    transform: translateX(-100%);
+  }
+
+  .sidebarOpen {
+    transform: translateX(0);
+  }
+}
