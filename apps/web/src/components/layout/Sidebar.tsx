@@ -83,7 +83,7 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps): React.ReactN
                 key={item.name}
                 href={item.href}
                 className={`${styles.navLink} ${isActive ? styles.navLinkActive : ''}`}
-                onClick={onClose ? () => onClose() : () => {}}
+                onClick={onClose ? (): void => onClose() : (): void => {}}
               >
                 <Icon className={styles.navIcon} />
                 <span>{item.name}</span>
