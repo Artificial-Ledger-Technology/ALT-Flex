@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/strict-boolean-expressions, @typescript-eslint/no-redundant-type-constituents, @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/strict-boolean-expressions */
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import type { TimelineDataPoint } from '@/lib/api-client';
 import styles from './Charts.module.css';
@@ -21,13 +21,13 @@ export function TimelineChart({ data, isLoading }: TimelineChartProps): React.Re
   };
 
   return (
-    <div className={styles.chartCard ?? ''}>
-      <div className={styles.chartHeader ?? ''}>
-        <h3 className={styles.chartTitle ?? ''}>Losses Over Time</h3>
+    <div className={styles.chartCard}>
+      <div className={styles.chartHeader}>
+        <h3 className={styles.chartTitle}>Losses Over Time</h3>
       </div>
-      <div className={styles.chartContainer ?? ''}>
+      <div className={styles.chartContainer}>
         {isLoading ? (
-          <div className={styles.skeleton ?? ''} />
+          <div className={styles.skeleton} />
         ) : data.length === 0 ? (
           <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
             No data available

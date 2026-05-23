@@ -63,7 +63,8 @@ export const hacksApi = {
       throw new Error(`Failed to fetch hacks: ${response.statusText}`);
     }
 
-    return (await response.json()) as PaginatedResponse<HackIncident>;
+    const responseData: unknown = await response.json();
+    return responseData as PaginatedResponse<HackIncident>;
   },
 
   async getHackDetails(id: string): Promise<HackIncident> {
@@ -78,30 +79,35 @@ export const hacksApi = {
       throw new Error(`Failed to fetch hack details: ${response.statusText}`);
     }
 
-    return (await response.json()) as HackIncident;
+    const responseData: unknown = await response.json();
+    return responseData as HackIncident;
   },
 
   async getDashboardStats(): Promise<DashboardStats> {
     const response = await fetch(`${API_BASE}/hacks/stats`);
     if (!response.ok) throw new Error(`Failed to fetch stats: ${response.statusText}`);
-    return (await response.json()) as DashboardStats;
+    const responseData: unknown = await response.json();
+    return responseData as DashboardStats;
   },
 
   async getTimelineStats(granularity: 'day' | 'week' | 'month' | 'year' = 'month'): Promise<{ timeline: TimelineDataPoint[] }> {
     const response = await fetch(`${API_BASE}/hacks/stats/timeline?granularity=${granularity}`);
     if (!response.ok) throw new Error(`Failed to fetch timeline: ${response.statusText}`);
-    return (await response.json()) as { timeline: TimelineDataPoint[] };
+    const responseData: unknown = await response.json();
+    return responseData as { timeline: TimelineDataPoint[] };
   },
 
   async getVectorStats(): Promise<{ vectors: VectorStat[] }> {
     const response = await fetch(`${API_BASE}/hacks/vectors`);
     if (!response.ok) throw new Error(`Failed to fetch vectors: ${response.statusText}`);
-    return (await response.json()) as { vectors: VectorStat[] };
+    const responseData: unknown = await response.json();
+    return responseData as { vectors: VectorStat[] };
   },
 
   async getChainStats(): Promise<{ chains: ChainStat[] }> {
     const response = await fetch(`${API_BASE}/hacks/chains`);
     if (!response.ok) throw new Error(`Failed to fetch chains: ${response.statusText}`);
-    return (await response.json()) as { chains: ChainStat[] };
+    const responseData: unknown = await response.json();
+    return responseData as { chains: ChainStat[] };
   }
 };

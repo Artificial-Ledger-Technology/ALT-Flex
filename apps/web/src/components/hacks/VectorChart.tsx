@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/strict-boolean-expressions, @typescript-eslint/no-redundant-type-constituents, @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/strict-boolean-expressions */
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import type { VectorStat } from '@/lib/api-client';
 import styles from './Charts.module.css';
@@ -8,7 +8,18 @@ interface VectorChartProps {
   isLoading: boolean;
 }
 
-const COLORS = ['#3b82f6', '#8b5cf6', '#ec4899', '#f43f5e', '#f97316', '#eab308', '#22c55e', '#14b8a6', '#06b6d4', '#64748b'];
+const COLORS = [
+  'var(--accent-cyan)',
+  'var(--accent-purple)',
+  'var(--accent-emerald)',
+  'var(--accent-amber)',
+  'var(--accent-red)',
+  '#3b82f6',
+  '#f43f5e',
+  '#14b8a6',
+  '#06b6d4',
+  '#64748b'
+];
 
 export function VectorChart({ data, isLoading }: VectorChartProps): React.ReactNode {
   const formatCurrency = (value: number): string => {
@@ -18,13 +29,13 @@ export function VectorChart({ data, isLoading }: VectorChartProps): React.ReactN
   };
 
   return (
-    <div className={styles.chartCard ?? ''}>
-      <div className={styles.chartHeader ?? ''}>
-        <h3 className={styles.chartTitle ?? ''}>Attack Vectors</h3>
+    <div className={styles.chartCard}>
+      <div className={styles.chartHeader}>
+        <h3 className={styles.chartTitle}>Attack Vectors</h3>
       </div>
-      <div className={styles.chartContainer ?? ''}>
+      <div className={styles.chartContainer}>
         {isLoading ? (
-          <div className={styles.skeleton ?? ''} />
+          <div className={styles.skeleton} />
         ) : data.length === 0 ? (
           <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
             No data available

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-redundant-type-constituents */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-redundant-type-constituents, @typescript-eslint/no-unnecessary-type-assertion */
 import { useState, useEffect } from 'react';
 import { hacksApi, type DashboardStats, type TimelineDataPoint, type VectorStat, type ChainStat } from '@/lib/api-client';
 
@@ -27,7 +27,7 @@ export function useHacksStats(): HacksStatsData & { isLoading: boolean; error: E
         setIsLoading(true);
         setError(null);
 
-        const [dashboard, timelineRes, vectorsRes, chainsRes] = await Promise.all([
+        const [dashboardRes, timelineRes, vectorsRes, chainsRes] = await Promise.allSettled([
           hacksApi.getDashboardStats(),
           hacksApi.getTimelineStats('month'),
           hacksApi.getVectorStats(),
@@ -36,11 +36,19 @@ export function useHacksStats(): HacksStatsData & { isLoading: boolean; error: E
 
         if (mounted) {
           setData({
-            dashboard,
-            timeline: timelineRes.timeline,
-            vectors: vectorsRes.vectors,
-            chains: chainsRes.chains,
+            dashboard: dashboardRes.status === 'fulfilled' ? dashboardRes.value : null,
+            timeline: timelineRes.status === 'fulfilled' ? timelineRes.value.timeline : [],
+            vectors: vectorsRes.status === 'fulfilled' ? vectorsRes.value.vectors : [],
+            chains: chainsRes.status === 'fulfilled' ? chainsRes.value.chains : [],
           });
+
+          const rejected = [dashboardRes, timelineRes, vectorsRes, chainsRes].filter((r) => r.status === 'rejected') as PromiseRejectedResult[];
+          if (rejected.length > 0) {
+            console.error('Some stats failed to load:', rejected);
+            if (dashboardRes.status === 'rejected') {
+              setError(dashboardRes.reason instanceof Error ? dashboardRes.reason : new Error('Failed to load dashboard statistics'));
+            }
+          }
         }
       } catch (err) {
         if (mounted) {

@@ -20,44 +20,44 @@ export function StatsCards({ stats, isLoading }: StatsCardsProps): React.ReactNo
   };
 
   return (
-    <div className={styles.grid ?? ''}>
-      <div className={styles.card ?? ''}>
-        <div className={styles.cardHeader ?? ''}>
+    <div className={styles.grid}>
+      <div className={styles.card}>
+        <div className={styles.cardHeader}>
           <span>Total Incidents</span>
-          <Activity size={18} className={styles.cardIcon ?? ''} />
+          <Activity size={18} className={styles.cardIcon} />
         </div>
-        <div className={styles.cardValue ?? ''}>
-          {isLoading || !stats ? <div className={styles.skeleton ?? ''} /> : stats.totalIncidents.toLocaleString()}
+        <div className={styles.cardValue}>
+          {isLoading || !stats ? <div className={styles.skeleton} /> : stats.totalIncidents.toLocaleString()}
         </div>
       </div>
 
-      <div className={styles.card ?? ''}>
-        <div className={styles.cardHeader ?? ''}>
+      <div className={styles.card}>
+        <div className={styles.cardHeader}>
           <span>Total Value Lost</span>
-          <DollarSign size={18} className={styles.cardIcon ?? ''} style={{ color: '#fca5a5' }} />
+          <DollarSign size={18} className={styles.cardIcon} style={{ color: 'var(--accent-red)' }} />
         </div>
-        <div className={styles.cardValue ?? ''}>
-          {isLoading || !stats ? <div className={styles.skeleton ?? ''} /> : formatCurrency(stats.totalLossUsd)}
+        <div className={styles.cardValue}>
+          {isLoading || !stats ? <div className={styles.skeleton} /> : formatCurrency(stats.totalLossUsd)}
         </div>
       </div>
 
-      <div className={styles.card ?? ''}>
-        <div className={styles.cardHeader ?? ''}>
+      <div className={styles.card}>
+        <div className={styles.cardHeader}>
           <span>Funds Recovered</span>
-          <RefreshCw size={18} className={styles.cardIcon ?? ''} style={{ color: '#86efac' }} />
+          <RefreshCw size={18} className={styles.cardIcon} style={{ color: 'var(--accent-emerald)' }} />
         </div>
-        <div className={styles.cardValue ?? ''}>
-          {isLoading || !stats ? <div className={styles.skeleton ?? ''} /> : formatPercentage(stats.recoveryRate)}
+        <div className={styles.cardValue}>
+          {isLoading || !stats ? <div className={styles.skeleton} /> : formatPercentage(stats.recoveryRate)}
         </div>
       </div>
 
-      <div className={styles.card ?? ''}>
-        <div className={styles.cardHeader ?? ''}>
+      <div className={styles.card}>
+        <div className={styles.cardHeader}>
           <span>POC Coverage</span>
-          <ShieldCheck size={18} className={styles.cardIcon ?? ''} style={{ color: '#d8b4fe' }} />
+          <ShieldCheck size={18} className={styles.cardIcon} style={{ color: 'var(--accent-purple)' }} />
         </div>
-        <div className={styles.cardValue ?? ''}>
-          {isLoading || !stats ? <div className={styles.skeleton ?? ''} /> : formatPercentage(stats.pocCoverage)}
+        <div className={styles.cardValue}>
+          {isLoading || !stats ? <div className={styles.skeleton} /> : formatPercentage(stats.pocCoverage)}
         </div>
       </div>
     </div>
