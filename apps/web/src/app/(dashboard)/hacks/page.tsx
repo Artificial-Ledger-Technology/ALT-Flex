@@ -1,4 +1,5 @@
 import { Shield } from 'lucide-react';
+import { HacksTable } from '@/components/hacks/HacksTable';
 
 export const metadata = {
   title: 'Hacks Dashboard | ALTFlex AEGIS',
@@ -25,23 +26,8 @@ export default function HacksPage(): React.ReactNode {
         </div>
       </header>
 
-      {/* Structural Placeholder for the Hacks Table in P4-FE-003 */}
-      <section 
-        style={{ 
-          backgroundColor: 'var(--bg-secondary)', 
-          border: '1px solid var(--border-subtle)', 
-          borderRadius: 'var(--radius-lg)', 
-          minHeight: '400px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'var(--text-muted)'
-        }}
-      >
-        <div style={{ textAlign: 'center' }}>
-          <p style={{ fontSize: 'var(--font-size-lg)', marginBottom: 'var(--space-2)' }}>Data Table Module</p>
-          <p>Task P4-FE-003 will implement the dynamic grid and API connection here.</p>
-        </div>
+      <section>
+        <HacksTable />
       </section>
     </div>
   );

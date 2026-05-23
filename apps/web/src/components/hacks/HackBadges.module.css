@@ -1,0 +1,51 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+/* Severity */
+.severityCritical {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.severityHigh {
+  background-color: rgba(249, 115, 22, 0.15);
+  color: #fdba74;
+  border: 1px solid rgba(249, 115, 22, 0.3);
+}
+
+.severityMedium {
+  background-color: rgba(234, 179, 8, 0.15);
+  color: #fde047;
+  border: 1px solid rgba(234, 179, 8, 0.3);
+}
+
+.severityLow {
+  background-color: rgba(34, 197, 94, 0.15);
+  color: #86efac;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+/* Chains */
+.chainEthereum { background-color: rgba(98, 126, 234, 0.15); color: #a5b4fc; border: 1px solid rgba(98, 126, 234, 0.3); }
+.chainBsc { background-color: rgba(243, 186, 47, 0.15); color: #fde047; border: 1px solid rgba(243, 186, 47, 0.3); }
+.chainPolygon { background-color: rgba(130, 71, 229, 0.15); color: #d8b4fe; border: 1px solid rgba(130, 71, 229, 0.3); }
+.chainArbitrum { background-color: rgba(40, 160, 240, 0.15); color: #93c5fd; border: 1px solid rgba(40, 160, 240, 0.3); }
+.chainOptimism { background-color: rgba(255, 4, 32, 0.15); color: #fca5a5; border: 1px solid rgba(255, 4, 32, 0.3); }
+.chainSolana { background-color: rgba(20, 241, 149, 0.15); color: #6ee7b7; border: 1px solid rgba(20, 241, 149, 0.3); }
+.chainDefault { background-color: rgba(107, 114, 128, 0.15); color: #d1d5db; border: 1px solid rgba(107, 114, 128, 0.3); }
+
+/* Vector */
+.vectorBadge {
+  background-color: rgba(59, 130, 246, 0.15);
+  color: #93c5fd;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
