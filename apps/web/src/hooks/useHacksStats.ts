@@ -1,0 +1,85 @@
+import { useState, useEffect } from 'react';
+import {
+  hacksApi,
+  type DashboardStats,
+  type TimelineDataPoint,
+  type VectorStat,
+  type ChainStat,
+} from '../lib/api-client';
+
+export interface HacksStatsData {
+  dashboard: DashboardStats | null;
+  timeline: TimelineDataPoint[];
+  vectors: VectorStat[];
+  chains: ChainStat[];
+}
+
+export function useHacksStats(): HacksStatsData & { isLoading: boolean; error: Error | null } {
+  const [data, setData] = useState<HacksStatsData>({
+    dashboard: null,
+    timeline: [],
+    vectors: [],
+    chains: [],
+  });
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function fetchStats(): Promise<void> {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const [dashboardRes, timelineRes, vectorsRes, chainsRes] = await Promise.allSettled([
+          hacksApi.getDashboardStats(),
+          hacksApi.getTimelineStats('month'),
+          hacksApi.getVectorStats(),
+          hacksApi.getChainStats(),
+        ]);
+
+        if (mounted) {
+          setData({
+            dashboard: dashboardRes.status === 'fulfilled' ? dashboardRes.value : null,
+            timeline: timelineRes.status === 'fulfilled' ? timelineRes.value.timeline : [],
+            vectors: vectorsRes.status === 'fulfilled' ? vectorsRes.value.vectors : [],
+            chains: chainsRes.status === 'fulfilled' ? chainsRes.value.chains : [],
+          });
+
+          const rejected = [dashboardRes, timelineRes, vectorsRes, chainsRes].filter(
+            (r) => r.status === 'rejected',
+          );
+          if (rejected.length > 0) {
+            console.error('Some stats failed to load:', rejected);
+            if (dashboardRes.status === 'rejected') {
+              setError(
+                dashboardRes.reason instanceof Error
+                  ? dashboardRes.reason
+                  : new Error('Failed to load dashboard statistics'),
+              );
+            }
+          }
+        }
+      } catch (err) {
+        if (mounted) {
+          setError(err instanceof Error ? err : new Error('Failed to fetch stats'));
+        }
+      } finally {
+        if (mounted) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    fetchStats().catch((err) => {
+      console.error('Unhandled error in useHacksStats:', err);
+    });
+
+    return (): void => {
+      mounted = false;
+    };
+  }, []);
+
+  return { ...data, isLoading, error };
+}
