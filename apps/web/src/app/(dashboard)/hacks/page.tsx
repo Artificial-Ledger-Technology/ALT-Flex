@@ -1,5 +1,6 @@
 import { Shield } from 'lucide-react';
 import { HacksTable } from '@/components/hacks/HacksTable';
+import { HacksDashboardCharts } from '@/components/hacks/HacksDashboardCharts';
 
 export const metadata = {
   title: 'Hacks Dashboard | ALTFlex AEGIS',
@@ -25,6 +26,8 @@ export default function HacksPage(): React.ReactNode {
           <p style={{ color: 'var(--text-secondary)' }}>Browse, filter, and analyze DeFi hack incidents with forensic-grade detail.</p>
         </div>
       </header>
+
+      <HacksDashboardCharts />
 
       <section>
         <HacksTable />
