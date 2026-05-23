@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/strict-boolean-expressions */
 'use client';
 
-import { useHacksStats } from '@/hooks/useHacksStats';
+import { useHacksStats } from '../../hooks/useHacksStats';
 import { StatsCards } from './StatsCards';
 import { TimelineChart } from './TimelineChart';
 import { VectorChart } from './VectorChart';
@@ -22,7 +21,7 @@ export function HacksDashboardCharts(): React.ReactNode {
   return (
     <section className={styles.container}>
       <StatsCards stats={dashboard} isLoading={isLoading} />
-      
+
       <div className={styles.timelineGrid}>
         <TimelineChart data={timeline} isLoading={isLoading} />
       </div>

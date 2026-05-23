@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/strict-boolean-expressions, @typescript-eslint/no-redundant-type-constituents, @typescript-eslint/no-unsafe-argument */
 import { Activity, DollarSign, RefreshCw, ShieldCheck } from 'lucide-react';
-import type { DashboardStats } from '@/lib/api-client';
+import type { DashboardStats } from '../../lib/api-client';
 import styles from './StatsCards.module.css';
 
 interface StatsCardsProps {
@@ -27,37 +26,65 @@ export function StatsCards({ stats, isLoading }: StatsCardsProps): React.ReactNo
           <Activity size={18} className={styles.cardIcon} />
         </div>
         <div className={styles.cardValue}>
-          {isLoading || !stats ? <div className={styles.skeleton} /> : stats.totalIncidents.toLocaleString()}
+          {isLoading || !stats ? (
+            <div className={styles.skeleton} />
+          ) : (
+            stats.totalIncidents.toLocaleString()
+          )}
         </div>
       </div>
 
       <div className={styles.card}>
         <div className={styles.cardHeader}>
           <span>Total Value Lost</span>
-          <DollarSign size={18} className={styles.cardIcon} style={{ color: 'var(--accent-red)' }} />
+          <DollarSign
+            size={18}
+            className={styles.cardIcon}
+            style={{ color: 'var(--accent-red)' }}
+          />
         </div>
         <div className={styles.cardValue}>
-          {isLoading || !stats ? <div className={styles.skeleton} /> : formatCurrency(stats.totalLossUsd)}
+          {isLoading || !stats ? (
+            <div className={styles.skeleton} />
+          ) : (
+            formatCurrency(stats.totalLossUsd)
+          )}
         </div>
       </div>
 
       <div className={styles.card}>
         <div className={styles.cardHeader}>
           <span>Funds Recovered</span>
-          <RefreshCw size={18} className={styles.cardIcon} style={{ color: 'var(--accent-emerald)' }} />
+          <RefreshCw
+            size={18}
+            className={styles.cardIcon}
+            style={{ color: 'var(--accent-emerald)' }}
+          />
         </div>
         <div className={styles.cardValue}>
-          {isLoading || !stats ? <div className={styles.skeleton} /> : formatPercentage(stats.recoveryRate)}
+          {isLoading || !stats ? (
+            <div className={styles.skeleton} />
+          ) : (
+            formatPercentage(stats.recoveryRate)
+          )}
         </div>
       </div>
 
       <div className={styles.card}>
         <div className={styles.cardHeader}>
           <span>POC Coverage</span>
-          <ShieldCheck size={18} className={styles.cardIcon} style={{ color: 'var(--accent-purple)' }} />
+          <ShieldCheck
+            size={18}
+            className={styles.cardIcon}
+            style={{ color: 'var(--accent-purple)' }}
+          />
         </div>
         <div className={styles.cardValue}>
-          {isLoading || !stats ? <div className={styles.skeleton} /> : formatPercentage(stats.pocCoverage)}
+          {isLoading || !stats ? (
+            <div className={styles.skeleton} />
+          ) : (
+            formatPercentage(stats.pocCoverage)
+          )}
         </div>
       </div>
     </div>

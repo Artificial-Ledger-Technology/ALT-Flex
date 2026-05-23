@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/strict-boolean-expressions */
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import type { VectorStat } from '@/lib/api-client';
+import type { VectorStat } from '../../lib/api-client';
 import styles from './Charts.module.css';
 
 interface VectorChartProps {
@@ -18,7 +17,7 @@ const COLORS = [
   '#f43f5e',
   '#14b8a6',
   '#06b6d4',
-  '#64748b'
+  '#64748b',
 ];
 
 export function VectorChart({ data, isLoading }: VectorChartProps): React.ReactNode {
@@ -37,7 +36,15 @@ export function VectorChart({ data, isLoading }: VectorChartProps): React.ReactN
         {isLoading ? (
           <div className={styles.skeleton} />
         ) : data.length === 0 ? (
-          <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+          <div
+            style={{
+              display: 'flex',
+              height: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'var(--text-muted)',
+            }}
+          >
             No data available
           </div>
         ) : (
@@ -57,15 +64,22 @@ export function VectorChart({ data, isLoading }: VectorChartProps): React.ReactN
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
-              <Tooltip 
-                contentStyle={{ backgroundColor: 'var(--bg-tertiary)', borderColor: 'var(--border-subtle)', borderRadius: 'var(--radius-md)' }}
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: 'var(--bg-tertiary)',
+                  borderColor: 'var(--border-subtle)',
+                  borderRadius: 'var(--radius-md)',
+                }}
                 itemStyle={{ color: 'var(--text-primary)' }}
-                formatter={(value: number): [string, string] => [formatCurrency(value), 'Total Loss']}
+                formatter={(value: number): [string, string] => [
+                  formatCurrency(value),
+                  'Total Loss',
+                ]}
               />
-              <Legend 
-                verticalAlign="bottom" 
-                height={36} 
-                wrapperStyle={{ fontSize: '12px', color: 'var(--text-muted)' }} 
+              <Legend
+                verticalAlign="bottom"
+                height={36}
+                wrapperStyle={{ fontSize: '12px', color: 'var(--text-muted)' }}
               />
             </PieChart>
           </ResponsiveContainer>

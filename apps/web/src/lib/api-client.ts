@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access */
 import type { HackListQuery, HackIncident } from '@aegis/core';
 
 export interface DashboardStats {
@@ -48,7 +47,7 @@ export const hacksApi = {
         }
       });
     }
-    
+
     const queryStr = searchParams.toString();
     const url = `${API_BASE}/hacks${queryStr ? `?${queryStr}` : ''}`;
 
@@ -90,7 +89,9 @@ export const hacksApi = {
     return responseData as DashboardStats;
   },
 
-  async getTimelineStats(granularity: 'day' | 'week' | 'month' | 'year' = 'month'): Promise<{ timeline: TimelineDataPoint[] }> {
+  async getTimelineStats(
+    granularity: 'day' | 'week' | 'month' | 'year' = 'month',
+  ): Promise<{ timeline: TimelineDataPoint[] }> {
     const response = await fetch(`${API_BASE}/hacks/stats/timeline?granularity=${granularity}`);
     if (!response.ok) throw new Error(`Failed to fetch timeline: ${response.statusText}`);
     const responseData: unknown = await response.json();
@@ -109,5 +110,5 @@ export const hacksApi = {
     if (!response.ok) throw new Error(`Failed to fetch chains: ${response.statusText}`);
     const responseData: unknown = await response.json();
     return responseData as { chains: ChainStat[] };
-  }
+  },
 };

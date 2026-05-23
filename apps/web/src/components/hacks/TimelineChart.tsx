@@ -1,6 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/strict-boolean-expressions */
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import type { TimelineDataPoint } from '@/lib/api-client';
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts';
+import type { TimelineDataPoint } from '../../lib/api-client';
 import styles from './Charts.module.css';
 
 interface TimelineChartProps {
@@ -29,7 +36,15 @@ export function TimelineChart({ data, isLoading }: TimelineChartProps): React.Re
         {isLoading ? (
           <div className={styles.skeleton} />
         ) : data.length === 0 ? (
-          <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+          <div
+            style={{
+              display: 'flex',
+              height: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'var(--text-muted)',
+            }}
+          >
             No data available
           </div>
         ) : (
@@ -42,8 +57,8 @@ export function TimelineChart({ data, isLoading }: TimelineChartProps): React.Re
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle)" vertical={false} />
-              <XAxis 
-                dataKey="timestamp" 
+              <XAxis
+                dataKey="timestamp"
                 tickFormatter={formatDate}
                 stroke="var(--text-muted)"
                 fontSize={12}
@@ -51,7 +66,7 @@ export function TimelineChart({ data, isLoading }: TimelineChartProps): React.Re
                 axisLine={false}
                 dy={10}
               />
-              <YAxis 
+              <YAxis
                 tickFormatter={formatCurrency}
                 stroke="var(--text-muted)"
                 fontSize={12}
@@ -59,13 +74,23 @@ export function TimelineChart({ data, isLoading }: TimelineChartProps): React.Re
                 axisLine={false}
                 dx={-10}
               />
-              <Tooltip 
-                contentStyle={{ backgroundColor: 'var(--bg-tertiary)', borderColor: 'var(--border-subtle)', borderRadius: 'var(--radius-md)' }}
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: 'var(--bg-tertiary)',
+                  borderColor: 'var(--border-subtle)',
+                  borderRadius: 'var(--radius-md)',
+                }}
                 itemStyle={{ color: 'var(--text-primary)' }}
                 labelFormatter={formatDate}
                 formatter={(value: number): [string, string] => [formatCurrency(value), 'Loss']}
               />
-              <Area type="monotone" dataKey="lossUsd" stroke="#0ea5e9" fillOpacity={1} fill="url(#colorLoss)" />
+              <Area
+                type="monotone"
+                dataKey="lossUsd"
+                stroke="#0ea5e9"
+                fillOpacity={1}
+                fill="url(#colorLoss)"
+              />
             </AreaChart>
           </ResponsiveContainer>
         )}

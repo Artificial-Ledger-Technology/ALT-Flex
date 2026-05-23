@@ -1,6 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/strict-boolean-expressions, @typescript-eslint/no-unsafe-argument */
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import type { ChainStat } from '@/lib/api-client';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Cell,
+} from 'recharts';
+import type { ChainStat } from '../../lib/api-client';
 import styles from './Charts.module.css';
 
 interface ChainChartProps {
@@ -18,7 +26,7 @@ const CHAIN_COLORS: Record<string, string> = {
   avalanche: '#E84142',
   fantom: '#13B5C1',
   base: '#0052FF',
-  default: '#6b7280'
+  default: '#6b7280',
 };
 
 export function ChainChart({ data, isLoading }: ChainChartProps): React.ReactNode {
@@ -45,35 +53,58 @@ export function ChainChart({ data, isLoading }: ChainChartProps): React.ReactNod
         {isLoading ? (
           <div className={styles.skeleton} />
         ) : data.length === 0 ? (
-          <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+          <div
+            style={{
+              display: 'flex',
+              height: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'var(--text-muted)',
+            }}
+          >
             No data available
           </div>
         ) : (
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle)" horizontal={false} />
-              <XAxis 
-                type="number" 
+            <BarChart
+              data={data}
+              layout="vertical"
+              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+            >
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke="var(--border-subtle)"
+                horizontal={false}
+              />
+              <XAxis
+                type="number"
                 tickFormatter={formatCurrency}
                 stroke="var(--text-muted)"
                 fontSize={12}
                 tickLine={false}
                 axisLine={false}
               />
-              <YAxis 
-                dataKey="chain" 
-                type="category" 
+              <YAxis
+                dataKey="chain"
+                type="category"
                 stroke="var(--text-muted)"
                 fontSize={12}
                 tickLine={false}
                 axisLine={false}
                 width={80}
               />
-              <Tooltip 
+              <Tooltip
                 cursor={{ fill: 'var(--bg-tertiary)' }}
-                contentStyle={{ backgroundColor: 'var(--bg-tertiary)', borderColor: 'var(--border-subtle)', borderRadius: 'var(--radius-md)' }}
+                contentStyle={{
+                  backgroundColor: 'var(--bg-tertiary)',
+                  borderColor: 'var(--border-subtle)',
+                  borderRadius: 'var(--radius-md)',
+                }}
                 itemStyle={{ color: 'var(--text-primary)' }}
-                formatter={(value: number): [string, string] => [formatCurrency(value), 'Total Loss']}
+                formatter={(value: number): [string, string] => [
+                  formatCurrency(value),
+                  'Total Loss',
+                ]}
               />
               <Bar dataKey="totalLossUsd" radius={[0, 4, 4, 0]}>
                 {data.map((entry, index) => (

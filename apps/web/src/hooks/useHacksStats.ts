@@ -1,6 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-redundant-type-constituents, @typescript-eslint/no-unnecessary-type-assertion */
 import { useState, useEffect } from 'react';
-import { hacksApi, type DashboardStats, type TimelineDataPoint, type VectorStat, type ChainStat } from '@/lib/api-client';
+import {
+  hacksApi,
+  type DashboardStats,
+  type TimelineDataPoint,
+  type VectorStat,
+  type ChainStat,
+} from '../lib/api-client';
 
 export interface HacksStatsData {
   dashboard: DashboardStats | null;
@@ -42,11 +47,17 @@ export function useHacksStats(): HacksStatsData & { isLoading: boolean; error: E
             chains: chainsRes.status === 'fulfilled' ? chainsRes.value.chains : [],
           });
 
-          const rejected = [dashboardRes, timelineRes, vectorsRes, chainsRes].filter((r) => r.status === 'rejected') as PromiseRejectedResult[];
+          const rejected = [dashboardRes, timelineRes, vectorsRes, chainsRes].filter(
+            (r) => r.status === 'rejected',
+          );
           if (rejected.length > 0) {
             console.error('Some stats failed to load:', rejected);
             if (dashboardRes.status === 'rejected') {
-              setError(dashboardRes.reason instanceof Error ? dashboardRes.reason : new Error('Failed to load dashboard statistics'));
+              setError(
+                dashboardRes.reason instanceof Error
+                  ? dashboardRes.reason
+                  : new Error('Failed to load dashboard statistics'),
+              );
             }
           }
         }
