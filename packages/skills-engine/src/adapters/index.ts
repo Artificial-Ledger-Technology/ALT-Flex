@@ -3,14 +3,26 @@
  *
  * Infrastructure adapters for the Skills Engine.
  * Concrete implementations of driven ports defined in @aegis/core:
- * - PostgreSQL repository for AI skill files
- * - PostgreSQL repository for safety scan results
  * - GitHub API client for skill scraping
- * - AST-based safety scanner implementation
+ * - PostgreSQL repository for AI skill files (Phase 2 — P2-ETL-004)
+ * - AST-based safety scanner implementation (Phase 3)
  *
  * @hexagonal Adapter Layer — Engine β (Driven/Secondary)
  */
 
-// Adapters will be added in Phase 2+ as scraper pipelines are implemented.
-// Examples: PostgresSkillRepository, GitHubSkillScraper, AstSafetyScanner
-export {};
+// ── GitHub Skills ETL Adapter (P2-ETL-003) ──────────────────────────────────
+export { GitHubSkillsAdapter } from './github-skills-adapter.js';
+export {
+  DEFAULT_GITHUB_SKILLS_CONFIG,
+  DEFAULT_SKILL_SOURCES,
+  type GitHubSkillsAdapterConfig,
+  type SkillSource,
+} from './github-skills-adapter.config.js';
+export { detectPlatform } from './platform-detector.js';
+export { detectLanguage } from './language-detector.js';
+export {
+  parseFrontmatter,
+  deriveNameFromPath,
+  type SkillFrontmatter,
+  type FrontmatterParseResult,
+} from './frontmatter-parser.js';
