@@ -266,7 +266,8 @@ export class DefiLlamaAdapter implements IHackSourcePort {
     // Check for Retry-After header on 429 responses
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError;
-      const retryAfter = (axiosError.response?.headers as AxiosHeaders)?.get?.('retry-after') ?? axiosError.response?.headers?.['retry-after'];
+      const headers = axiosError.response?.headers as any;
+      const retryAfter = headers?.get?.('retry-after') ?? headers?.['retry-after'];
       if (retryAfter !== undefined && retryAfter !== null) {
         const retryAfterMs = parseInt(String(retryAfter), 10) * 1000;
         if (!isNaN(retryAfterMs) && retryAfterMs > 0) {
