@@ -12,13 +12,3 @@
  */
 
 export { PostgresHackRepository } from './postgres-hack.repository.js';
-
-// ── DefiLlama ETL Adapter (P2-ETL-001) ──────────────────────────────────────
-export { DefiLlamaAdapter } from './defillama-adapter.js';
-export type { DefiLlamaHack } from './defillama-adapter.js';
-export {
-  DEFAULT_DEFILLAMA_CONFIG,
-  type DefiLlamaAdapterConfig,
-} from './defillama-adapter.config.js';
-export { normalizeChainName, normalizeChains } from './chain-normalizer.js';
-export { classifyAttackVector } from './attack-vector-classifier.js';
