@@ -30,7 +30,7 @@ import { AttackVector } from '@aegis/core';
  *
  * Source: CODE_REVIEW_PHASE2.md P2-ETL-007 specification.
  */
-const VECTOR_KEYWORDS: ReadonlyArray<readonly [AttackVector, readonly string[]]> = [
+const PRIORITIZED_VECTOR_KEYWORDS: ReadonlyArray<readonly [AttackVector, readonly string[]]> = [
   [
     AttackVector.ACCESS_CONTROL,
     [
@@ -84,7 +84,7 @@ export function classifyAttackVector(technique: string, isBridgeHack = false): A
 
   const lowerTechnique = technique.toLowerCase();
 
-  for (const [vector, keywords] of VECTOR_KEYWORDS) {
+  for (const [vector, keywords] of PRIORITIZED_VECTOR_KEYWORDS) {
     for (const keyword of keywords) {
       if (lowerTechnique.includes(keyword)) {
         return vector;
