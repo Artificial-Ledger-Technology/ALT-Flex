@@ -36,25 +36,80 @@ export interface DeFiHackLabsPocEntry {
 export function parseReadmeTables(readmeContent: string): DeFiHackLabsPocEntry[] {
   const entries: DeFiHackLabsPocEntry[] = [];
 
-  // Regex to match a markdown table row containing a date and a link
-  // capturing: 1=Protocol, 2=Date, 3=Loss, 4=Link text (ignored), 5=Link path
-  // E.g., | Euler | 2023-03-13 | $197M | [Link](src/test/2023-03/Euler_exp.sol) |
-  const rowRegex =
-    /\|\s*([^|]+?)\s*\|\s*(\d{4}-\d{2}-\d{2})\s*\|\s*([^|]+?)\s*\|\s*\[([^\]]*?)\]\((.*?)\)\s*\|/g;
+  const lines = readmeContent.split('\n');
 
-  let match;
-  while ((match = rowRegex.exec(readmeContent)) !== null) {
-    const protocolName = match[1]?.trim();
-    const dateStr = match[2]?.trim();
-    const lossStr = match[3]?.trim();
-    const testFilePath = match[5]?.trim();
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed.startsWith('|') || !trimmed.endsWith('|')) {
+      continue;
+    }
 
-    // Basic cleanup and validation
+    // Ignore header separators like |---|---|
+    if (/^\|[-:| ]+\|$/.test(trimmed)) {
+      continue;
+    }
+
+    const columns = trimmed.split('|').map(c => c.trim()).filter((_, i, arr) => i > 0 && i < arr.length - 1);
+    if (columns.length < 3) continue;
+
+    let dateStr: string | undefined;
+    let testFilePath: string | undefined;
+    let lossStr: string | undefined;
+    let protocolName: string | undefined;
+    let vulnerabilityType: string | undefined;
+
+    for (const col of columns) {
+      // 1. Check for Date
+      if (!dateStr && /^\d{4}-?\d{2}-?\d{2}$/.test(col)) {
+        dateStr = col;
+        continue;
+      }
+
+      // 2. Check for POC Link
+      const linkMatch = col.match(/\[.*?\]\((.*?)\)/);
+      if (linkMatch && (linkMatch[1].endsWith('.sol') || linkMatch[1].includes('src/test'))) {
+        testFilePath = linkMatch[1];
+        continue;
+      }
+
+      // 3. Check for Loss
+      if (!lossStr && (col.includes('$') || /^[~]?\$?[0-9,.]+[KMBkmb]?$/.test(col.replace(/\s/g, '')))) {
+        lossStr = col;
+        continue;
+      }
+
+      // 4. Extract Protocol Name if it's a link (but not POC)
+      if (!protocolName && linkMatch && !linkMatch[1].endsWith('.sol')) {
+        const nameMatch = col.match(/\[(.*?)\]/);
+        if (nameMatch) {
+          protocolName = nameMatch[1];
+          continue;
+        }
+      }
+    }
+
+    // 5. Fallback for Protocol Name and Vulnerability (Plain text columns)
+    const remainingCols = columns.filter(col => col !== dateStr && col !== lossStr && !col.includes('](') && col !== protocolName);
+    
+    if (!protocolName && remainingCols.length > 0) {
+      protocolName = remainingCols.shift();
+    }
+    
+    if (remainingCols.length > 0) {
+      vulnerabilityType = remainingCols[0];
+    }
+
     if (!protocolName || !dateStr || !testFilePath || !lossStr) {
       continue;
     }
 
-    const date = new Date(dateStr);
+    let date: Date;
+    if (dateStr.length === 8 && !dateStr.includes('-')) {
+      date = new Date(`${dateStr.slice(0, 4)}-${dateStr.slice(4, 6)}-${dateStr.slice(6, 8)}`);
+    } else {
+      date = new Date(dateStr);
+    }
+
     if (isNaN(date.getTime())) {
       continue;
     }
@@ -66,6 +121,7 @@ export function parseReadmeTables(readmeContent: string): DeFiHackLabsPocEntry[]
       date,
       lossUsd,
       testFilePath,
+      vulnerabilityType,
     });
   }
 

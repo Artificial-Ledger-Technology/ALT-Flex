@@ -276,6 +276,9 @@ export class DeFiHackLabsAdapter implements IHackSourcePort {
         if (resetTimeMs > now) {
           // Add 1 second buffer
           const waitTime = resetTimeMs - now + 1000;
+          if (waitTime > this.config.retryMaxDelayMs) {
+            throw new Error(`GitHub Rate Limit Exceeded. Reset time (${Math.ceil(waitTime / 1000)}s) exceeds max retry delay.`);
+          }
           return Math.min(waitTime, this.config.retryMaxDelayMs);
         }
       }
@@ -284,6 +287,9 @@ export class DeFiHackLabsAdapter implements IHackSourcePort {
       const retryAfter = headers?.get?.('retry-after') ?? headers?.['retry-after'];
       if (retryAfter) {
         const retryAfterMs = parseInt(String(retryAfter), 10) * 1000;
+        if (retryAfterMs > this.config.retryMaxDelayMs) {
+          throw new Error(`GitHub Secondary Rate Limit. Retry-after (${retryAfter}s) exceeds max retry delay.`);
+        }
         return Math.min(retryAfterMs, this.config.retryMaxDelayMs);
       }
     }

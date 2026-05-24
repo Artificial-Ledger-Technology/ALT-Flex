@@ -40,6 +40,33 @@ describe('parseReadmeTables', () => {
     });
   });
 
+  it('parses alternative table row formats (e.g. 2024 format with YYYYMMDD and Root Cause)', () => {
+    const markdown = `
+| Date | Protocol | Root Cause | Loss | POC |
+|----------|------|------|-----------|----|
+| 20240101 | [Orbit Chain](https://orbitchain.io/) | Access Control | $81.5M | [Exp](./src/test/2024-01/OrbitChain_exp.sol) |
+| 20240102 | Radiant Capital | Flash Loan | ~$4.5M | [Exp](./src/test/2024-01/RadiantCapital_exp.sol) |
+    `;
+
+    const result = parseReadmeTables(markdown);
+
+    expect(result).toHaveLength(2);
+    expect(result[0]).toMatchObject({
+      protocolName: 'Orbit Chain',
+      date: new Date('2024-01-01'),
+      lossUsd: 81500000,
+      testFilePath: './src/test/2024-01/OrbitChain_exp.sol',
+      vulnerabilityType: 'Access Control',
+    });
+    expect(result[1]).toMatchObject({
+      protocolName: 'Radiant Capital',
+      date: new Date('2024-01-02'),
+      lossUsd: 4500000,
+      testFilePath: './src/test/2024-01/RadiantCapital_exp.sol',
+      vulnerabilityType: 'Flash Loan',
+    });
+  });
+
   it('ignores non-table markdown content', () => {
     const markdown = `
 # DeFiHackLabs

@@ -53,15 +53,7 @@ export function ChainChart({ data, isLoading }: ChainChartProps): React.ReactNod
         {isLoading ? (
           <div className={styles.skeleton} />
         ) : data.length === 0 ? (
-          <div
-            style={{
-              display: 'flex',
-              height: '100%',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'var(--text-muted)',
-            }}
-          >
+          <div className={styles.emptyState}>
             No data available
           </div>
         ) : (

@@ -168,7 +168,7 @@ describe('DeFiHackLabsAdapter', () => {
     const rateLimitError = {
       response: { 
         status: 403, 
-        headers: { 'retry-after': '1' } 
+        headers: { 'retry-after': '0' } 
       },
       isAxiosError: true,
     };
