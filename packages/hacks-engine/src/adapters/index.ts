@@ -22,3 +22,11 @@ export {
 } from './defillama-adapter.config.js';
 export { normalizeChainName, normalizeChains } from './chain-normalizer.js';
 export { classifyAttackVector } from './attack-vector-classifier.js';
+
+// ── DeFiHackLabs ETL Adapter (P2-ETL-002) ─────────────────────────────────
+export { DeFiHackLabsAdapter } from './defihacklabs-adapter.js';
+export type { DeFiHackLabsPocEntry } from './readme-parser.js';
+export {
+  DEFAULT_DEFIHACKLABS_CONFIG,
+  type DeFiHackLabsAdapterConfig,
+} from './defihacklabs-adapter.config.js';

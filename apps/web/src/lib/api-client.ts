@@ -3,8 +3,9 @@ import type { HackListQuery, HackIncident } from '@aegis/core';
 export interface DashboardStats {
   totalIncidents: number;
   totalLossUsd: number;
-  recoveredUsd: number;
-  recoveryRate: number;
+  totalRecoveredUsd: number;
+  avgLossUsd: number;
+  medianLossUsd: number;
   pocCoverage: number;
   uniqueProtocols: number;
   uniqueChains: number;

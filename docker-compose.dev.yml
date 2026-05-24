@@ -95,14 +95,16 @@ services:
     ports:
       - '3000:3000'
     volumes:
-      # Hot-reload: Mount source + public for live changes
+      # Hot-reload: Mount source + public + config for live changes
       - ./apps/web/src:/app/apps/web/src
       - ./apps/web/public:/app/apps/web/public
       - ./apps/web/tsconfig.json:/app/apps/web/tsconfig.json
+      - ./apps/web/next.config.ts:/app/apps/web/next.config.ts
     env_file: .env
     environment:
       NODE_ENV: development
       NEXT_PUBLIC_API_URL: http://localhost:4000
+      API_PROXY_URL: http://api-gateway:4000
     depends_on:
       - api-gateway
     networks:
