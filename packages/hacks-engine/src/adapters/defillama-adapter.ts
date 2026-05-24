@@ -16,8 +16,8 @@
  * @task P2-ETL-001
  */
 
-import { randomUUID } from 'node:crypto';
-import axios, { type AxiosInstance, type AxiosError } from 'axios';
+import { v5 as uuidv5 } from 'uuid';
+import axios, { type AxiosInstance, type AxiosError, type AxiosHeaders } from 'axios';
 import {
   HackIncidentSchema,
   type HackIncident,
@@ -31,6 +31,9 @@ import {
 } from './defillama-adapter.config.js';
 import { normalizeChains } from './chain-normalizer.js';
 import { classifyAttackVector } from './attack-vector-classifier.js';
+
+// Define a stable namespace for DefiLlama (e.g. using a random but fixed UUID)
+const DEFILLAMA_NAMESPACE = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // Raw API Response Types
@@ -263,7 +266,7 @@ export class DefiLlamaAdapter implements IHackSourcePort {
     // Check for Retry-After header on 429 responses
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError;
-      const retryAfter = axiosError.response?.headers?.['retry-after'] as unknown;
+      const retryAfter = (axiosError.response?.headers as AxiosHeaders)?.get?.('retry-after') ?? axiosError.response?.headers?.['retry-after'];
       if (retryAfter !== undefined && retryAfter !== null) {
         const retryAfterMs = parseInt(String(retryAfter), 10) * 1000;
         if (!isNaN(retryAfterMs) && retryAfterMs > 0) {
@@ -296,10 +299,10 @@ export class DefiLlamaAdapter implements IHackSourcePort {
     const now = new Date();
 
     return {
-      id: randomUUID(),
+      id: uuidv5(raw.id.toString(), DEFILLAMA_NAMESPACE),
       protocolName: raw.name,
       protocolSlug: toSlug(raw.name),
-      date: new Date(raw.date * 1000),
+      date: raw.date ? new Date(raw.date * 1000) : new Date(0),
       chain: normalizeChains(raw.chains ?? []),
       attackVector: classifyAttackVector(raw.technique ?? '', raw.bridgeHack ?? false),
       secondaryVectors: [],
