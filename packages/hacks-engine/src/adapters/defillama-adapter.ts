@@ -17,7 +17,7 @@
  */
 
 import { v5 as uuidv5 } from 'uuid';
-import axios, { type AxiosInstance, type AxiosError, type AxiosHeaders } from 'axios';
+import axios, { type AxiosInstance, type AxiosError } from 'axios';
 import {
   HackIncidentSchema,
   type HackIncident,
@@ -266,7 +266,9 @@ export class DefiLlamaAdapter implements IHackSourcePort {
     // Check for Retry-After header on 429 responses
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError;
-      const retryAfter = (axiosError.response?.headers as AxiosHeaders)?.get?.('retry-after') ?? axiosError.response?.headers?.['retry-after'];
+      const headers = axiosError.response?.headers as Record<string, unknown> | undefined;
+      const getFn = headers?.get as ((key: string) => unknown) | undefined;
+      const retryAfter = getFn ? getFn.call(headers, 'retry-after') : headers?.['retry-after'];
       if (retryAfter !== undefined && retryAfter !== null) {
         const retryAfterMs = parseInt(String(retryAfter), 10) * 1000;
         if (!isNaN(retryAfterMs) && retryAfterMs > 0) {
