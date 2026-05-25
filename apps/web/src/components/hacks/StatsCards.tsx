@@ -18,6 +18,11 @@ export function StatsCards({ stats, isLoading }: StatsCardsProps): React.ReactNo
     return `${val.toFixed(1)}%`;
   };
 
+  const recoveryRate =
+    stats && stats.totalLossUsd > 0
+      ? (stats.totalRecoveredUsd / stats.totalLossUsd) * 100
+      : 0;
+
   return (
     <div className={styles.grid}>
       <div className={styles.card}>
@@ -29,7 +34,7 @@ export function StatsCards({ stats, isLoading }: StatsCardsProps): React.ReactNo
           {isLoading || !stats ? (
             <div className={styles.skeleton} />
           ) : (
-            stats.totalIncidents.toLocaleString()
+            (stats.totalIncidents ?? 0).toLocaleString()
           )}
         </div>
       </div>
@@ -47,7 +52,7 @@ export function StatsCards({ stats, isLoading }: StatsCardsProps): React.ReactNo
           {isLoading || !stats ? (
             <div className={styles.skeleton} />
           ) : (
-            formatCurrency(stats.totalLossUsd)
+            formatCurrency(stats.totalLossUsd ?? 0)
           )}
         </div>
       </div>
@@ -65,7 +70,7 @@ export function StatsCards({ stats, isLoading }: StatsCardsProps): React.ReactNo
           {isLoading || !stats ? (
             <div className={styles.skeleton} />
           ) : (
-            formatPercentage(stats.recoveryRate)
+            formatPercentage(recoveryRate)
           )}
         </div>
       </div>
@@ -83,7 +88,7 @@ export function StatsCards({ stats, isLoading }: StatsCardsProps): React.ReactNo
           {isLoading || !stats ? (
             <div className={styles.skeleton} />
           ) : (
-            formatPercentage(stats.pocCoverage)
+            formatPercentage(stats.pocCoverage ?? 0)
           )}
         </div>
       </div>

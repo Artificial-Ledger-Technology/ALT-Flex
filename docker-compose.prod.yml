@@ -135,6 +135,7 @@ services:
     environment:
       NODE_ENV: production
       HOSTNAME: '0.0.0.0'
+      API_PROXY_URL: http://api-gateway:4000
     depends_on:
       api-gateway:
         condition: service_healthy

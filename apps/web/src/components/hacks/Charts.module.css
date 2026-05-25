@@ -43,6 +43,14 @@
   }
 }
 
+.emptyState {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+
 .container {
   display: flex;
   flex-direction: column;
