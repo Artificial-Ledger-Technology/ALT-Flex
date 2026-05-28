@@ -641,6 +641,93 @@
         /* ===== FOOTER ===== */
         .footer-sub { margin-top: 8px; }
 
+        /* ===== ATTACK VECTOR GRID ===== */
+        .av-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .av-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            transition: border-color 0.3s, transform 0.2s;
+        }
+
+        .av-card:hover {
+            border-color: rgba(99, 102, 241, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .av-card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .av-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .av-icon.critical { background: rgba(251, 113, 133, 0.15); }
+        .av-icon.high { background: rgba(251, 191, 36, 0.15); }
+        .av-icon.medium { background: rgba(99, 102, 241, 0.15); }
+
+        .av-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .av-severity {
+            margin-left: auto;
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 2px 8px;
+            border-radius: 100px;
+        }
+
+        .av-severity.critical { background: rgba(251,113,133,0.12); color: #fb7185; }
+        .av-severity.high { background: rgba(251,191,36,0.12); color: #fbbf24; }
+        .av-severity.medium { background: rgba(99,102,241,0.12); color: #818cf8; }
+
+        .av-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .av-keywords {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .av-kw {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: rgba(100, 116, 139, 0.1);
+            color: #94a3b8;
+            border: 1px solid rgba(100, 116, 139, 0.15);
+        }
+
         /* ===== INTELLIGENCE CYCLE ===== */
         .cycle-flow {
             display: grid;
@@ -1084,6 +1171,7 @@
     <a href="#engine-alpha" class="section-head">Part 2 — Hacks Engine (α)</a>
     <a href="#alpha-arch">Architecture Overview</a>
     <a href="#alpha-domain">Key Domain Objects</a>
+    <a href="#alpha-vectors">Attack Vector Classifier</a>
     <a href="#alpha-role">Role in AEGIS</a>
     <a href="#engine-beta" class="section-head">Part 3 — Skills Engine (β)</a>
     <a href="#beta-arch">Architecture Overview</a>
@@ -1435,6 +1523,257 @@
             <div class="speech">
                 <span class="speaker-tag">🎤 You Say</span>
                 <p><em>"<strong>HackIncident</strong> is our primary aggregate root — every exploit that enters AEGIS is normalized into this single entity shape, enforced by Zod schema validation. The <strong>AttackVector</strong> taxonomy enables pattern analysis across the DeFi exploit landscape, and the <strong>ports</strong> form the hexagonal boundary — the domain core depends only on these interfaces, never on their implementations."</em></p>
+            </div>
+        </div>
+
+        <!-- Attack Vector Classifier -->
+        <div class="engine-card alpha" id="alpha-vectors">
+            <div class="engine-header">
+                <div class="engine-icon alpha">α</div>
+                <div class="engine-title-group">
+                    <h3>Attack Vector Classifier — 16-Type Taxonomy</h3>
+                    <span class="engine-subtitle">Keyword-based classification · Maps free-text exploit descriptions to AttackVector enum</span>
+                </div>
+            </div>
+
+            <div class="speech">
+                <span class="speaker-tag">🎤 You Say</span>
+                <p><em>"When raw exploit data arrives from DefiLlama, the <code>technique</code> field is free-text — 'Flash Loan Attack', 'Price Oracle Manipulation', etc. Our <strong>AttackVectorClassifier</strong> uses keyword matching with confidence scoring to map these descriptions to our 16-member <code>AttackVector</code> enum. This is critical because it enables <strong>structured querying and pattern analysis</strong> across the entire DeFi exploit landscape. Let me walk you through each attack vector and why it matters."</em></p>
+            </div>
+
+            <div class="av-grid">
+                <!-- ACCESS_CONTROL -->
+                <div class="av-card">
+                    <div class="av-card-header">
+                        <div class="av-icon critical">🔐</div>
+                        <span class="av-name">ACCESS_CONTROL</span>
+                        <span class="av-severity critical">Critical</span>
+                    </div>
+                    <p class="av-desc">Exploits that bypass authorization checks — compromised private keys, unprotected admin functions, or privilege escalation. The attacker gains unauthorized access to privileged operations like fund withdrawal, ownership transfer, or contract upgrades. This is the <strong>most common attack vector</strong> in DeFi, accounting for the largest cumulative losses.</p>
+                    <div class="av-keywords">
+                        <span class="av-kw">access control</span>
+                        <span class="av-kw">private key</span>
+                        <span class="av-kw">admin</span>
+                        <span class="av-kw">privilege</span>
+                        <span class="av-kw">unauthorized</span>
+                    </div>
+                </div>
+
+                <!-- FLASH_LOAN -->
+                <div class="av-card">
+                    <div class="av-card-header">
+                        <div class="av-icon critical">⚡</div>
+                        <span class="av-name">FLASH_LOAN</span>
+                        <span class="av-severity critical">Critical</span>
+                    </div>
+                    <p class="av-desc">Leverages uncollateralized loans that must be repaid within a single transaction. The attacker borrows millions, manipulates markets or exploits vulnerable contracts, profits, and repays — all atomically. Flash loans <strong>democratize exploit capital</strong>, meaning any attacker can execute multi-million dollar attacks with zero upfront funds.</p>
+                    <div class="av-keywords">
+                        <span class="av-kw">flash loan</span>
+                        <span class="av-kw">flashloan</span>
+                        <span class="av-kw">flash-loan</span>
+                    </div>
+                </div>
+
+                <!-- ORACLE_MANIPULATION -->
+                <div class="av-card">
+                    <div class="av-card-header">
+                        <div class="av-icon critical">📊</div>
+                        <span class="av-name">ORACLE_MANIPULATION</span>
+                        <span class="av-severity critical">Critical</span>
+                    </div>
+                    <p class="av-desc">Targets price feed mechanisms that DeFi protocols depend on for asset valuation. The attacker manipulates spot prices on a DEX (often via flash loans) to distort oracle readings, causing lending protocols to issue undercollateralized loans or triggering false liquidations. Exploits the gap between <strong>instantaneous spot price and true market value</strong>.</p>
+                    <div class="av-keywords">
+                        <span class="av-kw">oracle</span>
+                        <span class="av-kw">price manipulation</span>
+                        <span class="av-kw">price oracle</span>
+                        <span class="av-kw">twap</span>
+                    </div>
+                </div>
+
+                <!-- REENTRANCY -->
+                <div class="av-card">
+                    <div class="av-card-header">
+                        <div class="av-icon critical">🔄</div>
+                        <span class="av-name">REENTRANCY</span>
+                        <span class="av-severity critical">Critical</span>
+                    </div>
+                    <p class="av-desc">The classic smart contract vulnerability — an external call re-enters the calling contract before state updates complete. This allows an attacker to repeatedly withdraw funds before the balance is decremented. The 2016 DAO hack ($60M) was a reentrancy exploit. Despite being well-known, <strong>new variants</strong> (cross-function, cross-contract, read-only) continue to emerge.</p>
+                    <div class="av-keywords">
+                        <span class="av-kw">reentrancy</span>
+                        <span class="av-kw">re-entrancy</span>
+                        <span class="av-kw">reentrant</span>
+                    </div>
+                </div>
+
+                <!-- PHISHING -->
+                <div class="av-card">
+                    <div class="av-card-header">
+                        <div class="av-icon high">🎣</div>
+                        <span class="av-name">PHISHING</span>
+                        <span class="av-severity high">High</span>
+                    </div>
+                    <p class="av-desc">Social engineering attacks that trick users or developers into signing malicious transactions, approving token drains, or revealing private keys. Includes fake dApp frontends, malicious token approvals, and targeted spear-phishing of protocol team members. Often the <strong>entry point for access control compromises</strong> — the private key wasn't hacked, it was stolen.</p>
+                    <div class="av-keywords">
+                        <span class="av-kw">phishing</span>
+                        <span class="av-kw">social engineering</span>
+                        <span class="av-kw">fake</span>
+                    </div>
+                </div>
+
+                <!-- RUG_PULL -->
+                <div class="av-card">
+                    <div class="av-card-header">
+                        <div class="av-icon critical">🏃</div>
+                        <span class="av-name">RUG_PULL</span>
+                        <span class="av-severity critical">Critical</span>
+                    </div>
+                    <p class="av-desc">Insider fraud where the protocol creators intentionally drain liquidity or user funds. Typically involves deploying a token with hidden backdoors (mint functions, transfer restrictions), building hype to attract deposits, then executing a <strong>premeditated exit</strong> — removing all liquidity or minting unlimited tokens to dump on investors.</p>
+                    <div class="av-keywords">
+                        <span class="av-kw">rug pull</span>
+                        <span class="av-kw">rugpull</span>
+                        <span class="av-kw">exit scam</span>
+                    </div>
+                </div>
+
+                <!-- FRONTRUNNING -->
+                <div class="av-card">
+                    <div class="av-card-header">
+                        <div class="av-icon high">🏎️</div>
+                        <span class="av-name">FRONTRUNNING</span>
+                        <span class="av-severity high">High</span>
+                    </div>
+                    <p class="av-desc">MEV (Maximal Extractable Value) attacks where bots monitor the mempool for profitable transactions and insert their own transactions before or around the victim's. Includes <strong>sandwich attacks</strong> (buy before, sell after a large swap), generalized frontrunning (copying profitable transactions), and JIT liquidity attacks.</p>
+                    <div class="av-keywords">
+                        <span class="av-kw">frontrun</span>
+                        <span class="av-kw">sandwich</span>
+                        <span class="av-kw">mev</span>
+                        <span class="av-kw">front-run</span>
+                    </div>
+                </div>
+
+                <!-- DAO_GOVERNANCE -->
+                <div class="av-card">
+                    <div class="av-card-header">
+                        <div class="av-icon medium">🏛️</div>
+                        <span class="av-name">DAO_GOVERNANCE</span>
+                        <span class="av-severity medium">Medium</span>
+                    </div>
+                    <p class="av-desc">Exploits the on-chain governance mechanisms of DAOs. The attacker acquires enough voting power (often via flash loans) to pass malicious proposals — draining treasuries, changing protocol parameters, or upgrading contracts to attacker-controlled code. Targets the <strong>democratic assumption</strong> that token holders act in the protocol's interest.</p>
+                    <div class="av-keywords">
+                        <span class="av-kw">governance</span>
+                        <span class="av-kw">dao</span>
+                        <span class="av-kw">voting</span>
+                    </div>
+                </div>
+
+                <!-- ARITHMETIC_OVERFLOW -->
+                <div class="av-card">
+                    <div class="av-card-header">
+                        <div class="av-icon high">🔢</div>
+                        <span class="av-name">ARITHMETIC_OVERFLOW</span>
+                        <span class="av-severity high">High</span>
+                    </div>
+                    <p class="av-desc">Integer overflow/underflow vulnerabilities where arithmetic operations wrap around, producing unexpected values. A balance subtraction can underflow to a massive number, granting the attacker near-infinite tokens. While Solidity 0.8+ has <strong>built-in overflow checks</strong>, older contracts and unchecked blocks remain vulnerable.</p>
+                    <div class="av-keywords">
+                        <span class="av-kw">overflow</span>
+                        <span class="av-kw">underflow</span>
+                        <span class="av-kw">integer</span>
+                    </div>
+                </div>
+
+                <!-- DELEGATECALL_INJECTION -->
+                <div class="av-card">
+                    <div class="av-card-header">
+                        <div class="av-icon critical">💉</div>
+                        <span class="av-name">DELEGATECALL_INJECTION</span>
+                        <span class="av-severity critical">Critical</span>
+                    </div>
+                    <p class="av-desc">Exploits the <code>delegatecall</code> opcode which executes external code in the caller's storage context. If a proxy contract's implementation address is writable, an attacker can redirect it to malicious code that <strong>operates on the proxy's storage</strong> — effectively hijacking the entire contract state, including all user funds.</p>
+                    <div class="av-keywords">
+                        <span class="av-kw">delegatecall</span>
+                        <span class="av-kw">proxy</span>
+                        <span class="av-kw">call injection</span>
+                    </div>
+                </div>
+
+                <!-- DOS -->
+                <div class="av-card">
+                    <div class="av-card-header">
+                        <div class="av-icon medium">🚫</div>
+                        <span class="av-name">DOS</span>
+                        <span class="av-severity medium">Medium</span>
+                    </div>
+                    <p class="av-desc">Denial of Service attacks that render a contract unusable. Includes gas griefing (making functions exceed block gas limits), blocking critical operations (e.g., always-reverting fallback functions in auction contracts), and <strong>state bloating</strong> that makes iteration over storage arrays impossible.</p>
+                    <div class="av-keywords">
+                        <span class="av-kw">dos</span>
+                        <span class="av-kw">denial of service</span>
+                        <span class="av-kw">griefing</span>
+                    </div>
+                </div>
+
+                <!-- REPLAY -->
+                <div class="av-card">
+                    <div class="av-card-header">
+                        <div class="av-icon high">📼</div>
+                        <span class="av-name">REPLAY</span>
+                        <span class="av-severity high">High</span>
+                    </div>
+                    <p class="av-desc">Reuses valid signatures or transactions in unintended contexts — across chains (post-fork replay), across contracts (missing domain separators), or repeated submissions (missing nonce checks). Particularly dangerous during <strong>chain forks and L2 deployments</strong> where the same signed message may be valid on multiple networks.</p>
+                    <div class="av-keywords">
+                        <span class="av-kw">replay</span>
+                        <span class="av-kw">signature replay</span>
+                    </div>
+                </div>
+
+                <!-- SELF_DESTRUCT -->
+                <div class="av-card">
+                    <div class="av-card-header">
+                        <div class="av-icon medium">💥</div>
+                        <span class="av-name">SELF_DESTRUCT</span>
+                        <span class="av-severity medium">Medium</span>
+                    </div>
+                    <p class="av-desc">Uses the <code>selfdestruct</code> opcode to forcibly send ETH to a target contract, bypassing its fallback/receive functions. This can break contracts that rely on <code>address(this).balance</code> for logic. Also used to <strong>destroy implementation contracts</strong> behind proxies, permanently bricking the protocol.</p>
+                    <div class="av-keywords">
+                        <span class="av-kw">selfdestruct</span>
+                        <span class="av-kw">self-destruct</span>
+                        <span class="av-kw">suicide</span>
+                    </div>
+                </div>
+
+                <!-- BRIDGE_EXPLOIT -->
+                <div class="av-card">
+                    <div class="av-card-header">
+                        <div class="av-icon critical">🌉</div>
+                        <span class="av-name">BRIDGE_EXPLOIT</span>
+                        <span class="av-severity critical">Critical</span>
+                    </div>
+                    <p class="av-desc">Targets cross-chain bridge protocols — the most catastrophic attack vector in DeFi. Bridges hold massive TVL as collateral for wrapped assets. Exploits include forging deposit proofs, compromising validator/relayer keys, or exploiting message verification logic. The Ronin ($625M), Wormhole ($326M), and Nomad ($190M) hacks were all <strong>bridge exploits</strong>.</p>
+                    <div class="av-keywords">
+                        <span class="av-kw">bridge</span>
+                        <span class="av-kw">cross-chain</span>
+                        <span class="av-kw">cross chain</span>
+                    </div>
+                </div>
+
+                <!-- LOGIC_ERROR -->
+                <div class="av-card">
+                    <div class="av-card-header">
+                        <div class="av-icon high">🐛</div>
+                        <span class="av-name">LOGIC_ERROR</span>
+                        <span class="av-severity high">High</span>
+                    </div>
+                    <p class="av-desc">Catch-all for implementation bugs that don't fit other categories — incorrect conditional logic, wrong variable usage, missing edge case handling, or flawed business logic. These are <strong>protocol-specific vulnerabilities</strong> that require deep understanding of the contract's intended behavior to identify and exploit.</p>
+                    <div class="av-keywords">
+                        <span class="av-kw">logic</span>
+                        <span class="av-kw">bug</span>
+                        <span class="av-kw">implementation error</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="speech">
+                <span class="speaker-tag">🎤 You Say</span>
+                <p><em>"These 16 attack vectors represent the <strong>complete taxonomy</strong> of how DeFi protocols are exploited. Our classifier maps free-text descriptions to this enum using keyword matching — the grey tags you see on each card are the exact keywords the classifier scans for. When a new hack is ingested from DefiLlama, the classifier processes the <code>technique</code> field, scores it against each vector's keyword set, and assigns the highest-confidence match. If no match exceeds the threshold, it falls back to <code>AttackVector.OTHER</code>. This classification is what enables AEGIS to answer questions like 'show me all flash loan attacks on Ethereum in 2024' — structured, queryable intelligence from unstructured source data."</em></p>
             </div>
         </div>
 
