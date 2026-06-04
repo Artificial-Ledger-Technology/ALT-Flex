@@ -65,3 +65,8 @@ export * from './errors/index.js';
 // Pino-based structured logging with AsyncLocalStorage correlation IDs.
 // Domain layers depend on LoggerPort interface, not Pino directly.
 export * from './logging/index.js';
+
+// ── Queue Infrastructure (P2-ETL-006) ───────────────────────────────────────
+// BullMQ queue connection factory and shared job type definitions.
+// Both hacks-engine and skills-engine import queue types from here.
+export * from './shared/queue/index.js';

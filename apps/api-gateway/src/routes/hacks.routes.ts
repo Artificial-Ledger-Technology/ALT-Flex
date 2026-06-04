@@ -31,7 +31,7 @@ import {
 import { PostgresHackRepository } from '@aegis/hacks-engine';
 
 const dbUrl = process.env['DATABASE_URL'] ?? 'postgresql://aegis:changeme@localhost:5432/aegis_dev';
-const hackRepo = new PostgresHackRepository(dbUrl);
+const hackRepo = new PostgresHackRepository({ connectionString: dbUrl });
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // Constants

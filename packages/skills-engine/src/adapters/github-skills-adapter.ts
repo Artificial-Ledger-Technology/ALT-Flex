@@ -85,14 +85,7 @@ function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function toSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '');
-}
+
 
 /**
  * Determine file format from extension.
@@ -455,7 +448,7 @@ export class GitHubSkillsAdapter implements ISkillSourcePort {
     const sourceRepo = `${source.owner}/${source.repo}`;
 
     // Parse frontmatter
-    const { metadata, content } = parseFrontmatter(rawContent);
+    const { metadata } = parseFrontmatter(rawContent);
 
     // Generate deterministic UUID
     const uniqueKey = `${sourceRepo}:${fileEntry.path}`;

@@ -164,9 +164,10 @@ export class RedisCacheAdapter implements ICachePort {
       const map = new Map<string, T>();
 
       for (let i = 0; i < keys.length; i++) {
+        const key = keys[i];
         const raw = results[i];
-        if (raw !== null) {
-          map.set(keys[i], this.serializer.deserialize<T>(raw));
+        if (key !== undefined && raw !== undefined && raw !== null) {
+          map.set(key, this.serializer.deserialize<T>(raw));
         }
       }
       return map;
