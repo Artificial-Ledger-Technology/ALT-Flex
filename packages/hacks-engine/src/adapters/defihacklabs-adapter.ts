@@ -20,7 +20,6 @@ import axios, { type AxiosInstance, type AxiosError } from 'axios';
 import {
   HackIncidentSchema,
   Chain,
-  AttackVector,
   type HackIncident,
   type IHackSourcePort,
   type LoggerPort,
@@ -76,7 +75,7 @@ export class DeFiHackLabsAdapter implements IHackSourcePort {
       'User-Agent': 'AEGIS/3.0 DeFiHackLabsAdapter',
     };
     
-    if (this.config.githubToken) {
+    if (this.config.githubToken !== undefined && this.config.githubToken !== '') {
       headers['Authorization'] = `token ${this.config.githubToken}`;
     }
 
@@ -147,7 +146,7 @@ export class DeFiHackLabsAdapter implements IHackSourcePort {
       }
 
       const base64Content = response.content;
-      if (!base64Content) {
+      if (base64Content === undefined || base64Content === '') {
         this.logger.warn('Empty content received from GitHub');
         return [];
       }
@@ -186,20 +185,20 @@ export class DeFiHackLabsAdapter implements IHackSourcePort {
     for (let attempt = 0; attempt <= this.config.maxRetries; attempt++) {
       try {
         const headers: Record<string, string> = {};
-        if (this.etag) {
+        if (this.etag !== null && this.etag !== '') {
           headers['If-None-Match'] = this.etag;
         }
 
         const response = await this.httpClient.get(url, { headers });
         
-        // Update ETag for future incremental syncs
-        if (response.headers.etag) {
-          this.etag = response.headers.etag;
+        const responseHeaders = response.headers as Record<string, unknown>;
+        if (typeof responseHeaders['etag'] === 'string' && responseHeaders['etag'] !== '') {
+          this.etag = responseHeaders['etag'];
         }
 
-        this.checkRateLimit(response.headers);
+        this.checkRateLimit(responseHeaders);
 
-        return response.data;
+        return response.data as { content: string };
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
 
@@ -246,7 +245,7 @@ export class DeFiHackLabsAdapter implements IHackSourcePort {
       return false;
     }
 
-    if (!error.response) {
+    if (error.response === undefined) {
       return true; // Network error
     }
 
@@ -268,9 +267,16 @@ export class DeFiHackLabsAdapter implements IHackSourcePort {
   private calculateBackoff(error: unknown, attempt: number): number {
     if (axios.isAxiosError(error) && error.response?.status === 403) {
       // Check for GitHub rate limit reset header
-      const headers = error.response.headers as any;
-      const resetHeader = headers?.get?.('x-ratelimit-reset') ?? headers?.['x-ratelimit-reset'];
-      if (resetHeader) {
+      const headers = error.response.headers as Record<string, unknown>;
+      
+      let resetHeader: unknown = undefined;
+      if (typeof headers['get'] === 'function') {
+        resetHeader = (headers as { get: (name: string) => unknown }).get('x-ratelimit-reset');
+      } else {
+        resetHeader = headers['x-ratelimit-reset'];
+      }
+      
+      if (resetHeader !== undefined && resetHeader !== null) {
         const resetTimeMs = parseInt(String(resetHeader), 10) * 1000;
         const now = Date.now();
         if (resetTimeMs > now) {
@@ -284,11 +290,17 @@ export class DeFiHackLabsAdapter implements IHackSourcePort {
       }
       
       // Check for retry-after header (Secondary Rate Limit)
-      const retryAfter = headers?.get?.('retry-after') ?? headers?.['retry-after'];
-      if (retryAfter) {
+      let retryAfter: unknown = undefined;
+      if (typeof headers['get'] === 'function') {
+        retryAfter = (headers as { get: (name: string) => unknown }).get('retry-after');
+      } else {
+        retryAfter = headers['retry-after'];
+      }
+      
+      if (retryAfter !== undefined && retryAfter !== null) {
         const retryAfterMs = parseInt(String(retryAfter), 10) * 1000;
         if (retryAfterMs > this.config.retryMaxDelayMs) {
-          throw new Error(`GitHub Secondary Rate Limit. Retry-after (${retryAfter}s) exceeds max retry delay.`);
+          throw new Error(`GitHub Secondary Rate Limit. Retry-after (${String(retryAfter)}s) exceeds max retry delay.`);
         }
         return Math.min(retryAfterMs, this.config.retryMaxDelayMs);
       }
@@ -298,10 +310,10 @@ export class DeFiHackLabsAdapter implements IHackSourcePort {
     return Math.min(exponentialDelay, this.config.retryMaxDelayMs);
   }
 
-  private checkRateLimit(headers: any): void {
-    const getHeader = (name: string) => {
-      if (typeof headers.get === 'function') {
-        return headers.get(name);
+  private checkRateLimit(headers: Record<string, unknown>): void {
+    const getHeader = (name: string): unknown => {
+      if (typeof headers['get'] === 'function') {
+        return (headers as { get: (name: string) => unknown }).get(name);
       }
       return headers[name];
     };

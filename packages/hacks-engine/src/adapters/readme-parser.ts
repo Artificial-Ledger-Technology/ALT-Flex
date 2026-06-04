@@ -60,28 +60,28 @@ export function parseReadmeTables(readmeContent: string): DeFiHackLabsPocEntry[]
 
     for (const col of columns) {
       // 1. Check for Date
-      if (!dateStr && /^\d{4}-?\d{2}-?\d{2}$/.test(col)) {
+      if (dateStr === undefined && /^\d{4}-?\d{2}-?\d{2}$/.test(col)) {
         dateStr = col;
         continue;
       }
 
       // 2. Check for POC Link
       const linkMatch = col.match(/\[.*?\]\((.*?)\)/);
-      if (linkMatch && (linkMatch[1].endsWith('.sol') || linkMatch[1].includes('src/test'))) {
+      if (linkMatch && linkMatch[1] !== undefined && (linkMatch[1].endsWith('.sol') || linkMatch[1].includes('src/test'))) {
         testFilePath = linkMatch[1];
         continue;
       }
 
       // 3. Check for Loss
-      if (!lossStr && (col.includes('$') || /^[~]?\$?[0-9,.]+[KMBkmb]?$/.test(col.replace(/\s/g, '')))) {
+      if (lossStr === undefined && (col.includes('$') || /^[~]?\$?[0-9,.]+[KMBkmb]?$/.test(col.replace(/\s/g, '')))) {
         lossStr = col;
         continue;
       }
 
       // 4. Extract Protocol Name if it's a link (but not POC)
-      if (!protocolName && linkMatch && !linkMatch[1].endsWith('.sol')) {
+      if (protocolName === undefined && linkMatch && linkMatch[1] !== undefined && !linkMatch[1].endsWith('.sol')) {
         const nameMatch = col.match(/\[(.*?)\]/);
-        if (nameMatch) {
+        if (nameMatch && nameMatch[1] !== undefined) {
           protocolName = nameMatch[1];
           continue;
         }
@@ -91,7 +91,7 @@ export function parseReadmeTables(readmeContent: string): DeFiHackLabsPocEntry[]
     // 5. Fallback for Protocol Name and Vulnerability (Plain text columns)
     const remainingCols = columns.filter(col => col !== dateStr && col !== lossStr && !col.includes('](') && col !== protocolName);
     
-    if (!protocolName && remainingCols.length > 0) {
+    if (protocolName === undefined && remainingCols.length > 0) {
       protocolName = remainingCols.shift();
     }
     
@@ -99,7 +99,7 @@ export function parseReadmeTables(readmeContent: string): DeFiHackLabsPocEntry[]
       vulnerabilityType = remainingCols[0];
     }
 
-    if (!protocolName || !dateStr || !testFilePath || !lossStr) {
+    if (protocolName === undefined || dateStr === undefined || testFilePath === undefined || lossStr === undefined) {
       continue;
     }
 
@@ -116,13 +116,18 @@ export function parseReadmeTables(readmeContent: string): DeFiHackLabsPocEntry[]
 
     const lossUsd = parseLossAmount(lossStr);
 
-    entries.push({
+    const entry: DeFiHackLabsPocEntry = {
       protocolName,
       date,
       lossUsd,
       testFilePath,
-      vulnerabilityType,
-    });
+    };
+    
+    if (vulnerabilityType !== undefined) {
+      entry.vulnerabilityType = vulnerabilityType;
+    }
+
+    entries.push(entry);
   }
 
   return entries;
@@ -136,14 +141,14 @@ export function parseReadmeTables(readmeContent: string): DeFiHackLabsPocEntry[]
  * @returns The parsed number in USD, or 0 if unparseable
  */
 export function parseLossAmount(lossStr: string): number {
-  if (!lossStr || lossStr === '-' || lossStr.toLowerCase() === 'n/a') {
+  if (lossStr === '' || lossStr === '-' || lossStr.toLowerCase() === 'n/a') {
     return 0;
   }
 
   // Remove whitespace, currency symbols, and approx indicators
   const cleaned = lossStr.replace(/[\s$~,]/g, '').toUpperCase();
 
-  if (!cleaned) return 0;
+  if (cleaned === '') return 0;
 
   // Extract numeric part and multiplier
   const numericMatch = cleaned.match(/^([0-9.]+)([KMB]?)/);
@@ -152,13 +157,13 @@ export function parseLossAmount(lossStr: string): number {
   }
 
   const [, numStr, multiplier] = numericMatch;
-  const num = parseFloat(numStr || '');
+  const num = parseFloat(numStr ?? '');
 
   if (isNaN(num)) {
     return 0;
   }
 
-  switch (multiplier || '') {
+  switch (multiplier ?? '') {
     case 'B':
       return num * 1_000_000_000;
     case 'M':
