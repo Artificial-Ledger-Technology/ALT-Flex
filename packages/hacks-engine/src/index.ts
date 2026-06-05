@@ -40,8 +40,8 @@ export type {
   HackSyncRequest,
 } from '@aegis/core';
 
-// ── Engine-specific Application Layer (populated in Phase 2+) ───────────────
-// export * from './application/index.js';
+// ── Engine-specific Application Layer (P2-ETL-008+) ─────────────────────────
+export * from './application/index.js';
 
 export * from './adapters/index.js';
 

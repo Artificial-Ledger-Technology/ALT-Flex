@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument */
 /**
  * ═══════════════════════════════════════════════════════════════════════════════
  * AltFlex AEGIS v3.0 — Hacks Engine Worker
@@ -28,6 +29,12 @@ import {
 } from '@aegis/core';
 import { createHacksSyncQueue, registerHacksSyncCron } from './infrastructure/hacks-sync-queue.js';
 import { createHacksSyncProcessor } from './infrastructure/hacks-sync-processor.js';
+import { SyncHacksUseCase } from './application/sync-hacks.use-case.js';
+import { DefiLlamaAdapter } from './adapters/defillama-adapter.js';
+import { DeFiHackLabsAdapter } from './adapters/defihacklabs-adapter.js';
+import { PostgresHackRepository } from './adapters/postgres/postgres-hack-repository.js';
+import { RedisCacheAdapter } from './adapters/redis/redis-cache-adapter.js';
+import { normalizeDefiLlamaHacks } from './adapters/hack-normalizer.js';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // Logger
@@ -66,8 +73,25 @@ async function start(): Promise<void> {
   const cron = process.env['HACKS_SYNC_CRON'] ?? '0 */6 * * *';
   logger.info('⏰ Hacks sync cron schedule registered', { cron });
 
+  // Construct use case dependencies
+  const defiLlamaSource = new DefiLlamaAdapter(logger);
+  const defiHackLabsSource = new DeFiHackLabsAdapter(logger);
+  const hackRepo = new PostgresHackRepository(pool, logger);
+  const redisCacheAdapter = new RedisCacheAdapter();
+  await redisCacheAdapter.connect();
+
+  // Create the application-layer orchestrator
+  const syncHacksUseCase = new SyncHacksUseCase(
+    defiLlamaSource,
+    defiHackLabsSource,
+    hackRepo,
+    { normalizeDefiLlamaHacks },
+    redisCacheAdapter,
+    logger,
+  );
+
   // Create job processor
-  const processor = createHacksSyncProcessor(pool, logger);
+  const processor = createHacksSyncProcessor(syncHacksUseCase, pool, logger);
 
   // Create BullMQ Worker
   const worker = new Worker<HacksSyncJobData, HacksSyncJobResult>(
@@ -109,6 +133,7 @@ async function start(): Promise<void> {
     await hacksSyncQueue.close();
     await queueConnection.quit();
     await workerConnection.quit();
+    await redisCacheAdapter.disconnect();
     await pool.end();
     logger.info('👋 Hacks Worker shut down gracefully');
     process.exit(0);
