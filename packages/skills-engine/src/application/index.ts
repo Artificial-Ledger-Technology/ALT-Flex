@@ -13,4 +13,4 @@
 
 // Use cases will be added in Phase 2+ as scraper pipelines are implemented.
 // Examples: SearchSkillsUseCase, ScanSkillUseCase, SyncSkillsUseCase
-export {};
+export * from './use-cases/index-skills-use-case.js';

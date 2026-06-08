@@ -156,6 +156,13 @@ export class GitHubSkillsAdapter implements ISkillSourcePort {
   // ── Public API ──────────────────────────────────────────────────────────────
 
   /**
+   * Get the configured skill sources.
+   */
+  get skillSources(): readonly SkillSource[] {
+    return this.config.skillSources;
+  }
+
+  /**
    * Fetch all AI skill files from all configured source repositories.
    *
    * Flow per source:
@@ -206,7 +213,7 @@ export class GitHubSkillsAdapter implements ISkillSourcePort {
 
     // 1. Discover files
     const branch = source.branch ?? 'main';
-    const filePaths = await this.discoverFiles(source, branch);
+    const filePaths = await this.discoverSkillFiles(source, branch);
 
     this.logger.info('Discovered skill files', {
       sourceRepo,
@@ -251,15 +258,15 @@ export class GitHubSkillsAdapter implements ISkillSourcePort {
     return validSkills;
   }
 
-  // ── Private: File Discovery ─────────────────────────────────────────────────
+  // ── Public: File Discovery & Download ───────────────────────────────────────
 
   /**
    * Discover skill files in a repository using the Git Trees API.
    * Uses `?recursive=1` for efficient single-call directory traversal.
    */
-  private async discoverFiles(
+  public async discoverSkillFiles(
     source: SkillSource,
-    branch: string,
+    branch: string = 'main',
   ): Promise<GitTreeEntry[]> {
     const url = `/repos/${source.owner}/${source.repo}/git/trees/${branch}?recursive=1`;
 
@@ -316,13 +323,13 @@ export class GitHubSkillsAdapter implements ISkillSourcePort {
     });
   }
 
-  // ── Private: File Content Download ──────────────────────────────────────────
+  // ── Public: File Content Download ───────────────────────────────────────────
 
   /**
    * Download file content via the GitHub Contents API.
    * Returns decoded UTF-8 string or null if the file is inaccessible.
    */
-  private async downloadFileContent(
+  public async downloadFileContent(
     owner: string,
     repo: string,
     path: string,
