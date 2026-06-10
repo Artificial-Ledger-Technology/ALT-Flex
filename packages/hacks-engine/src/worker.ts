@@ -76,7 +76,12 @@ async function start(): Promise<void> {
   // Construct use case dependencies
   const defiLlamaSource = new DefiLlamaAdapter(logger);
   const defiHackLabsSource = new DeFiHackLabsAdapter(logger);
-  const hackRepo = new PostgresHackRepository(pool, logger);
+  const hackRepo = new PostgresHackRepository({
+    connectionString: dbUrl,
+    min: 1,
+    max: 3,
+    idleTimeoutMillis: 30000,
+  });
   const redisCacheAdapter = new RedisCacheAdapter();
   await redisCacheAdapter.connect();
 
