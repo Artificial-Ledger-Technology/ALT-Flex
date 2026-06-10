@@ -19,11 +19,7 @@
 
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import { Queue } from 'bullmq';
-import {
-  createQueueConnection,
-  QUEUE_NAMES,
-  type QueueStatus,
-} from '@aegis/core';
+import { createQueueConnection, QUEUE_NAMES, type QueueStatus } from '@aegis/core';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // Constants
@@ -35,27 +31,13 @@ const ROUTE_PREFIX = '/api/v1/admin';
 // Helpers
 // ═══════════════════════════════════════════════════════════════════════════════
 
-/**
- * Validate API key from x-api-key header.
- * Returns true if valid, false otherwise.
- */
-function validateApiKey(request: FastifyRequest): boolean {
-  const apiKey = request.headers['x-api-key'] as string | undefined;
-  const validKeys = (process.env['API_KEYS'] ?? '').split(',').filter(Boolean);
-  return typeof apiKey === 'string' && validKeys.includes(apiKey);
-}
+import { requireApiKey } from '../middleware/api-key.middleware.js';
 
 /**
  * Get job counts for a single queue.
  */
 async function getQueueStatus(queue: Queue): Promise<QueueStatus> {
-  const counts = await queue.getJobCounts(
-    'active',
-    'waiting',
-    'completed',
-    'failed',
-    'delayed',
-  );
+  const counts = await queue.getJobCounts('active', 'waiting', 'completed', 'failed', 'delayed');
 
   return {
     name: queue.name,
@@ -97,6 +79,7 @@ export async function adminRoutes(server: FastifyInstance): Promise<void> {
   server.get(
     `${ROUTE_PREFIX}/jobs`,
     {
+      preHandler: [requireApiKey],
       schema: {
         description:
           'Get aggregate job queue statistics for all ETL queues. ' +
@@ -125,25 +108,18 @@ export async function adminRoutes(server: FastifyInstance): Promise<void> {
               timestamp: { type: 'string' },
             },
           },
-          401: { description: 'Missing or invalid API key', type: 'object', additionalProperties: true },
+          401: {
+            description: 'Missing or invalid API key',
+            type: 'object',
+            additionalProperties: true,
+          },
           500: { description: 'Internal server error', type: 'object', additionalProperties: true },
         },
       },
     },
     async (request, reply) => {
-      if (!validateApiKey(request)) {
-        return reply.status(401).send({
-          error: 'UNAUTHORIZED',
-          code: 'AEGIS-401-001',
-          message: 'Missing or invalid API key. Admin access required.',
-          timestamp: new Date().toISOString(),
-        });
-      }
-
       try {
-        const statuses = await Promise.all(
-          queues.map((q) => getQueueStatus(q)),
-        );
+        const statuses = await Promise.all(queues.map((q) => getQueueStatus(q)));
 
         return reply.status(200).send({
           queues: statuses,
@@ -164,9 +140,9 @@ export async function adminRoutes(server: FastifyInstance): Promise<void> {
   server.get(
     `${ROUTE_PREFIX}/jobs/:jobId`,
     {
+      preHandler: [requireApiKey],
       schema: {
-        description:
-          'Get the status of a specific job by ID. Searches across all queues.',
+        description: 'Get the status of a specific job by ID. Searches across all queues.',
         tags: ['Admin - Job Queue'],
         params: {
           type: 'object',
@@ -181,22 +157,17 @@ export async function adminRoutes(server: FastifyInstance): Promise<void> {
             type: 'object',
             additionalProperties: true,
           },
-          401: { description: 'Missing or invalid API key', type: 'object', additionalProperties: true },
+          401: {
+            description: 'Missing or invalid API key',
+            type: 'object',
+            additionalProperties: true,
+          },
           404: { description: 'Job not found', type: 'object', additionalProperties: true },
           500: { description: 'Internal server error', type: 'object', additionalProperties: true },
         },
       },
     },
     async (request: FastifyRequest<{ Params: { jobId: string } }>, reply) => {
-      if (!validateApiKey(request)) {
-        return reply.status(401).send({
-          error: 'UNAUTHORIZED',
-          code: 'AEGIS-401-001',
-          message: 'Missing or invalid API key. Admin access required.',
-          timestamp: new Date().toISOString(),
-        });
-      }
-
       const { jobId } = request.params;
 
       try {

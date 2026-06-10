@@ -31,8 +31,12 @@ import {
   type SkillScanRequest,
   type SkillStarParams,
   type SkillSyncRequest,
+  createQueueConnection,
+  QUEUE_NAMES,
 } from '@aegis/core';
+import { Queue } from 'bullmq';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { requireApiKey } from '../middleware/api-key.middleware.js';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // Constants
@@ -79,6 +83,8 @@ function notImplemented(_request: FastifyRequest, reply: FastifyReply): FastifyR
  */
 // eslint-disable-next-line @typescript-eslint/require-await
 export async function skillsRoutes(server: FastifyInstance): Promise<void> {
+  const connection = createQueueConnection();
+  const skillsIndexQueue = new Queue(QUEUE_NAMES.SKILLS_INDEX, { connection });
   // ── 1. GET /api/v1/skills — Paginated List with Filters ────────────────────
   server.get(
     ROUTE_PREFIX,
@@ -278,6 +284,7 @@ export async function skillsRoutes(server: FastifyInstance): Promise<void> {
   server.post(
     `${ROUTE_PREFIX}/sync`,
     {
+      preHandler: [requireApiKey],
       schema: {
         description:
           'Trigger a GitHub scraper sync to index new AI skill files from configured repositories. ' +
@@ -303,19 +310,6 @@ export async function skillsRoutes(server: FastifyInstance): Promise<void> {
       },
     },
     async (request: FastifyRequest<{ Body: SkillSyncRequest }>, reply) => {
-      // Admin API key check (Phase 3: replace with proper auth middleware)
-      const apiKey = request.headers['x-api-key'] as string | undefined;
-      const validKeys = (process.env['API_KEYS'] ?? '').split(',').filter(Boolean);
-
-      if (typeof apiKey !== 'string' || !validKeys.includes(apiKey)) {
-        return reply.status(401).send({
-          error: 'UNAUTHORIZED',
-          code: 'AEGIS-401-003',
-          message: 'Missing or invalid API key. Admin access required.',
-          timestamp: new Date().toISOString(),
-        });
-      }
-
       const parseResult = SkillSyncRequestSchema.safeParse(request.body);
       if (!parseResult.success) {
         return reply.status(400).send({
@@ -330,7 +324,29 @@ export async function skillsRoutes(server: FastifyInstance): Promise<void> {
         });
       }
 
-      return notImplemented(request, reply);
+      // Check if job already in progress
+      const activeCount = await skillsIndexQueue.getJobCounts('active', 'waiting', 'delayed');
+      const inProgress =
+        (activeCount.active ?? 0) + (activeCount.waiting ?? 0) + (activeCount.delayed ?? 0);
+      if (inProgress > 0) {
+        return reply.status(409).send({
+          error: 'CONFLICT',
+          code: 'ETL_SYNC_IN_PROGRESS',
+          message: 'Skills sync job already in progress',
+          timestamp: new Date().toISOString(),
+        });
+      }
+
+      // Enqueue job
+      const force = parseResult.data.force ?? false;
+      const job = await skillsIndexQueue.add('sync', { force });
+
+      return reply.status(202).send({
+        jobId: job.id,
+        status: 'queued',
+        message: 'Skills sync job queued successfully',
+        timestamp: new Date().toISOString(),
+      });
     },
   );
 
