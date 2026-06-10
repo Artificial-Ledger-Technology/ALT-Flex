@@ -156,6 +156,9 @@ export class DefiLlamaAdapter implements IHackSourcePort {
         const validated = HackIncidentSchema.parse(transformed);
         validIncidents.push(validated);
       } catch (error) {
+        if (invalidCount === 0) {
+          console.error('FIRST VALIDATION ERROR:', error);
+        }
         invalidCount++;
         this.logger.warn('Skipping invalid DefiLlama record', {
           rawId: raw.id,
@@ -300,8 +303,11 @@ export class DefiLlamaAdapter implements IHackSourcePort {
   private transformRecord(raw: DefiLlamaHack): Record<string, unknown> {
     const now = new Date();
 
+    // Fallback to name+date if id is missing from the API
+    const uniqueKey = raw.id !== undefined ? raw.id.toString() : `${raw.name}-${raw.date}`;
+
     return {
-      id: uuidv5(raw.id.toString(), DEFILLAMA_NAMESPACE),
+      id: uuidv5(uniqueKey, DEFILLAMA_NAMESPACE),
       protocolName: raw.name,
       protocolSlug: toSlug(raw.name),
       date: raw.date ? new Date(raw.date * 1000) : new Date(0),
