@@ -17,13 +17,13 @@ export {
 } from './skills-index-queue.js';
 
 // ── Safety Scan Queue ────────────────────────────────────────────────────────
-export {
-  createSafetyScanQueue,
-  enqueueSafetyScan,
-} from './safety-scan-queue.js';
+export { createSafetyScanQueue, enqueueSafetyScan } from './safety-scan-queue.js';
 
 // ── Skills Index Processor ───────────────────────────────────────────────────
 export { createSkillsIndexProcessor } from './skills-index-processor.js';
 
 // ── Safety Scan Processor ────────────────────────────────────────────────────
 export { createSafetyScanProcessor } from './safety-scan-processor.js';
+
+// ── Safety Rules Loader ──────────────────────────────────────────────────────
+export { SafetyRuleLoader } from './safety-rules/rule-loader.js';
