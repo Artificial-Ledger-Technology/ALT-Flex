@@ -40,6 +40,7 @@ const mockLogger: LoggerPort = {
   error: (_msg: string, _ctx?: Record<string, unknown>) => {},
   warn: (_msg: string, _ctx?: Record<string, unknown>) => {},
   debug: (_msg: string, _ctx?: Record<string, unknown>) => {},
+  fatal: (_msg: string, _ctx?: Record<string, unknown>) => {},
   child: (_ctx: Record<string, unknown>) => mockLogger,
 };
 
