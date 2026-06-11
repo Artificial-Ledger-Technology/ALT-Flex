@@ -1,0 +1,458 @@
+[
+  {
+    "id": "SHELL-001",
+    "name": "Direct curl to sh execution",
+    "category": "shell_execution",
+    "severity": "critical",
+    "description": "Detects pattern where content is downloaded via curl and piped directly into a shell execution context, a common malware delivery technique.",
+    "pattern": {
+      "type": "regex",
+      "value": "curl\\s+.*\\|\\s*(ba)?sh"
+    },
+    "falsePositiveGuidance": "Legitimate setup scripts sometimes use this pattern, though it is discouraged in production AI skills.",
+    "references": ["MITRE ATT&CK: T1059.004"],
+    "enabled": true,
+    "version": "1.0.0"
+  },
+  {
+    "id": "SHELL-002",
+    "name": "Child Process Execution",
+    "category": "shell_execution",
+    "severity": "high",
+    "description": "Identifies the usage of child_process.exec which allows arbitrary shell command execution with the privileges of the Node process.",
+    "pattern": {
+      "type": "ast",
+      "value": "CallExpression[callee.property.name=\"exec\"]"
+    },
+    "falsePositiveGuidance": "May trigger on administrative scripts running valid system commands.",
+    "references": ["CWE-78: OS Command Injection"],
+    "enabled": true,
+    "version": "1.0.0"
+  },
+  {
+    "id": "SHELL-003",
+    "name": "Spawn Process",
+    "category": "shell_execution",
+    "severity": "medium",
+    "description": "Identifies the usage of child_process.spawn. While safer than exec, it can still be used to launch malicious binaries.",
+    "pattern": {
+      "type": "ast",
+      "value": "CallExpression[callee.property.name=\"spawn\"]"
+    },
+    "falsePositiveGuidance": "Common in tools that orchestrate other CLI utilities.",
+    "references": ["OWASP Top 10: A03:2021-Injection"],
+    "enabled": true,
+    "version": "1.0.0"
+  },
+  {
+    "id": "SHELL-004",
+    "name": "Base64 Decoded Execution",
+    "category": "shell_execution",
+    "severity": "critical",
+    "description": "Detects execution of base64 decoded strings, highly indicative of obfuscated payloads.",
+    "pattern": {
+      "type": "regex",
+      "value": "echo\\s+[A-Za-z0-9+/=]+\\s*\\|\\s*base64\\s+-d\\s*\\|\\s*sh"
+    },
+    "falsePositiveGuidance": "Rarely a false positive. Obfuscated commands are inherently suspicious.",
+    "references": ["MITRE ATT&CK: T1027 - Obfuscated Files or Information"],
+    "enabled": true,
+    "version": "1.0.0"
+  },
+  {
+    "id": "SHELL-005",
+    "name": "Wget to sh",
+    "category": "shell_execution",
+    "severity": "critical",
+    "description": "Detects download via wget piped to shell execution.",
+    "pattern": {
+      "type": "regex",
+      "value": "wget\\s+-qO-\\s+.*\\|\\s*sh"
+    },
+    "falsePositiveGuidance": "Similar to curl | sh, used by some legitimate installers.",
+    "references": ["MITRE ATT&CK: T1105 - Ingress Tool Transfer"],
+    "enabled": true,
+    "version": "1.0.0"
+  },
+  {
+    "id": "SHELL-006",
+    "name": "Python one-liner shell",
+    "category": "shell_execution",
+    "severity": "high",
+    "description": "Detects usage of python -c to spawn a reverse shell or execute arbitrary code.",
+    "pattern": {
+      "type": "regex",
+      "value": "python3?\\s+-c\\s+[\"'].*import\\s+(pty|socket|os).*[\"']"
+    },
+    "falsePositiveGuidance": "Security scanning tools might legitimately contain these signatures.",
+    "references": ["MITRE ATT&CK: T1059.006 - Python"],
+    "enabled": true,
+    "version": "1.0.0"
+  },
+  {
+    "id": "FS-001",
+    "name": "Read Sensitive System Files",
+    "category": "file_system",
+    "severity": "high",
+    "description": "Detects attempts to read sensitive Linux/Unix system files like /etc/passwd or /etc/shadow which can lead to privilege escalation.",
+    "pattern": {
+      "type": "regex",
+      "value": "/etc/(passwd|shadow|hosts|sudoers)"
+    },
+    "falsePositiveGuidance": "System auditing tools will naturally read these files.",
+    "references": ["MITRE ATT&CK: T1003.008 - /etc/passwd and /etc/shadow"],
+    "enabled": true,
+    "version": "1.0.0"
+  },
+  {
+    "id": "FS-002",
+    "name": "SSH Key Exfiltration",
+    "category": "file_system",
+    "severity": "critical",
+    "description": "Detects direct access to ~/.ssh/id_rsa or similar private key files.",
+    "pattern": {
+      "type": "regex",
+      "value": "\\.ssh/id_(rsa|ed25519|dsa)"
+    },
+    "falsePositiveGuidance": "Tools designed for SSH key management will trigger this.",
+    "references": ["MITRE ATT&CK: T1552.004 - Private Keys"],
+    "enabled": true,
+    "version": "1.0.0"
+  },
+  {
+    "id": "FS-003",
+    "name": "Write to Startup Scripts",
+    "category": "file_system",
+    "severity": "high",
+    "description": "Detects modification of shell profile scripts to establish persistence.",
+    "pattern": {
+      "type": "regex",
+      "value": "(~/.bashrc|~/.bash_profile|~/.zshrc|~/.profile)"
+    },
+    "falsePositiveGuidance": "Legitimate developer tool installers (like nvm or rustup) modify these profiles.",
+    "references": ["MITRE ATT&CK: T1546.004 - Unix Shell Configuration Modification"],
+    "enabled": true,
+    "version": "1.0.0"
+  },
+  {
+    "id": "FS-004",
+    "name": "Dangerous File Deletion",
+    "category": "file_system",
+    "severity": "high",
+    "description": "Detects indiscriminate deletion commands like rm -rf / or rm -rf /*.",
+    "pattern": {
+      "type": "regex",
+      "value": "rm\\s+-r[fF]?\\s+/\\*?"
+    },
+    "falsePositiveGuidance": "Almost never legitimate unless operating inside an isolated ephemeral container script.",
+    "references": ["MITRE ATT&CK: T1485 - Data Destruction"],
+    "enabled": true,
+    "version": "1.0.0"
+  },
+  {
+    "id": "FS-005",
+    "name": "Node.js FS Unlink",
+    "category": "file_system",
+    "severity": "medium",
+    "description": "Detects programmatic deletion of files using Node.js fs.unlink or unlinkSync.",
+    "pattern": {
+      "type": "ast",
+      "value": "CallExpression[callee.property.name=/^unlink(Sync)?$/]"
+    },
+    "falsePositiveGuidance": "Very common in scripts that clean up temporary files.",
+    "references": ["CWE-73: External Control of File Name or Path"],
+    "enabled": true,
+    "version": "1.0.0"
+  },
+  {
+    "id": "FS-006",
+    "name": "Hidden Directory Creation",
+    "category": "file_system",
+    "severity": "low",
+    "description": "Detects creation of hidden directories (starting with .) which is often used to hide malware payloads.",
+    "pattern": {
+      "type": "regex",
+      "value": "mkdir\\s+(-\\w\\s+)*\\.[a-zA-Z0-9_-]+"
+    },
+    "falsePositiveGuidance": "Many standard tools create hidden configuration directories (e.g. .git, .npm).",
+    "references": ["MITRE ATT&CK: T1564.001 - Hidden Files and Directories"],
+    "enabled": true,
+    "version": "1.0.0"
+  },
+  {
+    "id": "NET-001",
+    "name": "Data to Pastebin",
+    "category": "network",
+    "severity": "medium",
+    "description": "Detects HTTP requests directed to pastebin.com or similar clipboard sharing sites, often used for data exfiltration.",
+    "pattern": {
+      "type": "regex",
+      "value": "https?://(pastebin\\.com|hastebin\\.com|ghostbin\\.com)"
+    },
+    "falsePositiveGuidance": "Sometimes used legitimately to download configuration snippets or share crash logs.",
+    "references": ["MITRE ATT&CK: T1567.002 - Exfiltration to Cloud Storage"],
+    "enabled": true,
+    "version": "1.0.0"
+  },
+  {
+    "id": "NET-002",
+    "name": "Discord Webhook Exfiltration",
+    "category": "network",
+    "severity": "high",
+    "description": "Detects hardcoded Discord webhook URLs which are frequently abused as C2 or exfiltration channels.",
+    "pattern": {
+      "type": "regex",
+      "value": "discord\\.com/api/webhooks/[0-9]+/[A-Za-z0-9_-]+"
+    },
+    "falsePositiveGuidance": "Valid usage exists in notification scripts or bots.",
+    "references": ["MITRE ATT&CK: T1567 - Exfiltration Over Web Service"],
+    "enabled": true,
+    "version": "1.0.0"
+  },
+  {
+    "id": "NET-003",
+    "name": "Dynamic Fetch URL",
+    "category": "network",
+    "severity": "medium",
+    "description": "Detects fetch or HTTP requests where the URL is dynamically constructed, hiding the destination.",
+    "pattern": {
+      "type": "ast",
+      "value": "CallExpression[callee.name=\"fetch\"] > Identifier.arguments"
+    },
+    "falsePositiveGuidance": "Extremely common in API wrapper libraries.",
+    "references": ["CWE-918: Server-Side Request Forgery (SSRF)"],
+    "enabled": true,
+    "version": "1.0.0"
+  },
+  {
+    "id": "NET-004",
+    "name": "DNS Exfiltration",
+    "category": "network",
+    "severity": "high",
+    "description": "Detects patterns of embedding sensitive data in DNS lookup requests (e.g. via ping or dig to custom subdomains).",
+    "pattern": {
+      "type": "regex",
+      "value": "(ping|dig|nslookup|host)\\s+.*\\.(burpcollaborator\\.net|interact\\.sh|oastify\\.com)"
+    },
+    "falsePositiveGuidance": "Used extensively by penetration testers and bug bounty scanners.",
+    "references": [
+      "MITRE ATT&CK: T1048.003 - Exfiltration Over Alternative Protocol: Unencrypted/Obfuscated Non-C2 Protocol"
+    ],
+    "enabled": true,
+    "version": "1.0.0"
+  },
+  {
+    "id": "NET-005",
+    "name": "IP Address Hardcoding",
+    "category": "network",
+    "severity": "low",
+    "description": "Detects hardcoded raw IP addresses instead of hostnames, typical in rudimentary C2 beacons.",
+    "pattern": {
+      "type": "regex",
+      "value": "https?://[0-9]{1,3}(\\.[0-9]{1,3}){3}"
+    },
+    "falsePositiveGuidance": "Local IP addresses (127.0.0.1, 192.168.x.x) are widely used in development.",
+    "references": ["MITRE ATT&CK: T1008 - Fallback Channels"],
+    "enabled": true,
+    "version": "1.0.0"
+  },
+  {
+    "id": "NET-006",
+    "name": "Netcat Reverse Shell",
+    "category": "network",
+    "severity": "critical",
+    "description": "Detects usage of netcat (nc) to pipe shell input/output over a network socket.",
+    "pattern": {
+      "type": "regex",
+      "value": "nc\\s+-e\\s+/bin/(ba)?sh\\s+[0-9.]+\\s+[0-9]+"
+    },
+    "falsePositiveGuidance": "Rarely a false positive. Direct reverse shell execution is highly suspicious.",
+    "references": ["MITRE ATT&CK: T1059 - Command and Scripting Interpreter"],
+    "enabled": true,
+    "version": "1.0.0"
+  },
+  {
+    "id": "PI-001",
+    "name": "Ignore Previous Instructions",
+    "category": "prompt_injection",
+    "severity": "critical",
+    "description": "Detects explicit attempts to override the system prompt and reset the LLM context.",
+    "pattern": {
+      "type": "semantic",
+      "value": "role_override"
+    },
+    "falsePositiveGuidance": "May trigger in meta-prompts or AI debugging contexts.",
+    "references": ["OWASP LLM01: Prompt Injection"],
+    "enabled": true,
+    "version": "1.0.0"
+  },
+  {
+    "id": "PI-002",
+    "name": "Role Assumption (DAN)",
+    "category": "prompt_injection",
+    "severity": "high",
+    "description": "Detects jailbreak patterns like Do Anything Now (DAN) or forced persona adoption.",
+    "pattern": {
+      "type": "semantic",
+      "value": "persona_adoption"
+    },
+    "falsePositiveGuidance": "Legitimate role-playing prompts (e.g. \"Act as a senior developer\") can sometimes overlap.",
+    "references": ["OWASP LLM01: Prompt Injection"],
+    "enabled": true,
+    "version": "1.0.0"
+  },
+  {
+    "id": "PI-003",
+    "name": "System Prompt Leakage",
+    "category": "prompt_injection",
+    "severity": "high",
+    "description": "Detects requests asking the AI to print its initial instructions or system prompt.",
+    "pattern": {
+      "type": "regex",
+      "value": "print\\s+(all\\s+)?(your\\s+)?(initial|system)\\s+(prompt|instructions)"
+    },
+    "falsePositiveGuidance": "Usually malicious, though prompt engineers might test this.",
+    "references": ["OWASP LLM01: Prompt Injection"],
+    "enabled": true,
+    "version": "1.0.0"
+  },
+  {
+    "id": "PI-004",
+    "name": "Payload Encoding Injection",
+    "category": "prompt_injection",
+    "severity": "medium",
+    "description": "Detects base64 or hex encoded payloads in the prompt designed to evade simple keyword filters.",
+    "pattern": {
+      "type": "semantic",
+      "value": "encoded_content"
+    },
+    "falsePositiveGuidance": "Users providing encoded data for legitimate processing tasks (e.g. decode this string).",
+    "references": ["OWASP LLM01: Prompt Injection - Obfuscation"],
+    "enabled": true,
+    "version": "1.0.0"
+  },
+  {
+    "id": "PI-005",
+    "name": "Urgency Manipulation",
+    "category": "prompt_injection",
+    "severity": "medium",
+    "description": "Detects manipulative urgency tactics to bypass safety checks (e.g. \"This is a life or death emergency\").",
+    "pattern": {
+      "type": "semantic",
+      "value": "urgency_manipulation"
+    },
+    "falsePositiveGuidance": "Users might genuinely write urgent prompts, though context is key.",
+    "references": ["Social Engineering: Urgency Techniques"],
+    "enabled": true,
+    "version": "1.0.0"
+  },
+  {
+    "id": "PI-006",
+    "name": "Deceptive Safe Assertion",
+    "category": "prompt_injection",
+    "severity": "medium",
+    "description": "Detects prompts asserting that their requested action is completely safe or authorized by administrators.",
+    "pattern": {
+      "type": "semantic",
+      "value": "deception_assertion"
+    },
+    "falsePositiveGuidance": "Can be conversational filler.",
+    "references": ["Social Engineering: Authority/Trust Techniques"],
+    "enabled": true,
+    "version": "1.0.0"
+  },
+  {
+    "id": "CE-001",
+    "name": "Eval Execution",
+    "category": "code_execution",
+    "severity": "critical",
+    "description": "Detects the use of JavaScript eval() which executes arbitrary string expressions as code.",
+    "pattern": {
+      "type": "ast",
+      "value": "CallExpression[callee.name=\"eval\"]"
+    },
+    "falsePositiveGuidance": "Some legacy codebases or dynamic templating engines use eval, but it is highly discouraged.",
+    "references": ["CWE-94: Improper Control of Generation of Code ('Code Injection')"],
+    "enabled": true,
+    "version": "1.0.0"
+  },
+  {
+    "id": "CE-002",
+    "name": "Function Constructor Execution",
+    "category": "code_execution",
+    "severity": "high",
+    "description": "Detects the use of the Function constructor to generate anonymous functions from strings, an eval alternative.",
+    "pattern": {
+      "type": "ast",
+      "value": "NewExpression[callee.name=\"Function\"]"
+    },
+    "falsePositiveGuidance": "Used in some high-performance templating libraries (e.g. doT.js).",
+    "references": ["CWE-94: Improper Control of Generation of Code"],
+    "enabled": true,
+    "version": "1.0.0"
+  },
+  {
+    "id": "CE-003",
+    "name": "Dynamic Import",
+    "category": "code_execution",
+    "severity": "medium",
+    "description": "Detects usage of dynamic import() with non-literal arguments, which can load arbitrary modules.",
+    "pattern": {
+      "type": "ast",
+      "value": "ImportExpression > Identifier"
+    },
+    "falsePositiveGuidance": "Common in modern applications with dynamic chunk loading or plugins.",
+    "references": [
+      "CWE-470: Use of Externally-Controlled Input to Select Classes or Code ('Unsafe Reflection')"
+    ],
+    "enabled": true,
+    "version": "1.0.0"
+  },
+  {
+    "id": "CE-004",
+    "name": "SetTimeout Code Execution",
+    "category": "code_execution",
+    "severity": "medium",
+    "description": "Detects setTimeout or setInterval called with a string argument instead of a function, which acts like eval.",
+    "pattern": {
+      "type": "ast",
+      "value": "CallExpression[callee.name=/^set(Timeout|Interval)$/] > Literal[value=/[\\s\\S]+/]"
+    },
+    "falsePositiveGuidance": "Legacy code pattern, rarely seen in modern codebases.",
+    "references": ["CWE-94: Improper Control of Generation of Code"],
+    "enabled": true,
+    "version": "1.0.0"
+  },
+  {
+    "id": "CE-005",
+    "name": "Process Env Access",
+    "category": "code_execution",
+    "severity": "low",
+    "description": "Detects access to process.env, which may be used to exfiltrate secrets or manipulate environment context.",
+    "pattern": {
+      "type": "ast",
+      "value": "MemberExpression[object.name=\"process\"][property.name=\"env\"]"
+    },
+    "falsePositiveGuidance": "Extremely common for reading configuration variables.",
+    "references": ["CWE-200: Exposure of Sensitive Information to an Unauthorized Actor"],
+    "enabled": true,
+    "version": "1.0.0"
+  },
+  {
+    "id": "CE-006",
+    "name": "Python Exec/Eval",
+    "category": "code_execution",
+    "severity": "critical",
+    "description": "Detects the use of Python exec() or eval() on strings, allowing arbitrary code execution.",
+    "pattern": {
+      "type": "regex",
+      "value": "(exec|eval)\\s*\\(.*\\)"
+    },
+    "falsePositiveGuidance": "Very rare in secure codebases, highly suspicious.",
+    "references": [
+      "CWE-95: Improper Neutralization of Directives in Dynamically Evaluated Code ('Eval Injection')"
+    ],
+    "enabled": true,
+    "version": "1.0.0"
+  }
+]

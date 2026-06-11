@@ -52,3 +52,13 @@ export {
   isValidLabelTransition,
 } from './SafetyLabel.js';
 export type { SafetyLabelType, SafetyLabelMetadata } from './SafetyLabel.js';
+
+// ── Safety Rule ──────────────────────────────────────────────────────────────
+export {
+  RuleCategorySchema,
+  SeveritySchema,
+  RulePatternTypeSchema,
+  RulePatternSchema,
+  SafetyRuleSchema,
+} from './SafetyRule.js';
+export type { RuleCategory, Severity, RulePattern, SafetyRule } from './SafetyRule.js';
