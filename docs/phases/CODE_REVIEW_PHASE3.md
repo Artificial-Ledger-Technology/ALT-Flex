@@ -134,20 +134,21 @@ Implement the regex-based rule matcher — the first detection layer. It scans p
 - [ ] Performance: processes 1000 rules against a 10KB file in < 100ms
 - [ ] Handles ReDoS-resistant patterns (timeout per regex: 50ms)
 - [ ] Unit tests (≥25 cases) covering all 5 rule categories
-      **Detection Patterns (excerpt)**:
-      | Rule ID | Pattern | Category | Severity |
-      | --------- | --------- | -------- | -------- |
-      | `SHELL-001` | `curl\s+.*\|\s*sh` | Shell Execution | Critical |
-      | `SHELL-002` | `exec\s*\(.*\)` | Shell Execution | High |
-      | `SHELL-003` | `system\s*\(` | Shell Execution | High |
-      | `FS-001` | `fs\.(read\|write\|unlink\|rmdir)` | File System | High |
-      | `FS-002` | `open\s*\(.*,\s*['"]w` | File System | High |
-      | `NET-001` | `fetch\s*\(\s*['"]https?://` | Network | Medium |
-      | `NET-002` | `XMLHttpRequest\|axios\|got\|node-fetch` | Network | Medium |
-      | `PI-001` | `ignore\s+(previous\|all)\s+instructions` | Prompt Injection | Critical |
-      | `PI-002` | `you\s+are\s+now\s+` | Prompt Injection | High |
-      | `CE-001` | `eval\s*\(` | Code Execution | Critical |
-      | `CE-002` | `Function\s*\(` | Code Execution | High |
+
+ **Detection Patterns (excerpt)**:
+| Rule ID | Pattern | Category | Severity |
+| --------- | --------- | -------- | -------- |
+| `SHELL-001` | `curl\s+.*\|\s*sh` | Shell Execution | Critical |
+| `SHELL-002` | `exec\s*\(.*\)` | Shell Execution | High |
+| `SHELL-003` | `system\s*\(` | Shell Execution | High |
+| `FS-001` | `fs\.(read\|write\|unlink\|rmdir)` | File System | High |
+| `FS-002` | `open\s*\(.*,\s*['"]w` | File System | High |
+| `NET-001` | `fetch\s*\(\s*['"]https?://` | Network | Medium |
+| `NET-002` | `XMLHttpRequest\|axios\|got\|node-fetch` | Network | Medium |
+| `PI-001` | `ignore\s+(previous\|all)\s+instructions` | Prompt Injection | Critical |
+| `PI-002` | `you\s+are\s+now\s+` | Prompt Injection | High |
+| `CE-001` | `eval\s*\(` | Code Execution | Critical |
+| `CE-002` | `Function\s*\(` | Code Execution | High |
 
 ---
 
