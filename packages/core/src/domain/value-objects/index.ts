@@ -70,3 +70,7 @@ export type { CodeBlock, ParsedContent } from './ParsedContent.js';
 // ── Rule Finding ─────────────────────────────────────────────────────────────
 export { RuleFindingSchema } from './RuleFinding.js';
 export type { RuleFinding } from './RuleFinding.js';
+
+// ── AST Finding ──────────────────────────────────────────────────────────────
+export { ASTFindingSchema } from './ASTFinding.js';
+export type { ASTFinding } from './ASTFinding.js';
