@@ -51,6 +51,18 @@ export type {
   GatewayEnv,
 } from './shared/env/index.js';
 
+export {
+  SeveritySchema,
+  RuleFindingSchema,
+} from './domain/value-objects/index.js';
+
+export type {
+  SafetyRule,
+  RuleCategory,
+  Severity,
+  RuleFinding,
+} from './domain/value-objects/index.js';
+
 // ── API Contract Schemas ────────────────────────────────────────────────────
 // Request/response Zod schemas for all API endpoints.
 // These compose domain types — never duplicate them.
