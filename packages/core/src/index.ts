@@ -54,6 +54,7 @@ export type {
 export {
   SeveritySchema,
   RuleFindingSchema,
+  ASTFindingSchema,
 } from './domain/value-objects/index.js';
 
 export type {
@@ -61,6 +62,7 @@ export type {
   RuleCategory,
   Severity,
   RuleFinding,
+  ASTFinding,
 } from './domain/value-objects/index.js';
 
 // ── API Contract Schemas ────────────────────────────────────────────────────
