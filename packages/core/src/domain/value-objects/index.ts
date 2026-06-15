@@ -74,3 +74,7 @@ export type { RuleFinding } from './RuleFinding.js';
 // ── AST Finding ──────────────────────────────────────────────────────────────
 export { ASTFindingSchema } from './ASTFinding.js';
 export type { ASTFinding } from './ASTFinding.js';
+
+// ── Semantic Finding ─────────────────────────────────────────────────────────
+export { SemanticFindingSchema } from './SemanticFinding.js';
+export type { SemanticFinding } from './SemanticFinding.js';
