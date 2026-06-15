@@ -62,3 +62,10 @@ export {
   SafetyRuleSchema,
 } from './SafetyRule.js';
 export type { RuleCategory, Severity, RulePattern, SafetyRule } from './SafetyRule.js';
+
+// ── Parsed Content ───────────────────────────────────────────────────────────
+export {
+  CodeBlockSchema,
+  ParsedContentSchema,
+} from './ParsedContent.js';
+export type { CodeBlock, ParsedContent } from './ParsedContent.js';
