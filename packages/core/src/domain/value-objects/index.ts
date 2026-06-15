@@ -64,8 +64,9 @@ export {
 export type { RuleCategory, Severity, RulePattern, SafetyRule } from './SafetyRule.js';
 
 // ── Parsed Content ───────────────────────────────────────────────────────────
-export {
-  CodeBlockSchema,
-  ParsedContentSchema,
-} from './ParsedContent.js';
+export { CodeBlockSchema, ParsedContentSchema } from './ParsedContent.js';
 export type { CodeBlock, ParsedContent } from './ParsedContent.js';
+
+// ── Rule Finding ─────────────────────────────────────────────────────────────
+export { RuleFindingSchema } from './RuleFinding.js';
+export type { RuleFinding } from './RuleFinding.js';
