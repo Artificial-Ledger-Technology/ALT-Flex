@@ -144,15 +144,23 @@ export class PostgresScanResultRepository {
 
   async getRuleHitStats(): Promise<import('@aegis/core').SafetyRuleStat[]> {
     const query = `
+      WITH extracted AS (
+        SELECT
+          scan_timestamp,
+          f->>'ruleId' as rule_id,
+          f->>'ruleName' as rule_name,
+          f->>'category' as category
+        FROM safety_scan_results
+        CROSS JOIN LATERAL jsonb_array_elements(findings) as f
+      )
       SELECT
-        f->>'ruleId' as rule_id,
-        MAX(f->>'ruleName') as name,
-        MAX(f->>'category') as category,
+        rule_id,
+        MAX(rule_name) as name,
+        MAX(category) as category,
         COUNT(*) as hit_count,
         MAX(scan_timestamp) as last_triggered
-      FROM safety_scan_results,
-      jsonb_array_elements(findings) as f
-      GROUP BY f->>'ruleId'
+      FROM extracted
+      GROUP BY rule_id
       ORDER BY hit_count DESC
     `;
     const res = await this.pool.query<RuleHitRow>(query);
@@ -208,15 +216,23 @@ export class PostgresScanResultRepository {
 
   async getTopFindings(limit: number = 10): Promise<import('@aegis/core').TopFinding[]> {
     const query = `
+      WITH extracted AS (
+        SELECT
+          f->>'ruleId' as rule_id,
+          f->>'ruleName' as rule_name,
+          f->>'category' as category,
+          f->>'severity' as severity
+        FROM safety_scan_results
+        CROSS JOIN LATERAL jsonb_array_elements(findings) as f
+      )
       SELECT
-        f->>'ruleId' as rule_id,
-        MAX(f->>'ruleName') as rule_name,
-        MAX(f->>'category') as category,
-        MAX(f->>'severity') as severity,
+        rule_id,
+        MAX(rule_name) as rule_name,
+        MAX(category) as category,
+        MAX(severity) as severity,
         COUNT(*) as trigger_count
-      FROM safety_scan_results,
-      jsonb_array_elements(findings) as f
-      GROUP BY f->>'ruleId'
+      FROM extracted
+      GROUP BY rule_id
       ORDER BY trigger_count DESC
       LIMIT $1
     `;

@@ -1,6 +1,7 @@
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { PostgresScanResultRepository } from '@aegis/skills-engine';
 import { type SafetyTimelineQueryParams } from '@aegis/core';
+import { requireApiKey } from '../middleware/api-key.middleware.js';
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export async function safetyRoutes(server: FastifyInstance): Promise<void> {
@@ -12,6 +13,7 @@ export async function safetyRoutes(server: FastifyInstance): Promise<void> {
   server.get(
     '/stats',
     {
+      preHandler: [requireApiKey],
       schema: {
         description: 'Get high-level safety scanning statistics',
         tags: ['Safety Analytics'],
@@ -30,6 +32,7 @@ export async function safetyRoutes(server: FastifyInstance): Promise<void> {
   server.get(
     '/rules',
     {
+      preHandler: [requireApiKey],
       schema: {
         description: 'Get performance statistics for individual safety rules',
         tags: ['Safety Analytics'],
@@ -48,6 +51,7 @@ export async function safetyRoutes(server: FastifyInstance): Promise<void> {
   server.get(
     '/timeline',
     {
+      preHandler: [requireApiKey],
       schema: {
         description: 'Get time-series data of safety scan results',
         tags: ['Safety Analytics'],
@@ -79,6 +83,7 @@ export async function safetyRoutes(server: FastifyInstance): Promise<void> {
   server.get(
     '/findings/top',
     {
+      preHandler: [requireApiKey],
       schema: {
         description: 'Get the most frequently triggered safety rules',
         tags: ['Safety Analytics'],
