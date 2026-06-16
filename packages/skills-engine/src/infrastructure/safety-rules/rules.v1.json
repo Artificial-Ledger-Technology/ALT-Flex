@@ -52,7 +52,7 @@
     "description": "Detects execution of base64 decoded strings, highly indicative of obfuscated payloads.",
     "pattern": {
       "type": "regex",
-      "value": "echo\\s+[A-Za-z0-9+/=]+\\s*\\|\\s*base64\\s+-d\\s*\\|\\s*sh"
+      "value": "echo\\s+['\"]?[A-Za-z0-9+/=]+['\"]?\\s*\\|\\s*base64\\s+-d\\s*\\|\\s*sh"
     },
     "falsePositiveGuidance": "Rarely a false positive. Obfuscated commands are inherently suspicious.",
     "references": ["MITRE ATT&CK: T1027 - Obfuscated Files or Information"],
@@ -305,7 +305,7 @@
     "id": "PI-003",
     "name": "System Prompt Leakage",
     "category": "prompt_injection",
-    "severity": "high",
+    "severity": "critical",
     "description": "Detects requests asking the AI to print its initial instructions or system prompt.",
     "pattern": {
       "type": "regex",

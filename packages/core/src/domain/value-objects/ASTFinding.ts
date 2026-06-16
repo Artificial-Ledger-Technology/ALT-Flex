@@ -12,6 +12,8 @@ export const ASTFindingSchema = z.object({
       'Browser Exfiltration',
       'Dynamic Import',
       'Suspicious Concatenation',
+      'Environment Access',
+      'Path Manipulation',
     ])
     .describe('The category of the danger detected'),
   lineNumber: z

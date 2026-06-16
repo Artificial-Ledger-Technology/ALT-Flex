@@ -116,8 +116,8 @@ export class RegexRuleMatcher {
         return [];
       }
       return JSON.parse(context.resultJSON) as Array<{ match: string; index: number }>;
-    } catch (err: unknown) {
-      if (err instanceof Error && err.message.includes('Script execution timed out')) {
+    } catch (err: any) {
+      if (err?.code === 'ERR_SCRIPT_EXECUTION_TIMEOUT' || (err instanceof Error && err.message.includes('Script execution timed out'))) {
         console.warn(
           `[ReDoS Protection] Regex timeout (${this.TIMEOUT_MS}ms) triggered for pattern: ${regexSource}`,
         );

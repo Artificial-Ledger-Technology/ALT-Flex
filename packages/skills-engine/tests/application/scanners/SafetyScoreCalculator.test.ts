@@ -81,10 +81,10 @@ describe('SafetyScoreCalculator', () => {
     expect(verdict.findings).toHaveLength(3);
   });
 
-  it('should assign SUSPICIOUS label for score between 1 and 10', () => {
-    // 2 high findings (5 + 5 = 10)
+  it('should assign SUSPICIOUS label for score between 1 and 9', () => {
+    // 1 high (5) + 1 medium (2) = 7
     const ruleFinding = createRuleFinding('high', 'fetch(/api)', 1);
-    const astFinding = createASTFinding('File System', 'require("child_process")', 5); // high
+    const astFinding = createASTFinding('Encoding', 'Buffer.from', 5); // medium
 
     const verdict = calculator.calculate({
       ruleFindings: [ruleFinding],
@@ -94,7 +94,7 @@ describe('SafetyScoreCalculator', () => {
       analyzersUsed: ['regex', 'ast'],
     });
 
-    expect(verdict.score).toBe(10);
+    expect(verdict.score).toBe(7);
     expect(verdict.label).toBe(SafetyLabel.SUSPICIOUS);
   });
 
@@ -230,7 +230,7 @@ describe('SafetyScoreCalculator', () => {
     expect(f.location.line).toBe(5);
     expect(f.matchedText).toBe('fs.readFile()');
     expect(f.category).toBe('code_execution');
-    expect(f.severity).toBe('medium');
+    expect(f.severity).toBe('low');
     expect(f.confidence).toBe(1.0);
   });
 

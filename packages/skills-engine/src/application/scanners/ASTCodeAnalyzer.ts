@@ -142,8 +142,10 @@ export class ASTCodeAnalyzer {
         ) {
           let dangerType: ASTFinding['dangerType'] = 'Code Execution';
           const name = node.object.name;
-          if (name === 'fs' || name === 'path') dangerType = 'File System';
+          if (name === 'fs') dangerType = 'File System';
+          if (name === 'path') dangerType = 'Path Manipulation';
           if (name === 'child_process' || name === 'os') dangerType = 'Shell Execution';
+          if (name === 'process') dangerType = 'Environment Access';
           if (['net', 'http', 'https', 'dgram'].includes(name)) dangerType = 'Network';
           if (['window', 'document', 'navigator'].includes(name))
             dangerType = 'Browser Exfiltration';
