@@ -2,7 +2,7 @@ import vm from 'node:vm';
 import { SafetyRule, ParsedContent, RuleFinding } from '@aegis/core';
 
 export class RegexRuleMatcher {
-  private readonly TIMEOUT_MS = 50;
+  private readonly TIMEOUT_MS = 500;
 
   /**
    * Scans ParsedContent against a set of regex-based SafetyRules.
