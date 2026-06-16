@@ -78,3 +78,8 @@ export type { ASTFinding } from './ASTFinding.js';
 // ── Semantic Finding ─────────────────────────────────────────────────────────
 export { SemanticFindingSchema } from './SemanticFinding.js';
 export type { SemanticFinding } from './SemanticFinding.js';
+
+// ── Scan Verdict ─────────────────────────────────────────────────────────────
+export { ScanVerdictSchema, FindingSchema } from './ScanVerdict.js';
+export type { ScanVerdict, Finding } from './ScanVerdict.js';
+

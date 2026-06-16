@@ -56,6 +56,8 @@ export {
   RuleFindingSchema,
   ASTFindingSchema,
   SemanticFindingSchema,
+  ScanVerdictSchema,
+  FindingSchema,
 } from './domain/value-objects/index.js';
 
 export type {
@@ -65,6 +67,8 @@ export type {
   RuleFinding,
   ASTFinding,
   SemanticFinding,
+  ScanVerdict,
+  Finding,
 } from './domain/value-objects/index.js';
 
 // ── API Contract Schemas ────────────────────────────────────────────────────
