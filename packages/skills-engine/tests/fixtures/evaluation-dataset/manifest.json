@@ -1,0 +1,1193 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2026-06-16T06:02:15.324Z",
+  "labeler": "aegis-qa-engineer",
+  "totalSamples": 100,
+  "distribution": {
+    "safe": 50,
+    "suspicious": 25,
+    "malicious": 25
+  },
+  "samples": [
+    {
+      "id": "safe-001",
+      "filePath": "safe/safe-001.md",
+      "groundTruthLabel": "SAFE",
+      "category": "general-utility",
+      "description": "Code formatting instructions",
+      "rationale": "Pure formatting guidance with no executable content.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-002",
+      "filePath": "safe/safe-002.md",
+      "groundTruthLabel": "SAFE",
+      "category": "general-utility",
+      "description": "Git commit message generator",
+      "rationale": "Text generation guidance only, no system commands.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-003",
+      "filePath": "safe/safe-003.md",
+      "groundTruthLabel": "SAFE",
+      "category": "general-utility",
+      "description": "Markdown table generator",
+      "rationale": "Pure text transformation, no code execution.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-004",
+      "filePath": "safe/safe-004.md",
+      "groundTruthLabel": "SAFE",
+      "category": "general-utility",
+      "description": "JSON schema validator helper",
+      "rationale": "Documentation about validation patterns, no runtime code.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-005",
+      "filePath": "safe/safe-005.md",
+      "groundTruthLabel": "SAFE",
+      "category": "general-utility",
+      "description": "TypeScript type converter",
+      "rationale": "Type transformation guidance only.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-006",
+      "filePath": "safe/safe-006.md",
+      "groundTruthLabel": "SAFE",
+      "category": "general-utility",
+      "description": "CSS class name generator",
+      "rationale": "Naming convention guidance, no executable content.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-007",
+      "filePath": "safe/safe-007.md",
+      "groundTruthLabel": "SAFE",
+      "category": "general-utility",
+      "description": "Regular expression builder",
+      "rationale": "Pattern construction guidance, no eval or execution.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-008",
+      "filePath": "safe/safe-008.md",
+      "groundTruthLabel": "SAFE",
+      "category": "general-utility",
+      "description": "API response formatter",
+      "rationale": "Data formatting guidance only.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-009",
+      "filePath": "safe/safe-009.md",
+      "groundTruthLabel": "SAFE",
+      "category": "general-utility",
+      "description": "Color palette generator",
+      "rationale": "Design utility with no code execution.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-010",
+      "filePath": "safe/safe-010.md",
+      "groundTruthLabel": "SAFE",
+      "category": "general-utility",
+      "description": "Changelog entry writer",
+      "rationale": "Documentation writing assistance.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-011",
+      "filePath": "safe/safe-011.md",
+      "groundTruthLabel": "SAFE",
+      "category": "code-review",
+      "description": "Pull request review checklist",
+      "rationale": "Review process documentation only.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-012",
+      "filePath": "safe/safe-012.md",
+      "groundTruthLabel": "SAFE",
+      "category": "code-review",
+      "description": "Code smell detector guidance",
+      "rationale": "Pattern recognition documentation, no execution.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-013",
+      "filePath": "safe/safe-013.md",
+      "groundTruthLabel": "SAFE",
+      "category": "code-review",
+      "description": "Performance review guide",
+      "rationale": "Best practices documentation.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-014",
+      "filePath": "safe/safe-014.md",
+      "groundTruthLabel": "SAFE",
+      "category": "code-review",
+      "description": "Accessibility review helper",
+      "rationale": "WCAG compliance documentation.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-015",
+      "filePath": "safe/safe-015.md",
+      "groundTruthLabel": "SAFE",
+      "category": "code-review",
+      "description": "Error handling review",
+      "rationale": "Error pattern documentation.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-016",
+      "filePath": "safe/safe-016.md",
+      "groundTruthLabel": "SAFE",
+      "category": "code-review",
+      "description": "API design review",
+      "rationale": "REST design principles documentation.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-017",
+      "filePath": "safe/safe-017.md",
+      "groundTruthLabel": "SAFE",
+      "category": "code-review",
+      "description": "Database query review",
+      "rationale": "SQL best practices documentation.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-018",
+      "filePath": "safe/safe-018.md",
+      "groundTruthLabel": "SAFE",
+      "category": "code-review",
+      "description": "TypeScript strict mode guide",
+      "rationale": "Configuration guidance only.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-019",
+      "filePath": "safe/safe-019.md",
+      "groundTruthLabel": "SAFE",
+      "category": "documentation",
+      "description": "JSDoc comment generator",
+      "rationale": "Documentation generation, no code execution.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-020",
+      "filePath": "safe/safe-020.md",
+      "groundTruthLabel": "SAFE",
+      "category": "documentation",
+      "description": "README template builder",
+      "rationale": "Template generation, no system interaction.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-021",
+      "filePath": "safe/safe-021.md",
+      "groundTruthLabel": "SAFE",
+      "category": "documentation",
+      "description": "Architecture decision record writer",
+      "rationale": "Document creation assistance.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-022",
+      "filePath": "safe/safe-022.md",
+      "groundTruthLabel": "SAFE",
+      "category": "documentation",
+      "description": "API documentation writer",
+      "rationale": "OpenAPI spec generation guidance.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-023",
+      "filePath": "safe/safe-023.md",
+      "groundTruthLabel": "SAFE",
+      "category": "documentation",
+      "description": "Runbook template creator",
+      "rationale": "Operations documentation.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-024",
+      "filePath": "safe/safe-024.md",
+      "groundTruthLabel": "SAFE",
+      "category": "documentation",
+      "description": "Meeting notes summarizer",
+      "rationale": "Text summarization, no code.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-025",
+      "filePath": "safe/safe-025.md",
+      "groundTruthLabel": "SAFE",
+      "category": "documentation",
+      "description": "Error message style guide",
+      "rationale": "Writing guidelines, no execution.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-026",
+      "filePath": "safe/safe-026.md",
+      "groundTruthLabel": "SAFE",
+      "category": "documentation",
+      "description": "Commit history analyzer",
+      "rationale": "Analysis guidance, no git command execution.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-027",
+      "filePath": "safe/safe-027.md",
+      "groundTruthLabel": "SAFE",
+      "category": "testing",
+      "description": "Unit test template generator",
+      "rationale": "Test scaffolding guidance.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-028",
+      "filePath": "safe/safe-028.md",
+      "groundTruthLabel": "SAFE",
+      "category": "testing",
+      "description": "Test data factory builder",
+      "rationale": "Data generation patterns, no real data.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-029",
+      "filePath": "safe/safe-029.md",
+      "groundTruthLabel": "SAFE",
+      "category": "testing",
+      "description": "Mock strategy guide",
+      "rationale": "Testing patterns documentation.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-030",
+      "filePath": "safe/safe-030.md",
+      "groundTruthLabel": "SAFE",
+      "category": "testing",
+      "description": "Integration test setup guide",
+      "rationale": "Test infrastructure guidance.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-031",
+      "filePath": "safe/safe-031.md",
+      "groundTruthLabel": "SAFE",
+      "category": "testing",
+      "description": "Snapshot test reviewer",
+      "rationale": "Testing methodology guidance.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-032",
+      "filePath": "safe/safe-032.md",
+      "groundTruthLabel": "SAFE",
+      "category": "testing",
+      "description": "Test coverage analyzer",
+      "rationale": "Metrics analysis guidance.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-033",
+      "filePath": "safe/safe-033.md",
+      "groundTruthLabel": "SAFE",
+      "category": "testing",
+      "description": "E2E test scenario writer",
+      "rationale": "Test planning documentation.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-034",
+      "filePath": "safe/safe-034.md",
+      "groundTruthLabel": "SAFE",
+      "category": "testing",
+      "description": "Mutation testing interpreter",
+      "rationale": "Testing methodology analysis.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-035",
+      "filePath": "safe/safe-035.md",
+      "groundTruthLabel": "SAFE",
+      "category": "devops-safe",
+      "description": "Docker best practices",
+      "rationale": "Configuration guidance, no container execution.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-036",
+      "filePath": "safe/safe-036.md",
+      "groundTruthLabel": "SAFE",
+      "category": "devops-safe",
+      "description": "CI/CD pipeline reviewer",
+      "rationale": "Pipeline review guidance.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-037",
+      "filePath": "safe/safe-037.md",
+      "groundTruthLabel": "SAFE",
+      "category": "devops-safe",
+      "description": "Kubernetes manifest reviewer",
+      "rationale": "Configuration review guidance.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-038",
+      "filePath": "safe/safe-038.md",
+      "groundTruthLabel": "SAFE",
+      "category": "devops-safe",
+      "description": "Infrastructure cost analyzer",
+      "rationale": "Cost analysis guidance.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-039",
+      "filePath": "safe/safe-039.md",
+      "groundTruthLabel": "SAFE",
+      "category": "devops-safe",
+      "description": "Monitoring dashboard builder",
+      "rationale": "Observability guidance.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-040",
+      "filePath": "safe/safe-040.md",
+      "groundTruthLabel": "SAFE",
+      "category": "devops-safe",
+      "description": "Log analysis helper",
+      "rationale": "Log reading guidance.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-041",
+      "filePath": "safe/safe-041.md",
+      "groundTruthLabel": "SAFE",
+      "category": "devops-safe",
+      "description": "SSL certificate checker",
+      "rationale": "Security audit guidance only.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-042",
+      "filePath": "safe/safe-042.md",
+      "groundTruthLabel": "SAFE",
+      "category": "devops-safe",
+      "description": "Backup verification guide",
+      "rationale": "Operational procedures documentation.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-043",
+      "filePath": "safe/safe-043.md",
+      "groundTruthLabel": "SAFE",
+      "category": "educational",
+      "description": "Design pattern explainer",
+      "rationale": "Educational content only.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-044",
+      "filePath": "safe/safe-044.md",
+      "groundTruthLabel": "SAFE",
+      "category": "educational",
+      "description": "Algorithm complexity tutor",
+      "rationale": "Computer science education.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-045",
+      "filePath": "safe/safe-045.md",
+      "groundTruthLabel": "SAFE",
+      "category": "educational",
+      "description": "SQL query tutor",
+      "rationale": "Database education content.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-046",
+      "filePath": "safe/safe-046.md",
+      "groundTruthLabel": "SAFE",
+      "category": "educational",
+      "description": "HTTP status code reference",
+      "rationale": "Reference documentation.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-047",
+      "filePath": "safe/safe-047.md",
+      "groundTruthLabel": "SAFE",
+      "category": "educational",
+      "description": "Git workflow explainer",
+      "rationale": "Version control education.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-048",
+      "filePath": "safe/safe-048.md",
+      "groundTruthLabel": "SAFE",
+      "category": "educational",
+      "description": "Clean code principles",
+      "rationale": "Software craftsmanship education.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-049",
+      "filePath": "safe/safe-049.md",
+      "groundTruthLabel": "SAFE",
+      "category": "educational",
+      "description": "SOLID principles guide",
+      "rationale": "Object-oriented design education.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "safe-050",
+      "filePath": "safe/safe-050.md",
+      "groundTruthLabel": "SAFE",
+      "category": "educational",
+      "description": "Security best practices for developers",
+      "rationale": "Security education with no exploits.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 1,
+      "format": "markdown"
+    },
+    {
+      "id": "suspicious-001",
+      "filePath": "suspicious/suspicious-001.md",
+      "groundTruthLabel": "SUSPICIOUS",
+      "category": "env-access",
+      "description": "Environment variable reader",
+      "rationale": "Accesses process.env which could leak secrets, but is extremely common in Node.js applications.",
+      "expectedRuleMatches": [
+        "CE-005"
+      ],
+      "labelerConfidence": 0.85,
+      "format": "markdown"
+    },
+    {
+      "id": "suspicious-002",
+      "filePath": "suspicious/suspicious-002.md",
+      "groundTruthLabel": "SUSPICIOUS",
+      "category": "env-access",
+      "description": "Secret manager wrapper",
+      "rationale": "Reads multiple secret values from environment, common but triggers env access rules.",
+      "expectedRuleMatches": [
+        "CE-005"
+      ],
+      "labelerConfidence": 0.85,
+      "format": "markdown"
+    },
+    {
+      "id": "suspicious-003",
+      "filePath": "suspicious/suspicious-003.md",
+      "groundTruthLabel": "SUSPICIOUS",
+      "category": "env-access",
+      "description": "Feature flag reader",
+      "rationale": "Uses process.env for feature toggles, triggers low-severity env access.",
+      "expectedRuleMatches": [
+        "CE-005"
+      ],
+      "labelerConfidence": 0.85,
+      "format": "markdown"
+    },
+    {
+      "id": "suspicious-004",
+      "filePath": "suspicious/suspicious-004.md",
+      "groundTruthLabel": "SUSPICIOUS",
+      "category": "env-access",
+      "description": "Database connection builder",
+      "rationale": "Constructs DB connection string from env vars.",
+      "expectedRuleMatches": [
+        "CE-005"
+      ],
+      "labelerConfidence": 0.85,
+      "format": "markdown"
+    },
+    {
+      "id": "suspicious-005",
+      "filePath": "suspicious/suspicious-005.md",
+      "groundTruthLabel": "SUSPICIOUS",
+      "category": "env-access",
+      "description": "Logging level configurator",
+      "rationale": "Reads env to configure logging level.",
+      "expectedRuleMatches": [
+        "CE-005"
+      ],
+      "labelerConfidence": 0.85,
+      "format": "markdown"
+    },
+    {
+      "id": "suspicious-006",
+      "filePath": "suspicious/suspicious-006.md",
+      "groundTruthLabel": "SUSPICIOUS",
+      "category": "dynamic-import",
+      "description": "Plugin loader system",
+      "rationale": "Uses dynamic import() for plugin loading — common pattern but flagged by AST analyzer.",
+      "expectedRuleMatches": [
+        "CE-003"
+      ],
+      "labelerConfidence": 0.85,
+      "format": "markdown"
+    },
+    {
+      "id": "suspicious-007",
+      "filePath": "suspicious/suspicious-007.md",
+      "groundTruthLabel": "SUSPICIOUS",
+      "category": "dynamic-import",
+      "description": "Locale loader",
+      "rationale": "Dynamic import for i18n locale files.",
+      "expectedRuleMatches": [
+        "CE-003"
+      ],
+      "labelerConfidence": 0.85,
+      "format": "markdown"
+    },
+    {
+      "id": "suspicious-008",
+      "filePath": "suspicious/suspicious-008.md",
+      "groundTruthLabel": "SUSPICIOUS",
+      "category": "dynamic-import",
+      "description": "Theme loader",
+      "rationale": "Dynamic import for CSS theme modules.",
+      "expectedRuleMatches": [
+        "CE-003"
+      ],
+      "labelerConfidence": 0.85,
+      "format": "markdown"
+    },
+    {
+      "id": "suspicious-009",
+      "filePath": "suspicious/suspicious-009.md",
+      "groundTruthLabel": "SUSPICIOUS",
+      "category": "dynamic-import",
+      "description": "Route-based code splitting",
+      "rationale": "Dynamic import for lazy-loaded routes in React.",
+      "expectedRuleMatches": [
+        "CE-003"
+      ],
+      "labelerConfidence": 0.85,
+      "format": "markdown"
+    },
+    {
+      "id": "suspicious-010",
+      "filePath": "suspicious/suspicious-010.md",
+      "groundTruthLabel": "SUSPICIOUS",
+      "category": "dynamic-import",
+      "description": "Worker thread loader",
+      "rationale": "Dynamic import inside a worker context.",
+      "expectedRuleMatches": [
+        "CE-003"
+      ],
+      "labelerConfidence": 0.85,
+      "format": "markdown"
+    },
+    {
+      "id": "suspicious-011",
+      "filePath": "suspicious/suspicious-011.md",
+      "groundTruthLabel": "SUSPICIOUS",
+      "category": "fs-low-risk",
+      "description": "Temp file cleanup utility",
+      "rationale": "Uses fs operations for legitimate temp file cleanup but triggers FS rules.",
+      "expectedRuleMatches": [
+        "FS-005"
+      ],
+      "labelerConfidence": 0.85,
+      "format": "markdown"
+    },
+    {
+      "id": "suspicious-012",
+      "filePath": "suspicious/suspicious-012.md",
+      "groundTruthLabel": "SUSPICIOUS",
+      "category": "fs-low-risk",
+      "description": "Config file writer",
+      "rationale": "Writes configuration files, triggers FS write detection.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 0.85,
+      "format": "markdown"
+    },
+    {
+      "id": "suspicious-013",
+      "filePath": "suspicious/suspicious-013.md",
+      "groundTruthLabel": "SUSPICIOUS",
+      "category": "fs-low-risk",
+      "description": "Log file rotator",
+      "rationale": "Reads and renames log files, moderate FS interaction.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 0.85,
+      "format": "markdown"
+    },
+    {
+      "id": "suspicious-014",
+      "filePath": "suspicious/suspicious-014.md",
+      "groundTruthLabel": "SUSPICIOUS",
+      "category": "fs-low-risk",
+      "description": "Hidden directory creator for tool config",
+      "rationale": "Creates hidden .config directory, triggers FS-006.",
+      "expectedRuleMatches": [
+        "FS-006"
+      ],
+      "labelerConfidence": 0.85,
+      "format": "markdown"
+    },
+    {
+      "id": "suspicious-015",
+      "filePath": "suspicious/suspicious-015.md",
+      "groundTruthLabel": "SUSPICIOUS",
+      "category": "fs-low-risk",
+      "description": "Cache directory manager",
+      "rationale": "Manages a cache directory with read/write operations.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 0.85,
+      "format": "markdown"
+    },
+    {
+      "id": "suspicious-016",
+      "filePath": "suspicious/suspicious-016.md",
+      "groundTruthLabel": "SUSPICIOUS",
+      "category": "network-mild",
+      "description": "Health check endpoint caller",
+      "rationale": "Makes HTTP requests to check service health.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 0.85,
+      "format": "markdown"
+    },
+    {
+      "id": "suspicious-017",
+      "filePath": "suspicious/suspicious-017.md",
+      "groundTruthLabel": "SUSPICIOUS",
+      "category": "network-mild",
+      "description": "API client with hardcoded localhost",
+      "rationale": "Uses hardcoded IP which triggers NET-005.",
+      "expectedRuleMatches": [
+        "NET-005"
+      ],
+      "labelerConfidence": 0.85,
+      "format": "markdown"
+    },
+    {
+      "id": "suspicious-018",
+      "filePath": "suspicious/suspicious-018.md",
+      "groundTruthLabel": "SUSPICIOUS",
+      "category": "network-mild",
+      "description": "Webhook notification sender",
+      "rationale": "Sends data to webhook URLs, moderate network risk.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 0.85,
+      "format": "markdown"
+    },
+    {
+      "id": "suspicious-019",
+      "filePath": "suspicious/suspicious-019.md",
+      "groundTruthLabel": "SUSPICIOUS",
+      "category": "network-mild",
+      "description": "NPM package checker",
+      "rationale": "Fetches package info from npm registry.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 0.85,
+      "format": "markdown"
+    },
+    {
+      "id": "suspicious-020",
+      "filePath": "suspicious/suspicious-020.md",
+      "groundTruthLabel": "SUSPICIOUS",
+      "category": "network-mild",
+      "description": "RSS feed reader",
+      "rationale": "Fetches and parses external RSS feeds.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 0.85,
+      "format": "markdown"
+    },
+    {
+      "id": "suspicious-021",
+      "filePath": "suspicious/suspicious-021.md",
+      "groundTruthLabel": "SUSPICIOUS",
+      "category": "ambiguous",
+      "description": "Aggressive optimization instructions",
+      "rationale": "Contains assertive language that could border on instruction override patterns.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 0.85,
+      "format": "markdown"
+    },
+    {
+      "id": "suspicious-022",
+      "filePath": "suspicious/suspicious-022.md",
+      "groundTruthLabel": "SUSPICIOUS",
+      "category": "ambiguous",
+      "description": "Admin-level skill with authority claims",
+      "rationale": "Uses authority language that could trigger semantic detection.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 0.85,
+      "format": "markdown"
+    },
+    {
+      "id": "suspicious-023",
+      "filePath": "suspicious/suspicious-023.md",
+      "groundTruthLabel": "SUSPICIOUS",
+      "category": "ambiguous",
+      "description": "Base64 encoding tutorial",
+      "rationale": "Contains long base64 strings as examples, triggering encoded content detection.",
+      "expectedRuleMatches": [
+        "PI-004"
+      ],
+      "labelerConfidence": 0.85,
+      "format": "markdown"
+    },
+    {
+      "id": "suspicious-024",
+      "filePath": "suspicious/suspicious-024.md",
+      "groundTruthLabel": "SUSPICIOUS",
+      "category": "ambiguous",
+      "description": "Security testing guide with attack examples",
+      "rationale": "Documents attack patterns for defensive purposes but contains suspicious patterns.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 0.85,
+      "format": "markdown"
+    },
+    {
+      "id": "suspicious-025",
+      "filePath": "suspicious/suspicious-025.md",
+      "groundTruthLabel": "SUSPICIOUS",
+      "category": "ambiguous",
+      "description": "Bash script with profile references",
+      "rationale": "References shell profile files for legitimate tool setup, triggers FS-003.",
+      "expectedRuleMatches": [
+        "FS-003"
+      ],
+      "labelerConfidence": 0.85,
+      "format": "markdown"
+    },
+    {
+      "id": "malicious-001",
+      "filePath": "malicious/malicious-001.md",
+      "groundTruthLabel": "MALICIOUS",
+      "category": "shell-injection",
+      "description": "Curl-pipe-to-shell backdoor installer",
+      "rationale": "Downloads and executes arbitrary remote code via curl | sh — classic malware delivery.",
+      "expectedRuleMatches": [
+        "SHELL-001"
+      ],
+      "labelerConfidence": 0.95,
+      "format": "markdown"
+    },
+    {
+      "id": "malicious-002",
+      "filePath": "malicious/malicious-002.md",
+      "groundTruthLabel": "MALICIOUS",
+      "category": "shell-injection",
+      "description": "Base64-encoded shell payload",
+      "rationale": "Encodes malicious commands in Base64 to evade keyword scanners.",
+      "expectedRuleMatches": [
+        "SHELL-004"
+      ],
+      "labelerConfidence": 0.95,
+      "format": "markdown"
+    },
+    {
+      "id": "malicious-003",
+      "filePath": "malicious/malicious-003.md",
+      "groundTruthLabel": "MALICIOUS",
+      "category": "shell-injection",
+      "description": "Reverse shell via netcat",
+      "rationale": "Establishes a reverse shell connection to attacker-controlled server.",
+      "expectedRuleMatches": [
+        "NET-006"
+      ],
+      "labelerConfidence": 0.95,
+      "format": "markdown"
+    },
+    {
+      "id": "malicious-004",
+      "filePath": "malicious/malicious-004.md",
+      "groundTruthLabel": "MALICIOUS",
+      "category": "shell-injection",
+      "description": "Python reverse shell disguised as utility",
+      "rationale": "Spawns a Python reverse shell process.",
+      "expectedRuleMatches": [
+        "SHELL-006"
+      ],
+      "labelerConfidence": 0.95,
+      "format": "markdown"
+    },
+    {
+      "id": "malicious-005",
+      "filePath": "malicious/malicious-005.md",
+      "groundTruthLabel": "MALICIOUS",
+      "category": "shell-injection",
+      "description": "Wget payload delivery",
+      "rationale": "Downloads and executes payload via wget piped to shell.",
+      "expectedRuleMatches": [
+        "SHELL-005"
+      ],
+      "labelerConfidence": 0.95,
+      "format": "markdown"
+    },
+    {
+      "id": "malicious-006",
+      "filePath": "malicious/malicious-006.md",
+      "groundTruthLabel": "MALICIOUS",
+      "category": "fs-manipulation",
+      "description": "SSH key stealer",
+      "rationale": "Reads private SSH keys for exfiltration.",
+      "expectedRuleMatches": [
+        "FS-002"
+      ],
+      "labelerConfidence": 0.95,
+      "format": "markdown"
+    },
+    {
+      "id": "malicious-007",
+      "filePath": "malicious/malicious-007.md",
+      "groundTruthLabel": "MALICIOUS",
+      "category": "fs-manipulation",
+      "description": "System credential harvester",
+      "rationale": "Reads /etc/passwd and /etc/shadow for credential theft.",
+      "expectedRuleMatches": [
+        "FS-001"
+      ],
+      "labelerConfidence": 0.95,
+      "format": "markdown"
+    },
+    {
+      "id": "malicious-008",
+      "filePath": "malicious/malicious-008.md",
+      "groundTruthLabel": "MALICIOUS",
+      "category": "fs-manipulation",
+      "description": "Persistence via bashrc modification",
+      "rationale": "Modifies shell startup files to establish persistence.",
+      "expectedRuleMatches": [
+        "FS-003"
+      ],
+      "labelerConfidence": 0.95,
+      "format": "markdown"
+    },
+    {
+      "id": "malicious-009",
+      "filePath": "malicious/malicious-009.md",
+      "groundTruthLabel": "MALICIOUS",
+      "category": "fs-manipulation",
+      "description": "Destructive file deletion",
+      "rationale": "Attempts to recursively delete the root filesystem.",
+      "expectedRuleMatches": [
+        "FS-004"
+      ],
+      "labelerConfidence": 0.95,
+      "format": "markdown"
+    },
+    {
+      "id": "malicious-010",
+      "filePath": "malicious/malicious-010.md",
+      "groundTruthLabel": "MALICIOUS",
+      "category": "fs-manipulation",
+      "description": "Hidden malware directory",
+      "rationale": "Creates hidden directories and downloads payloads into them.",
+      "expectedRuleMatches": [
+        "FS-006",
+        "SHELL-001"
+      ],
+      "labelerConfidence": 0.95,
+      "format": "markdown"
+    },
+    {
+      "id": "malicious-011",
+      "filePath": "malicious/malicious-011.md",
+      "groundTruthLabel": "MALICIOUS",
+      "category": "network-exfil",
+      "description": "Discord webhook data exfiltrator",
+      "rationale": "Sends stolen data to a Discord webhook.",
+      "expectedRuleMatches": [
+        "NET-002"
+      ],
+      "labelerConfidence": 0.95,
+      "format": "markdown"
+    },
+    {
+      "id": "malicious-012",
+      "filePath": "malicious/malicious-012.md",
+      "groundTruthLabel": "MALICIOUS",
+      "category": "network-exfil",
+      "description": "DNS exfiltration via dig",
+      "rationale": "Exfiltrates data by encoding it in DNS queries.",
+      "expectedRuleMatches": [
+        "NET-004"
+      ],
+      "labelerConfidence": 0.95,
+      "format": "markdown"
+    },
+    {
+      "id": "malicious-013",
+      "filePath": "malicious/malicious-013.md",
+      "groundTruthLabel": "MALICIOUS",
+      "category": "network-exfil",
+      "description": "Pastebin data upload",
+      "rationale": "Uploads stolen data to pastebin.",
+      "expectedRuleMatches": [
+        "NET-001"
+      ],
+      "labelerConfidence": 0.95,
+      "format": "markdown"
+    },
+    {
+      "id": "malicious-014",
+      "filePath": "malicious/malicious-014.md",
+      "groundTruthLabel": "MALICIOUS",
+      "category": "network-exfil",
+      "description": "Hardcoded C2 beacon",
+      "rationale": "Beacons to a hardcoded IP address for command and control.",
+      "expectedRuleMatches": [
+        "NET-005"
+      ],
+      "labelerConfidence": 0.95,
+      "format": "markdown"
+    },
+    {
+      "id": "malicious-015",
+      "filePath": "malicious/malicious-015.md",
+      "groundTruthLabel": "MALICIOUS",
+      "category": "network-exfil",
+      "description": "Env variable exfiltrator via fetch",
+      "rationale": "Exfiltrates all environment variables to an external server.",
+      "expectedRuleMatches": [
+        "NET-005",
+        "CE-005"
+      ],
+      "labelerConfidence": 0.95,
+      "format": "markdown"
+    },
+    {
+      "id": "malicious-016",
+      "filePath": "malicious/malicious-016.md",
+      "groundTruthLabel": "MALICIOUS",
+      "category": "prompt-injection",
+      "description": "Direct instruction override",
+      "rationale": "Explicitly tells the AI to forget all previous instructions — classic prompt injection.",
+      "expectedRuleMatches": [
+        "PI-001"
+      ],
+      "labelerConfidence": 0.95,
+      "format": "markdown"
+    },
+    {
+      "id": "malicious-017",
+      "filePath": "malicious/malicious-017.md",
+      "groundTruthLabel": "MALICIOUS",
+      "category": "prompt-injection",
+      "description": "DAN jailbreak attempt",
+      "rationale": "Attempts the Do Anything Now (DAN) jailbreak pattern.",
+      "expectedRuleMatches": [
+        "PI-002"
+      ],
+      "labelerConfidence": 0.95,
+      "format": "markdown"
+    },
+    {
+      "id": "malicious-018",
+      "filePath": "malicious/malicious-018.md",
+      "groundTruthLabel": "MALICIOUS",
+      "category": "prompt-injection",
+      "description": "System prompt extraction",
+      "rationale": "Attempts to extract the system prompt from the AI.",
+      "expectedRuleMatches": [
+        "PI-003"
+      ],
+      "labelerConfidence": 0.95,
+      "format": "markdown"
+    },
+    {
+      "id": "malicious-019",
+      "filePath": "malicious/malicious-019.md",
+      "groundTruthLabel": "MALICIOUS",
+      "category": "prompt-injection",
+      "description": "Unicode hidden text injection",
+      "rationale": "Uses zero-width characters to hide malicious instructions.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 0.95,
+      "format": "markdown"
+    },
+    {
+      "id": "malicious-020",
+      "filePath": "malicious/malicious-020.md",
+      "groundTruthLabel": "MALICIOUS",
+      "category": "prompt-injection",
+      "description": "Authority + deception combined",
+      "rationale": "Combines authority claims with deceptive safety assertions.",
+      "expectedRuleMatches": [
+        "PI-005",
+        "PI-006"
+      ],
+      "labelerConfidence": 0.95,
+      "format": "markdown"
+    },
+    {
+      "id": "malicious-021",
+      "filePath": "malicious/malicious-021.md",
+      "groundTruthLabel": "MALICIOUS",
+      "category": "obfuscation",
+      "description": "Eval with string construction",
+      "rationale": "Uses eval() to execute dynamically constructed code.",
+      "expectedRuleMatches": [
+        "CE-001",
+        "CE-006"
+      ],
+      "labelerConfidence": 0.95,
+      "format": "markdown"
+    },
+    {
+      "id": "malicious-022",
+      "filePath": "malicious/malicious-022.md",
+      "groundTruthLabel": "MALICIOUS",
+      "category": "obfuscation",
+      "description": "Function constructor payload",
+      "rationale": "Uses new Function() as an eval alternative.",
+      "expectedRuleMatches": [
+        "CE-002"
+      ],
+      "labelerConfidence": 0.95,
+      "format": "markdown"
+    },
+    {
+      "id": "malicious-023",
+      "filePath": "malicious/malicious-023.md",
+      "groundTruthLabel": "MALICIOUS",
+      "category": "obfuscation",
+      "description": "Hex-encoded instruction hiding",
+      "rationale": "Uses hex encoding to hide malicious content.",
+      "expectedRuleMatches": [
+        "PI-004"
+      ],
+      "labelerConfidence": 0.95,
+      "format": "markdown"
+    },
+    {
+      "id": "malicious-024",
+      "filePath": "malicious/malicious-024.md",
+      "groundTruthLabel": "MALICIOUS",
+      "category": "obfuscation",
+      "description": "Suspicious string concatenation building URLs",
+      "rationale": "Constructs a malicious URL through string concatenation to evade static analysis.",
+      "expectedRuleMatches": [],
+      "labelerConfidence": 0.95,
+      "format": "markdown"
+    },
+    {
+      "id": "malicious-025",
+      "filePath": "malicious/malicious-025.md",
+      "groundTruthLabel": "MALICIOUS",
+      "category": "obfuscation",
+      "description": "setTimeout with string code execution",
+      "rationale": "Uses setTimeout with a string argument as an eval alternative.",
+      "expectedRuleMatches": [
+        "CE-004"
+      ],
+      "labelerConfidence": 0.95,
+      "format": "markdown"
+    }
+  ]
+}
