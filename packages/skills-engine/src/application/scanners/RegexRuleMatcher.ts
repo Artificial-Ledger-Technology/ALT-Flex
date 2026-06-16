@@ -81,10 +81,10 @@ export class RegexRuleMatcher {
     let flags = 'gi'; // Default to global, case-insensitive
 
     // Parse inline flags if provided, e.g., /pattern/gi
-    if (pattern.startsWith('/') && pattern.lastIndexOf('/') > 0) {
-      const lastSlashIndex = pattern.lastIndexOf('/');
-      regexSource = pattern.substring(1, lastSlashIndex);
-      flags = pattern.substring(lastSlashIndex + 1);
+    const inlineMatch = pattern.match(/^\/(.+)\/([gimsuy]*)$/);
+    if (inlineMatch) {
+      regexSource = inlineMatch[1]!;
+      flags = inlineMatch[2]!;
       if (!flags.includes('g')) flags += 'g';
     }
 

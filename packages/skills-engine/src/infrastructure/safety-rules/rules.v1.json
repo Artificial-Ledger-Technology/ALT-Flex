@@ -78,7 +78,7 @@
     "id": "SHELL-006",
     "name": "Python one-liner shell",
     "category": "shell_execution",
-    "severity": "high",
+    "severity": "critical",
     "description": "Detects usage of python -c to spawn a reverse shell or execute arbitrary code.",
     "pattern": {
       "type": "regex",
@@ -183,7 +183,7 @@
     "id": "NET-001",
     "name": "Data to Pastebin",
     "category": "network",
-    "severity": "medium",
+    "severity": "critical",
     "description": "Detects HTTP requests directed to pastebin.com or similar clipboard sharing sites, often used for data exfiltration.",
     "pattern": {
       "type": "regex",
@@ -245,7 +245,7 @@
     "id": "NET-005",
     "name": "IP Address Hardcoding",
     "category": "network",
-    "severity": "low",
+    "severity": "high",
     "description": "Detects hardcoded raw IP addresses instead of hostnames, typical in rudimentary C2 beacons.",
     "pattern": {
       "type": "regex",
