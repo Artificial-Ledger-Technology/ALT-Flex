@@ -400,10 +400,19 @@ export type SkillStarResponse = z.infer<typeof SkillStarResponseSchema>;
  */
 export const SkillScanRequestSchema = z.object({
   /** ID of the skill file to scan */
-  skillId: z.string().uuid('Invalid skill file ID format'),
+  skillId: z.string().uuid('Invalid skill file ID format').optional(),
+
+  /** Array of skill file IDs for batch scanning */
+  skillIds: z.array(z.string().uuid('Invalid skill file ID format')).optional(),
+
+  /** Flag to scan all skill files */
+  all: z.boolean().optional(),
 
   /** Force re-scan even if already scanned. Default: false. */
   force: z.boolean().default(false),
+}).refine(data => data.skillId || (data.skillIds && data.skillIds.length > 0) || data.all, {
+  message: "Must provide either skillId, skillIds, or all",
+  path: ["skillId"],
 });
 
 export type SkillScanRequest = z.infer<typeof SkillScanRequestSchema>;
@@ -413,8 +422,8 @@ export type SkillScanRequest = z.infer<typeof SkillScanRequestSchema>;
  * Wraps the standard async job response with scan-specific details.
  */
 export const SkillScanResponseSchema = AsyncJobResponseSchema.extend({
-  /** ID of the skill file being scanned */
-  skillId: z.string().uuid(),
+  /** ID of the skill file being scanned (omitted for batch scans) */
+  skillId: z.string().uuid().optional(),
 
   /** Whether this is a forced re-scan */
   force: z.boolean(),

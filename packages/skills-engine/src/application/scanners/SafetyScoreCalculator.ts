@@ -40,7 +40,7 @@ export class SafetyScoreCalculator {
     const score = deduplicatedFindings.reduce((total, finding) => total + SEVERITY_WEIGHTS[finding.severity], 0);
 
     let label = SafetyLabel.SAFE;
-    if (score > 10) {
+    if (score >= 10) {
       label = SafetyLabel.MALICIOUS;
     } else if (score > 0) {
       label = SafetyLabel.SUSPICIOUS;

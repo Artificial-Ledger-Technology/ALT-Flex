@@ -1,6 +1,7 @@
 export * from './github-skills-adapter.config.js';
 export * from './github-skills-adapter.js';
 export * from './postgres/postgres-skill-repository.js';
+export * from './postgres/postgres-scan-result-repository.js';
 
 // Normalizers & Parsers
 export * from './frontmatter-parser.js';
