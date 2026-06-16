@@ -11,6 +11,14 @@ const mockGetResultHistory = vi.fn();
 const mockAddBulk = vi.fn();
 const mockAdd = vi.fn();
 
+vi.mock('@aegis/core', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@aegis/core')>();
+  return {
+    ...actual,
+    createQueueConnection: vi.fn().mockReturnValue({}),
+  };
+});
+
 vi.mock('@aegis/skills-engine', () => {
   return {
     PostgresSkillRepository: vi.fn().mockImplementation(() => ({
@@ -20,7 +28,7 @@ vi.mock('@aegis/skills-engine', () => {
     })),
     PostgresScanResultRepository: vi.fn().mockImplementation(() => ({
       getLatestResult: mockGetLatestResult,
-      getResultHistory: mockGetResultHistory,
+      getSkillSafetyHistory: mockGetResultHistory,
     })),
   };
 });
@@ -43,7 +51,7 @@ describe('Skills Routes Integration Tests (P3-SCAN-010)', () => {
     vi.clearAllMocks();
     process.env['API_KEYS'] = validApiKey;
 
-    mockFindAll.mockResolvedValue({ items: [], totalItems: 0, page: 1, pageSize: 20, totalPages: 0 });
+    mockFindAll.mockResolvedValue({ data: [], total: 0, page: 1, pageSize: 20, totalPages: 0 });
     mockGetDashboardStats.mockResolvedValue({ totalSkills: 10 });
     mockFindById.mockResolvedValue(null);
     mockGetLatestResult.mockResolvedValue(null);
@@ -92,7 +100,7 @@ describe('Skills Routes Integration Tests (P3-SCAN-010)', () => {
 
   // 3. POST /scan (All skills)
   it('should successfully enqueue jobs for all skills', async () => {
-    mockFindAll.mockResolvedValueOnce({ items: [{ id: 'id1', contentHash: 'hash1' }] });
+    mockFindAll.mockResolvedValueOnce({ data: [{ id: 'id1', contentHash: 'hash1' }] });
     const response = await server.inject({
       method: 'POST',
       url: '/api/v1/skills/scan',
@@ -155,7 +163,7 @@ describe('Skills Routes Integration Tests (P3-SCAN-010)', () => {
 
   // 8. GET /skills
   it('should return paginated skills list', async () => {
-    mockFindAll.mockResolvedValueOnce({ items: [{ id: 'id1', safetyLabel: 'safe' }], totalItems: 1, page: 1, pageSize: 20, totalPages: 1 });
+    mockFindAll.mockResolvedValueOnce({ data: [{ id: 'id1', safetyLabel: 'safe' }], total: 1, page: 1, pageSize: 20, totalPages: 1 });
     const response = await server.inject({
       method: 'GET',
       url: '/api/v1/skills',

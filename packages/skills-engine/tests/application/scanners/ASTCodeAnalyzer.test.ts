@@ -64,10 +64,10 @@ describe('ASTCodeAnalyzer', () => {
 
   describe('Dangerous MemberExpressions', () => {
     const dangerousMembers = [
-      { name: 'process', code: 'process.env.SECRET', dangerType: 'Code Execution' },
+      { name: 'process', code: 'process.env.SECRET', dangerType: 'Environment Access' },
       { name: 'child_process', code: 'child_process.exec()', dangerType: 'Shell Execution' },
       { name: 'fs', code: 'fs.readFileSync("/etc/passwd")', dangerType: 'File System' },
-      { name: 'path', code: 'path.join(a, b)', dangerType: 'File System' },
+      { name: 'path', code: 'path.join(a, b)', dangerType: 'Path Manipulation' },
       { name: 'os', code: 'os.platform()', dangerType: 'Shell Execution' },
       { name: 'net', code: 'net.createServer()', dangerType: 'Network' },
       { name: 'http', code: 'http.get()', dangerType: 'Network' },

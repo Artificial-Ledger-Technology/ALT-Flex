@@ -108,14 +108,16 @@ export class SafetyScoreCalculator {
       case 'Shell Execution':
         return 'critical';
       case 'Network':
-      case 'File System':
       case 'Browser Exfiltration':
         return 'high';
+      case 'File System':
       case 'Encoding':
-      case 'Dynamic Import':
         return 'medium';
       case 'Suspicious Concatenation':
+      case 'Dynamic Import':
+      case 'Environment Access':
         return 'low';
+      case 'Path Manipulation':
       default:
         return 'info';
     }
