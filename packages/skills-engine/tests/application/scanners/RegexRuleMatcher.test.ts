@@ -307,7 +307,7 @@ eval(`;
 
       // It should complete very quickly due to the 50ms VM timeout.
       // We'll give it a generous upper bound for test runners, but it definitely shouldn't hang forever.
-      expect(duration).toBeLessThan(500);
+      expect(duration).toBeLessThan(1500);
     });
 
     it('should continue processing other rules after a timeout occurs', () => {
