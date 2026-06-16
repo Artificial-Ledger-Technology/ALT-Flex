@@ -1,11 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync, existsSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { join } from 'path';
 import { SafetyLabel } from '@aegis/core';
 
 const DATASET_DIR = join(
-  dirname(fileURLToPath(import.meta.url)),
+  __dirname,
   'fixtures',
   'evaluation-dataset',
 );

@@ -1,6 +1,5 @@
 import { readFileSync } from 'fs';
 import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
 import { SafetyLabel } from '@aegis/core';
 
 /**
@@ -109,7 +108,7 @@ function mapLabel(label: string): SafetyLabel {
  * @returns The fully loaded EvaluationDataset.
  */
 export function loadDataset(datasetDir?: string): EvaluationDataset {
-  const baseDir = datasetDir ?? dirname(fileURLToPath(import.meta.url));
+  const baseDir = datasetDir ?? __dirname;
   const manifestPath = join(baseDir, 'manifest.json');
 
   const manifestRaw = readFileSync(manifestPath, 'utf-8');
