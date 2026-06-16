@@ -1,28 +1,28 @@
 # AEGIS Scanner Evaluation Report
 
-**Date:** 2026-06-16T06:45:10.042Z
+**Date:** 2026-06-16T09:55:29.763Z
 **Total Samples:** 100
-**Total Scan Duration:** 5113ms
+**Total Scan Duration:** 5209ms
 
 ## Aggregate Metrics
 
 | Metric | Value |
 |---|---|
-| Accuracy | **79.00%** |
-| Macro Precision | **73.25%** |
-| Macro Recall | **72.00%** |
-| Macro F1 Score | **72.44%** |
-| Micro Precision | **79.00%** |
-| Micro Recall | **79.00%** |
-| Micro F1 Score | **79.00%** |
+| Accuracy | **84.00%** |
+| Macro Precision | **83.99%** |
+| Macro Recall | **78.67%** |
+| Macro F1 Score | **78.53%** |
+| Micro Precision | **84.00%** |
+| Micro Recall | **84.00%** |
+| Micro F1 Score | **84.00%** |
 
 ## Per-Label Metrics
 
 | Label | Precision | Recall | F1 Score | TP | FP | FN |
 |---|---|---|---|---|---|---|
 | **safe** | 90.91% | 100.00% | 95.24% | 50 | 5 | 0 |
-| **suspicious** | 63.64% | 56.00% | 59.57% | 14 | 8 | 11 |
-| **malicious** | 65.22% | 60.00% | 62.50% | 15 | 8 | 10 |
+| **suspicious** | 92.31% | 48.00% | 63.16% | 12 | 1 | 13 |
+| **malicious** | 68.75% | 88.00% | 77.19% | 22 | 10 | 3 |
 
 ## Confusion Matrix
 
@@ -31,8 +31,8 @@ Rows: Actual (Ground Truth), Columns: Predicted
 | Actual \ Predicted | SAFE | SUSPICIOUS | MALICIOUS |
 |---|---|---|---|
 | **safe** | 50 | 0 | 0 |
-| **suspicious** | 3 | 14 | 8 |
-| **malicious** | 2 | 8 | 15 |
+| **suspicious** | 3 | 12 | 10 |
+| **malicious** | 2 | 1 | 22 |
 
 ## Threshold Sensitivity Analysis
 
@@ -81,6 +81,12 @@ Rows: Actual (Ground Truth), Columns: Predicted
   - [CRITICAL] AST-CODE-EXECUTION: Detected suspicious AST node (MemberExpression): Code Execution
   - [CRITICAL] AST-CODE-EXECUTION: Detected suspicious AST node (MemberExpression): Code Execution
   - [LOW] AST-SUSPICIOUS-CONCATENATION: Detected suspicious AST node (BinaryExpression): Suspicious Concatenation
+
+### suspicious-005 (env-access)
+- **Expected:** suspicious
+- **Predicted:** malicious (Score: 10)
+- **Findings:**
+  - [CRITICAL] AST-CODE-EXECUTION: Detected suspicious AST node (MemberExpression): Code Execution
 
 ### suspicious-011 (fs-low-risk)
 - **Expected:** suspicious
@@ -139,60 +145,22 @@ Rows: Actual (Ground Truth), Columns: Predicted
 - **Expected:** suspicious
 - **Predicted:** safe (Score: 0)
 
-### malicious-001 (shell-injection)
-- **Expected:** malicious
-- **Predicted:** suspicious (Score: 10)
+### suspicious-025 (ambiguous)
+- **Expected:** suspicious
+- **Predicted:** malicious (Score: 10)
 - **Findings:**
-  - [CRITICAL] SHELL-001: Detects pattern where content is downloaded via curl and piped directly into a shell execution context, a common malware delivery technique.
+  - [HIGH] FS-003: Detects modification of shell profile scripts to establish persistence.
+  - [HIGH] FS-003: Detects modification of shell profile scripts to establish persistence.
 
 ### malicious-002 (shell-injection)
 - **Expected:** malicious
 - **Predicted:** safe (Score: 0)
-
-### malicious-003 (shell-injection)
-- **Expected:** malicious
-- **Predicted:** suspicious (Score: 10)
-- **Findings:**
-  - [CRITICAL] NET-006: Detects usage of netcat (nc) to pipe shell input/output over a network socket.
-
-### malicious-004 (shell-injection)
-- **Expected:** malicious
-- **Predicted:** suspicious (Score: 10)
-- **Findings:**
-  - [CRITICAL] SHELL-006: Detects usage of python -c to spawn a reverse shell or execute arbitrary code.
-
-### malicious-005 (shell-injection)
-- **Expected:** malicious
-- **Predicted:** suspicious (Score: 10)
-- **Findings:**
-  - [CRITICAL] SHELL-005: Detects download via wget piped to shell execution.
-
-### malicious-009 (fs-manipulation)
-- **Expected:** malicious
-- **Predicted:** suspicious (Score: 10)
-- **Findings:**
-  - [HIGH] FS-004: Detects indiscriminate deletion commands like rm -rf / or rm -rf /*.
-  - [HIGH] FS-004: Detects indiscriminate deletion commands like rm -rf / or rm -rf /*.
 
 ### malicious-010 (fs-manipulation)
 - **Expected:** malicious
 - **Predicted:** suspicious (Score: 1)
 - **Findings:**
   - [LOW] FS-006: Detects creation of hidden directories (starting with .) which is often used to hide malware payloads.
-
-### malicious-017 (prompt-injection)
-- **Expected:** malicious
-- **Predicted:** suspicious (Score: 10)
-- **Findings:**
-  - [HIGH] SEMANTIC-001: Detected semantic pattern of category: role_override
-  - [HIGH] SEMANTIC-001: Detected semantic pattern of category: role_override
-
-### malicious-018 (prompt-injection)
-- **Expected:** malicious
-- **Predicted:** suspicious (Score: 10)
-- **Findings:**
-  - [HIGH] PI-003: Detects requests asking the AI to print its initial instructions or system prompt.
-  - [HIGH] PI-003: Detects requests asking the AI to print its initial instructions or system prompt.
 
 ### malicious-019 (prompt-injection)
 - **Expected:** malicious

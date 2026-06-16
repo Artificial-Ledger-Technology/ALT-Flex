@@ -165,8 +165,8 @@ export async function skillsRoutes(server: FastifyInstance): Promise<void> {
 
       const result = await skillRepo.findAll(parseResult.data as any);
       return reply.status(200).send({
-        data: result.items,
-        total: result.totalItems,
+        data: result.data,
+        total: result.total,
         page: result.page,
         pageSize: result.pageSize,
         totalPages: result.totalPages,
@@ -295,7 +295,7 @@ export async function skillsRoutes(server: FastifyInstance): Promise<void> {
 
       if (all) {
         const res = await skillRepo.findAll({ page: 1, pageSize: 10000, sortBy: 'createdAt', sortOrder: 'desc' } as any);
-        targetSkills = res.items;
+        targetSkills = [...res.data];
       } else if (skillIds && skillIds.length > 0) {
         const skills = await Promise.all(skillIds.map(id => skillRepo.findById(id)));
         targetSkills = skills.filter(s => s !== null);
@@ -534,7 +534,7 @@ export async function skillsRoutes(server: FastifyInstance): Promise<void> {
       const [skill, latestScan, scanHistory] = await Promise.all([
         skillRepo.findById(skillId),
         scanRepo.getLatestResult(skillId),
-        scanRepo.getResultHistory(skillId)
+        scanRepo.getSkillSafetyHistory(skillId)
       ]);
 
       if (!skill) {
