@@ -233,3 +233,30 @@ export type {
   SafetyScanSummary,
   SkillSafetyResponse,
 } from './skills-api.schema.js';
+
+// ── Safety API Schemas (P3-SCAN-011) ────────────────────────────────────────
+export {
+  SafetyStatsResponseSchema,
+  SafetyStatsEndpointSchema,
+  SafetyRuleStatSchema,
+  SafetyRulesResponseSchema,
+  SafetyRulesEndpointSchema,
+  SafetyTimelineQueryParamsSchema,
+  SafetyTimelineDataPointSchema,
+  SafetyTimelineResponseSchema,
+  SafetyTimelineEndpointSchema,
+  TopFindingSchema,
+  TopFindingsResponseSchema,
+  TopFindingsEndpointSchema,
+} from './safety-api.schema.js';
+
+export type {
+  SafetyStatsResponse,
+  SafetyRuleStat,
+  SafetyRulesResponse,
+  SafetyTimelineQueryParams,
+  SafetyTimelineDataPoint,
+  SafetyTimelineResponse,
+  TopFinding,
+  TopFindingsResponse,
+} from './safety-api.schema.js';
