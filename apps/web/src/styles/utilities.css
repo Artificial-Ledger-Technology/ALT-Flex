@@ -1,0 +1,51 @@
+/* apps/web/src/styles/utilities.css */
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
+}
+
+@media (min-width: 640px) { /* sm */
+  .container { max-width: 640px; }
+}
+@media (min-width: 768px) { /* md */
+  .container { max-width: 768px; }
+}
+@media (min-width: 1024px) { /* lg */
+  .container { max-width: 1024px; }
+}
+@media (min-width: 1280px) { /* xl */
+  .container { max-width: 1280px; }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
