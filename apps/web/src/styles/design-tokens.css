@@ -69,4 +69,27 @@
   --radius-md: 0.5rem;
   --radius-lg: 1rem;
   --radius-full: 9999px;
+
+  /* Responsive Breakpoints */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+}
+
+[data-theme='light'] {
+  /* Background Color System - Light Mode */
+  --bg-primary: hsl(210 40% 98%);
+  --bg-secondary: hsl(0 0% 100%);
+  --bg-tertiary: hsl(210 20% 96%);
+  --bg-hover: hsl(210 20% 94%);
+  
+  /* Text Colors */
+  --text-primary: hsl(222 47% 11%);
+  --text-secondary: hsl(215 20% 35%);
+  --text-muted: hsl(215 15% 55%);
+
+  /* Borders */
+  --border-subtle: hsl(222 20% 90%);
+  --border-strong: hsl(222 20% 80%);
 }
