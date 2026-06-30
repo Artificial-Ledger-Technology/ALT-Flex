@@ -24,7 +24,7 @@ import { AegisError } from './aegis-error.js';
  */
 export class NotFoundError extends AegisError {
   constructor(resource: string, identifier?: string) {
-    const message = identifier
+    const message = identifier !== undefined && identifier !== ''
       ? `${resource} with id '${identifier}' not found`
       : `${resource} not found`;
 

@@ -27,11 +27,15 @@ import {
   type HackSearchQuery,
   type HackSyncRequest,
   type HackFilters,
+  createQueueConnection,
+  QUEUE_NAMES,
 } from '@aegis/core';
+import { Queue } from 'bullmq';
 import { PostgresHackRepository } from '@aegis/hacks-engine';
+import { requireApiKey } from '../middleware/api-key.middleware.js';
 
 const dbUrl = process.env['DATABASE_URL'] ?? 'postgresql://aegis:changeme@localhost:5432/aegis_dev';
-const hackRepo = new PostgresHackRepository(dbUrl);
+const hackRepo = new PostgresHackRepository({ connectionString: dbUrl });
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // Constants
@@ -64,6 +68,8 @@ const ROUTE_PREFIX = '/api/v1/hacks';
  */
 // eslint-disable-next-line @typescript-eslint/require-await
 export async function hacksRoutes(server: FastifyInstance): Promise<void> {
+  const connection = createQueueConnection();
+  const hacksSyncQueue = new Queue(QUEUE_NAMES.HACKS_SYNC, { connection });
   // ── 1. GET /api/v1/hacks — Paginated List with Filters ─────────────────────
   server.get(
     ROUTE_PREFIX,
@@ -95,17 +101,18 @@ export async function hacksRoutes(server: FastifyInstance): Promise<void> {
           200: {
             description: 'Paginated list of hack incidents',
             type: 'object',
+            additionalProperties: true,
             properties: {
-              data: { type: 'array', items: { type: 'object' } },
+              data: { type: 'array', items: { type: 'object', additionalProperties: true } },
               total: { type: 'integer' },
               page: { type: 'integer' },
               pageSize: { type: 'integer' },
               totalPages: { type: 'integer' },
             },
           },
-          400: { description: 'Validation error', type: 'object' },
-          429: { description: 'Rate limit exceeded', type: 'object' },
-          501: { description: 'Not implemented', type: 'object' },
+          400: { description: 'Validation error', type: 'object', additionalProperties: true },
+          429: { description: 'Rate limit exceeded', type: 'object', additionalProperties: true },
+          501: { description: 'Not implemented', type: 'object', additionalProperties: true },
         },
       },
     },
@@ -158,10 +165,18 @@ export async function hacksRoutes(server: FastifyInstance): Promise<void> {
           required: ['id'],
         },
         response: {
-          200: { description: 'Hack incident detail with computed fields', type: 'object' },
-          400: { description: 'Invalid UUID format', type: 'object' },
-          404: { description: 'Hack incident not found', type: 'object' },
-          501: { description: 'Not implemented', type: 'object' },
+          200: {
+            description: 'Hack incident detail with computed fields',
+            type: 'object',
+            additionalProperties: true,
+          },
+          400: { description: 'Invalid UUID format', type: 'object', additionalProperties: true },
+          404: {
+            description: 'Hack incident not found',
+            type: 'object',
+            additionalProperties: true,
+          },
+          501: { description: 'Not implemented', type: 'object', additionalProperties: true },
         },
       },
     },
@@ -215,9 +230,9 @@ export async function hacksRoutes(server: FastifyInstance): Promise<void> {
           'recovery rate, POC coverage, unique protocols and chains.',
         tags: ['Hacks - Statistics'],
         response: {
-          200: { description: 'Dashboard statistics', type: 'object' },
-          500: { description: 'Internal server error', type: 'object' },
-          501: { description: 'Not implemented', type: 'object' },
+          200: { description: 'Dashboard statistics', type: 'object', additionalProperties: true },
+          500: { description: 'Internal server error', type: 'object', additionalProperties: true },
+          501: { description: 'Not implemented', type: 'object', additionalProperties: true },
         },
       },
     },
@@ -258,9 +273,13 @@ export async function hacksRoutes(server: FastifyInstance): Promise<void> {
           },
         },
         response: {
-          200: { description: 'Time-series loss data points', type: 'object' },
-          400: { description: 'Validation error', type: 'object' },
-          501: { description: 'Not implemented', type: 'object' },
+          200: {
+            description: 'Time-series loss data points',
+            type: 'object',
+            additionalProperties: true,
+          },
+          400: { description: 'Validation error', type: 'object', additionalProperties: true },
+          501: { description: 'Not implemented', type: 'object', additionalProperties: true },
         },
       },
     },
@@ -304,9 +323,13 @@ export async function hacksRoutes(server: FastifyInstance): Promise<void> {
           'Used for pie charts and breakdown tables.',
         tags: ['Hacks - Statistics'],
         response: {
-          200: { description: 'Attack vector statistics', type: 'object' },
-          500: { description: 'Internal server error', type: 'object' },
-          501: { description: 'Not implemented', type: 'object' },
+          200: {
+            description: 'Attack vector statistics',
+            type: 'object',
+            additionalProperties: true,
+          },
+          500: { description: 'Internal server error', type: 'object', additionalProperties: true },
+          501: { description: 'Not implemented', type: 'object', additionalProperties: true },
         },
       },
     },
@@ -335,9 +358,9 @@ export async function hacksRoutes(server: FastifyInstance): Promise<void> {
           'Used for chain distribution charts.',
         tags: ['Hacks - Statistics'],
         response: {
-          200: { description: 'Chain statistics', type: 'object' },
-          500: { description: 'Internal server error', type: 'object' },
-          501: { description: 'Not implemented', type: 'object' },
+          200: { description: 'Chain statistics', type: 'object', additionalProperties: true },
+          500: { description: 'Internal server error', type: 'object', additionalProperties: true },
+          501: { description: 'Not implemented', type: 'object', additionalProperties: true },
         },
       },
     },
@@ -375,10 +398,18 @@ export async function hacksRoutes(server: FastifyInstance): Promise<void> {
           required: ['search'],
         },
         response: {
-          200: { description: 'Paginated search results', type: 'object' },
-          400: { description: 'Validation error (missing search query)', type: 'object' },
-          500: { description: 'Internal server error', type: 'object' },
-          501: { description: 'Not implemented', type: 'object' },
+          200: {
+            description: 'Paginated search results',
+            type: 'object',
+            additionalProperties: true,
+          },
+          400: {
+            description: 'Validation error (missing search query)',
+            type: 'object',
+            additionalProperties: true,
+          },
+          500: { description: 'Internal server error', type: 'object', additionalProperties: true },
+          501: { description: 'Not implemented', type: 'object', additionalProperties: true },
         },
       },
     },
@@ -416,6 +447,7 @@ export async function hacksRoutes(server: FastifyInstance): Promise<void> {
   server.post(
     `${ROUTE_PREFIX}/sync`,
     {
+      preHandler: [requireApiKey],
       schema: {
         description:
           'Trigger an ETL sync from external data sources (DefiLlama, DeFiHackLabs). ' +
@@ -429,28 +461,23 @@ export async function hacksRoutes(server: FastifyInstance): Promise<void> {
           },
         },
         response: {
-          202: { description: 'ETL sync job queued', type: 'object' },
-          400: { description: 'Validation error', type: 'object' },
-          401: { description: 'Missing or invalid API key', type: 'object' },
-          409: { description: 'ETL sync already in progress', type: 'object' },
-          501: { description: 'Not implemented', type: 'object' },
+          202: { description: 'ETL sync job queued', type: 'object', additionalProperties: true },
+          400: { description: 'Validation error', type: 'object', additionalProperties: true },
+          401: {
+            description: 'Missing or invalid API key',
+            type: 'object',
+            additionalProperties: true,
+          },
+          409: {
+            description: 'ETL sync already in progress',
+            type: 'object',
+            additionalProperties: true,
+          },
+          501: { description: 'Not implemented', type: 'object', additionalProperties: true },
         },
       },
     },
     async (request: FastifyRequest<{ Body: HackSyncRequest }>, reply) => {
-      // Admin API key check (Phase 3: replace with proper auth middleware)
-      const apiKey = request.headers['x-api-key'] as string | undefined;
-      const validKeys = (process.env['API_KEYS'] ?? '').split(',').filter(Boolean);
-
-      if (typeof apiKey !== 'string' || !validKeys.includes(apiKey)) {
-        return reply.status(401).send({
-          error: 'UNAUTHORIZED',
-          code: 'AEGIS-401-001',
-          message: 'Missing or invalid API key. Admin access required.',
-          timestamp: new Date().toISOString(),
-        });
-      }
-
       const parseResult = HackSyncRequestSchema.safeParse(request.body);
       if (!parseResult.success) {
         return reply.status(400).send({
@@ -465,11 +492,27 @@ export async function hacksRoutes(server: FastifyInstance): Promise<void> {
         });
       }
 
-      // Mock sync response for defense demo since we are using seed data
+      // Check if job already in progress
+      const activeCount = await hacksSyncQueue.getJobCounts('active', 'waiting', 'delayed');
+      const inProgress =
+        (activeCount.active ?? 0) + (activeCount.waiting ?? 0) + (activeCount.delayed ?? 0);
+      if (inProgress > 0) {
+        return reply.status(409).send({
+          error: 'CONFLICT',
+          code: 'ETL_SYNC_IN_PROGRESS',
+          message: 'Hacks sync job already in progress',
+          timestamp: new Date().toISOString(),
+        });
+      }
+
+      // Enqueue job
+      const force = parseResult.data.force ?? false;
+      const job = await hacksSyncQueue.add('sync', { force });
+
       return reply.status(202).send({
-        jobId: 'demo-sync-job-id',
+        jobId: job.id,
         status: 'queued',
-        message: 'Sync job queued successfully (simulated for defense demo)',
+        message: 'Hacks sync job queued successfully',
         timestamp: new Date().toISOString(),
       });
     },

@@ -10,6 +10,5 @@
  * @hexagonal Application Layer — Engine α
  */
 
-// Use cases will be added in Phase 2+ as ETL pipelines are implemented.
-// Examples: SearchHacksUseCase, SyncHacksUseCase, GetDashboardStatsUseCase
-export {};
+export { SyncHacksUseCase } from './sync-hacks.use-case.js';
+export type { SyncResult, SyncHacksOptions, HackNormalizerPort } from './sync-hacks.use-case.js';

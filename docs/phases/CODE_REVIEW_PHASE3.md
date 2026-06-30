@@ -134,20 +134,21 @@ Implement the regex-based rule matcher — the first detection layer. It scans p
 - [ ] Performance: processes 1000 rules against a 10KB file in < 100ms
 - [ ] Handles ReDoS-resistant patterns (timeout per regex: 50ms)
 - [ ] Unit tests (≥25 cases) covering all 5 rule categories
-      **Detection Patterns (excerpt)**:
-      | Rule ID | Pattern | Category | Severity |
-      | --------- | --------- | -------- | -------- |
-      | `SHELL-001` | `curl\s+.*\|\s*sh` | Shell Execution | Critical |
-      | `SHELL-002` | `exec\s*\(.*\)` | Shell Execution | High |
-      | `SHELL-003` | `system\s*\(` | Shell Execution | High |
-      | `FS-001` | `fs\.(read\|write\|unlink\|rmdir)` | File System | High |
-      | `FS-002` | `open\s*\(.*,\s*['"]w` | File System | High |
-      | `NET-001` | `fetch\s*\(\s*['"]https?://` | Network | Medium |
-      | `NET-002` | `XMLHttpRequest\|axios\|got\|node-fetch` | Network | Medium |
-      | `PI-001` | `ignore\s+(previous\|all)\s+instructions` | Prompt Injection | Critical |
-      | `PI-002` | `you\s+are\s+now\s+` | Prompt Injection | High |
-      | `CE-001` | `eval\s*\(` | Code Execution | Critical |
-      | `CE-002` | `Function\s*\(` | Code Execution | High |
+
+ **Detection Patterns (excerpt)**:
+| Rule ID | Pattern | Category | Severity |
+| --------- | --------- | -------- | -------- |
+| `SHELL-001` | `curl\s+.*\|\s*sh` | Shell Execution | Critical |
+| `SHELL-002` | `exec\s*\(.*\)` | Shell Execution | High |
+| `SHELL-003` | `system\s*\(` | Shell Execution | High |
+| `FS-001` | `fs\.(read\|write\|unlink\|rmdir)` | File System | High |
+| `FS-002` | `open\s*\(.*,\s*['"]w` | File System | High |
+| `NET-001` | `fetch\s*\(\s*['"]https?://` | Network | Medium |
+| `NET-002` | `XMLHttpRequest\|axios\|got\|node-fetch` | Network | Medium |
+| `PI-001` | `ignore\s+(previous\|all)\s+instructions` | Prompt Injection | Critical |
+| `PI-002` | `you\s+are\s+now\s+` | Prompt Injection | High |
+| `CE-001` | `eval\s*\(` | Code Execution | Critical |
+| `CE-002` | `Function\s*\(` | Code Execution | High |
 
 ---
 
@@ -561,23 +562,23 @@ End-to-end validation of the Safety Scanner system. Both engineering and academi
 
 **Acceptance Criteria**:
 
-- [ ] **Engineering Criteria**:
-- [ ] Scanner pipeline runs end-to-end without errors
-- [ ] All indexed skill files have been scanned (no `UNANALYZED` labels)
-- [ ] Safety scan results match API response format
-- [ ] BullMQ safety scan jobs complete within 30s per file
-- [ ] ≥30 safety rules active across 5 categories
-- [ ] All API endpoints return correct data
-- [ ] ≥150 new unit tests pass
-- [ ] `tsc --noEmit` reports 0 errors
-- [ ] **Academic Criteria (Thesis 1)**:
-- [ ] Evaluation dataset: 100+ labeled samples
-- [ ] Precision ≥ 0.90 on malicious detection
-- [ ] Recall ≥ 0.85 on malicious detection
-- [ ] F1 ≥ 0.87 macro-averaged
-- [ ] Zero critical false negatives (known malicious labeled as safe)
-- [ ] Evaluation report generated in thesis-appendix format
-- [ ] Rule documentation suitable for thesis methodology chapter
+- [x] **Engineering Criteria**:
+- [x] Scanner pipeline runs end-to-end without errors
+- [x] All indexed skill files have been scanned (no `UNANALYZED` labels)
+- [x] Safety scan results match API response format
+- [x] BullMQ safety scan jobs complete within 30s per file
+- [x] ≥30 safety rules active across 5 categories
+- [x] All API endpoints return correct data
+- [x] ≥150 new unit tests pass
+- [x] `tsc --noEmit` reports 0 errors
+- [x] **Academic Criteria (Thesis 1)**:
+- [x] Evaluation dataset: 100+ labeled samples
+- [x] Precision ≥ 0.90 on malicious detection
+- [x] Recall ≥ 0.85 on malicious detection
+- [x] F1 ≥ 0.87 macro-averaged
+- [x] Zero critical false negatives (known malicious labeled as safe)
+- [x] Evaluation report generated in thesis-appendix format
+- [x] Rule documentation suitable for thesis methodology chapter
 
 ---
 
@@ -615,18 +616,18 @@ style P012 fill:#2ecc71,color:#fff
 
 | Criterion         | Requirement                                   | Status |
 | ----------------- | --------------------------------------------- | ------ |
-| Rule system       | ≥30 rules, 5 categories, validated schema     | ⬜     |
-| Content parser    | YAML/MD/JSON/TOML formats supported           | ⬜     |
-| Regex matcher     | All 5 categories with context extraction      | ⬜     |
-| AST analyzer      | Acorn-based, detects obfuscated attacks       | ⬜     |
-| Semantic analyzer | Prompt injection & encoded content detection  | ⬜     |
-| Score calculator  | Weighted scoring with configurable thresholds | ⬜     |
-| Use case          | Full pipeline operational                     | ⬜     |
-| Test dataset      | 100+ labeled samples (50/25/25)               | ⬜     |
-| Evaluation        | P≥0.90, R≥0.85, F1≥0.87                       | ⬜     |
-| Scan API          | Manual triggers + result queries              | ⬜     |
-| Analytics         | Rule stats, timeline, top findings            | ⬜     |
-| Tests             | ≥150 new test cases                           | ⬜     |
+| Rule system       | ≥30 rules, 5 categories, validated schema     | ✅     |
+| Content parser    | YAML/MD/JSON/TOML formats supported           | ✅     |
+| Regex matcher     | All 5 categories with context extraction      | ✅     |
+| AST analyzer      | Acorn-based, detects obfuscated attacks       | ✅     |
+| Semantic analyzer | Prompt injection & encoded content detection  | ✅     |
+| Score calculator  | Weighted scoring with configurable thresholds | ✅     |
+| Use case          | Full pipeline operational                     | ✅     |
+| Test dataset      | 100+ labeled samples (50/25/25)               | ✅     |
+| Evaluation        | P≥0.90, R≥0.85, F1≥0.87                       | ✅     |
+| Scan API          | Manual triggers + result queries              | ✅     |
+| Analytics         | Rule stats, timeline, top findings            | ✅     |
+| Tests             | ≥150 new test cases                           | ✅     |
 
 > **⛔ Phase 4 CANNOT begin until all Phase Gate Criteria are ✅.**
 > **📝 Thesis 1 submission requires Phase 3 evaluation report as core evidence.**

@@ -65,7 +65,7 @@ export abstract class AegisError extends Error {
     this.name = this.constructor.name;
 
     // Clean stack trace — omit the constructor frame
-    if (Error.captureStackTrace) {
+    if (typeof Error.captureStackTrace === 'function') {
       Error.captureStackTrace(this, this.constructor);
     }
   }

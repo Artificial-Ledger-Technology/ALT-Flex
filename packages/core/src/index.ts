@@ -51,6 +51,26 @@ export type {
   GatewayEnv,
 } from './shared/env/index.js';
 
+export {
+  SeveritySchema,
+  RuleFindingSchema,
+  ASTFindingSchema,
+  SemanticFindingSchema,
+  ScanVerdictSchema,
+  FindingSchema,
+} from './domain/value-objects/index.js';
+
+export type {
+  SafetyRule,
+  RuleCategory,
+  Severity,
+  RuleFinding,
+  ASTFinding,
+  SemanticFinding,
+  ScanVerdict,
+  Finding,
+} from './domain/value-objects/index.js';
+
 // ── API Contract Schemas ────────────────────────────────────────────────────
 // Request/response Zod schemas for all API endpoints.
 // These compose domain types — never duplicate them.
@@ -65,3 +85,8 @@ export * from './errors/index.js';
 // Pino-based structured logging with AsyncLocalStorage correlation IDs.
 // Domain layers depend on LoggerPort interface, not Pino directly.
 export * from './logging/index.js';
+
+// ── Queue Infrastructure (P2-ETL-006) ───────────────────────────────────────
+// BullMQ queue connection factory and shared job type definitions.
+// Both hacks-engine and skills-engine import queue types from here.
+export * from './shared/queue/index.js';

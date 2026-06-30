@@ -157,7 +157,7 @@ export function createLogger(options?: LoggerOptions): LoggerPort {
 
   const pinoLogger = pino({
     level,
-    ...(options?.name ? { name: options.name } : {}),
+    ...(options?.name !== undefined && options?.name !== '' ? { name: options.name } : {}),
     // Inject correlationId from AsyncLocalStorage on every log entry
     mixin() {
       return { correlationId: getCorrelationId() };
