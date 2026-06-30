@@ -7,10 +7,10 @@ import { useEffect, useState } from 'react';
 import styles from './Header.module.css';
 
 interface HeaderProps {
-  onMenuClick: () => void;
+  onMenuAction: () => void;
 }
 
-export function Header({ onMenuClick }: HeaderProps): React.ReactNode {
+export function Header({ onMenuAction }: HeaderProps): React.ReactNode {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -24,7 +24,7 @@ export function Header({ onMenuClick }: HeaderProps): React.ReactNode {
       <div className={styles.leftSection}>
         <button
           className={styles.mobileMenuBtn}
-          onClick={onMenuClick}
+          onClick={onMenuAction}
           aria-label="Toggle menu"
         >
           <Menu />
