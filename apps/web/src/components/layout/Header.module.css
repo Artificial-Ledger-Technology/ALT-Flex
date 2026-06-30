@@ -24,6 +24,12 @@
   gap: var(--space-4);
 }
 
+.breadcrumbsContainer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
 .mobileMenuBtn {
   display: none;
   padding: var(--space-2);

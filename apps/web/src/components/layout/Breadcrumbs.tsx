@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ChevronRight } from 'lucide-react';
 import React from 'react';
+import styles from './Breadcrumbs.module.css';
 
 export function Breadcrumbs(): React.ReactNode {
   const pathname = usePathname();
@@ -19,10 +20,10 @@ export function Breadcrumbs(): React.ReactNode {
   };
 
   return (
-    <nav aria-label="Breadcrumb" className="flex items-center text-sm" style={{ display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
-      <ol style={{ display: 'flex', alignItems: 'center', margin: 0, padding: 0, listStyle: 'none' }}>
+    <nav aria-label="Breadcrumb" className={styles.nav}>
+      <ol className={styles.list}>
         <li>
-          <Link href="/" style={{ color: 'var(--text-muted)' }} className="hover:text-primary transition-colors">
+          <Link href="/" className={styles.link}>
             Home
           </Link>
         </li>
@@ -32,14 +33,14 @@ export function Breadcrumbs(): React.ReactNode {
 
           return (
             <React.Fragment key={segment}>
-              <ChevronRight size={16} style={{ margin: '0 var(--space-1)', opacity: 0.5 }} />
+              <ChevronRight size={16} className={styles.separator} />
               <li>
                 {isLast ? (
-                  <span style={{ color: 'var(--text-primary)', fontWeight: 500 }} aria-current="page">
+                  <span className={styles.active} aria-current="page">
                     {formatSegment(segment)}
                   </span>
                 ) : (
-                  <Link href={href} style={{ color: 'var(--text-muted)' }} className="hover:text-primary transition-colors">
+                  <Link href={href} className={styles.link}>
                     {formatSegment(segment)}
                   </Link>
                 )}

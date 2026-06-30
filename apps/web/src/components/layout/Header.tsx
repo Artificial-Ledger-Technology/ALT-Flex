@@ -30,7 +30,7 @@ export function Header({ onMenuClick }: HeaderProps): React.ReactNode {
           <Menu />
         </button>
         
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
+        <div className={styles.breadcrumbsContainer}>
           <Breadcrumbs />
         </div>
         
