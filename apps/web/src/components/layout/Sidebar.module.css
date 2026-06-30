@@ -27,6 +27,9 @@
   font-size: var(--font-size-xl);
   color: var(--text-primary);
   letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .logoAccent {
@@ -51,11 +54,14 @@
   color: var(--text-secondary);
   font-weight: 500;
   transition: all var(--duration-fast) var(--ease-out);
+  white-space: nowrap;
+  overflow: hidden;
 }
 
-.navLink:hover {
+.navLink:hover, .navLink:focus-visible {
   background-color: var(--bg-hover);
   color: var(--text-primary);
+  outline: none;
 }
 
 .navLinkActive {
@@ -79,10 +85,32 @@
   flex-shrink: 0;
 }
 
-@media (max-width: 1024px) {
+@media (min-width: 768px) and (max-width: 1024px) {
+  .sidebar {
+    width: 72px; /* Icon-only mode */
+  }
+
+  .logoText,
+  .navLink span {
+    display: none;
+  }
+
+  .navLink {
+    justify-content: center;
+    padding: var(--space-3);
+  }
+
+  .logoContainer {
+    justify-content: center;
+    padding: var(--space-6) 0;
+  }
+}
+
+@media (max-width: 767px) {
   .sidebar {
     position: fixed;
     transform: translateX(-100%);
+    width: 260px;
   }
 
   .sidebarOpen {

@@ -48,16 +48,16 @@ Establish the visual foundation — CSS custom properties (design tokens), color
 
 **Acceptance Criteria**:
 
-- [ ] CSS custom properties for colors, spacing, typography, shadows, radii
-- [ ] Dark mode color palette (primary: deep navy, accents: cyan/emerald/amber)
-- [ ] Light mode palette (optional, togglable)
-- [ ] Typography scale using Inter or Outfit (Google Fonts)
-- [ ] Responsive breakpoints: `sm` (640px), `md` (768px), `lg` (1024px), `xl` (1280px)
-- [ ] CSS utility classes for common patterns
-- [ ] Global reset and base element styles
-- [ ] CSS Modules configured for component-level scoping
-- [ ] Design token documentation in Storybook or standalone page
-- [ ] Animations: `fadeIn`, `slideUp`, `scaleIn`, `shimmer` (for skeleton loading)
+- [x] CSS custom properties for colors, spacing, typography, shadows, radii
+- [x] Dark mode color palette (primary: deep navy, accents: cyan/emerald/amber)
+- [x] Light mode palette (optional, togglable)
+- [x] Typography scale using Inter or Outfit (Google Fonts)
+- [x] Responsive breakpoints: `sm` (640px), `md` (768px), `lg` (1024px), `xl` (1280px)
+- [x] CSS utility classes for common patterns
+- [x] Global reset and base element styles
+- [x] CSS Modules configured for component-level scoping
+- [x] Design token documentation in Storybook or standalone page
+- [x] Animations: `fadeIn`, `slideUp`, `scaleIn`, `shimmer` (for skeleton loading)
       **Color Palette**:
 
 ```css
@@ -104,19 +104,19 @@ Build the persistent app shell — collapsible sidebar navigation, top header ba
 
 **Acceptance Criteria**:
 
-- [ ] Root layout (`app/layout.tsx`) with font loading, metadata, theme provider
-- [ ] Dashboard layout (`app/dashboard/layout.tsx`) with sidebar + main content area
-- [ ] Sidebar navigation with icons and active state indicators
-- [ ] Hacks Dashboard link (sword/shield icon)
-- [ ] AI Skills Explorer link (brain icon)
-- [ ] Safety Dashboard link (scan icon)
-- [ ] Forensics link (microscope icon) — disabled placeholder
-- [ ] Collapsible sidebar (icon-only mode on mobile)
-- [ ] Top header with AEGIS logo, search bar, and theme toggle
-- [ ] Breadcrumb component (auto-generated from route)
-- [ ] Loading state skeleton (shimmer animation)
-- [ ] Mobile hamburger menu
-- [ ] Keyboard navigation (Tab, Escape)
+- [x] Root layout (`app/layout.tsx`) with font loading, metadata, theme provider
+- [x] Dashboard layout (`app/dashboard/layout.tsx`) with sidebar + main content area
+- [x] Sidebar navigation with icons and active state indicators
+- [x] Hacks Dashboard link (sword/shield icon)
+- [x] AI Skills Explorer link (brain icon)
+- [x] Safety Dashboard link (scan icon)
+- [x] Forensics link (microscope icon) — disabled placeholder
+- [x] Collapsible sidebar (icon-only mode on mobile)
+- [x] Top header with AEGIS logo, search bar, and theme toggle
+- [x] Breadcrumb component (auto-generated from route)
+- [x] Loading state skeleton (shimmer animation)
+- [x] Mobile hamburger menu
+- [x] Keyboard navigation (Tab, Escape)
 
 ---
 
@@ -508,8 +508,8 @@ style P012 fill:#2ecc71,color:#fff
 
 | Criterion        | Requirement                                     | Status |
 | ---------------- | ----------------------------------------------- | ------ |
-| Design system    | CSS tokens, dark mode, typography               | ⬜     |
-| Layout shell     | Sidebar, header, routing, mobile menu           | ⬜     |
+| Design system    | CSS tokens, dark mode, typography               | ✅     |
+| Layout shell     | Sidebar, header, routing, mobile menu           | ✅     |
 | Hacks table      | 100+ rows, sorting, pagination, expansion       | ⬜     |
 | Hacks filters    | All filter types, URL sync, clear all           | ⬜     |
 | Hacks charts     | Timeline, vector bars, chain donut, stats cards | ⬜     |
