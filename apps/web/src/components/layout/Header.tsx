@@ -1,6 +1,9 @@
 'use client';
 
-import { Menu, Search, Moon } from 'lucide-react';
+import { Menu, Search, Moon, Sun } from 'lucide-react';
+import { useTheme } from 'next-themes';
+import { Breadcrumbs } from './Breadcrumbs';
+import { useEffect, useState } from 'react';
 import styles from './Header.module.css';
 
 interface HeaderProps {
@@ -8,6 +11,14 @@ interface HeaderProps {
 }
 
 export function Header({ onMenuClick }: HeaderProps): React.ReactNode {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // Avoid hydration mismatch by only rendering theme toggle after mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <header className={styles.header}>
       <div className={styles.leftSection}>
@@ -18,6 +29,10 @@ export function Header({ onMenuClick }: HeaderProps): React.ReactNode {
         >
           <Menu />
         </button>
+        
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
+          <Breadcrumbs />
+        </div>
         
         <div className={styles.searchContainer}>
           <Search className={styles.searchIcon} />
@@ -30,13 +45,16 @@ export function Header({ onMenuClick }: HeaderProps): React.ReactNode {
       </div>
 
       <div className={styles.rightSection}>
-        <button 
-          className={styles.iconBtn} 
-          aria-label="Toggle dark mode"
-          title="Dark mode is default for AEGIS v3.0"
-        >
-          <Moon size={20} />
-        </button>
+        {mounted && (
+          <button 
+            className={styles.iconBtn} 
+            aria-label="Toggle theme"
+            title="Toggle light/dark theme"
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+          >
+            {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
+        )}
       </div>
     </header>
   );

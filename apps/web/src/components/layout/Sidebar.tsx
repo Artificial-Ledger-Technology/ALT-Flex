@@ -71,8 +71,10 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps): React.ReactN
                   key={item.name}
                   className={`${styles.navLink} ${styles.navLinkDisabled}`}
                   title="Coming Soon"
+                  aria-disabled="true"
+                  tabIndex={-1}
                 >
-                  <Icon className={styles.navIcon} />
+                  <Icon className={styles.navIcon} aria-hidden="true" />
                   <span>{item.name}</span>
                 </div>
               );
@@ -84,8 +86,9 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps): React.ReactN
                 href={item.href}
                 className={`${styles.navLink} ${isActive ? styles.navLinkActive : ''}`}
                 onClick={onClose ? () => onClose() : () => {}}
+                aria-current={isActive ? 'page' : undefined}
               >
-                <Icon className={styles.navIcon} />
+                <Icon className={styles.navIcon} aria-hidden="true" />
                 <span>{item.name}</span>
               </Link>
             );
