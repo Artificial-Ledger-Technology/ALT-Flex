@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import useSWR from 'swr';
 import { useSearchParams } from 'next/navigation';
 import { skillsApi, type PaginatedResponse } from '../lib/api-client';
 import type { AISkillFile } from '@aegis/core';
@@ -11,69 +12,56 @@ export interface UseSkillsResult {
   refresh: () => void;
 }
 
+/**
+ * Convert URLSearchParams into a Record for API consumption.
+ */
+function searchParamsToRecord(
+  searchParams: URLSearchParams | null,
+): Record<string, string | string[]> {
+  const params: Record<string, string | string[]> = {};
+  if (searchParams === null) return params;
+
+  searchParams.forEach((value, key) => {
+    const existing = params[key];
+    if (existing !== undefined) {
+      if (Array.isArray(existing)) {
+        existing.push(value);
+      } else {
+        params[key] = [existing, value];
+      }
+    } else {
+      params[key] = value;
+    }
+  });
+
+  return params;
+}
+
+/**
+ * SWR-powered hook for fetching paginated skills.
+ * Supports automatic dedup, caching, and cache invalidation via `refresh()`.
+ */
 export function useSkills(): UseSkillsResult {
   const searchParams = useSearchParams();
-  const [data, setData] = useState<PaginatedResponse<AISkillFile> | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<Error | null>(null);
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const params = searchParamsToRecord(searchParams);
+  const paramKey = JSON.stringify(params);
 
-  const refresh = (): void => setRefreshTrigger((prev) => prev + 1);
+  const fetcher = async (): Promise<PaginatedResponse<AISkillFile>> => skillsApi.getSkills(params);
 
-  useEffect(() => {
-    let mounted = true;
+  const { data, error, isLoading, mutate } = useSWR<PaginatedResponse<AISkillFile>, Error>(
+    [`/skills`, paramKey],
+    fetcher,
+  );
 
-    async function fetchSkills(): Promise<void> {
-      try {
-        setIsLoading(true);
-        setError(null);
-
-        const params: Record<string, string | string[]> = {};
-        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-        if (searchParams) {
-          searchParams.forEach((value, key) => {
-            // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-            if (params[key]) {
-              if (Array.isArray(params[key])) {
-                params[key].push(value);
-              } else {
-                params[key] = [params[key], value];
-              }
-            } else {
-              params[key] = value;
-            }
-          });
-        }
-
-        const res = await skillsApi.getSkills(params);
-
-        if (mounted) {
-          setData(res);
-        }
-      } catch (err) {
-        if (mounted) {
-          setError(err instanceof Error ? err : new Error('Failed to fetch skills'));
-        }
-      } finally {
-        if (mounted) {
-          setIsLoading(false);
-        }
-      }
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    fetchSkills();
-
-    return (): void => {
-      mounted = false;
-    };
-  }, [searchParams, refreshTrigger]);
+  const refresh = (): void => {
+    void mutate();
+  };
 
   return {
     skills: data?.data ?? [],
     total: data?.total ?? 0,
     isLoading,
-    error,
+    error: error ?? null,
     refresh,
   };
 }
