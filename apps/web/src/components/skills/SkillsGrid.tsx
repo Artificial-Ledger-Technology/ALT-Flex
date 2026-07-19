@@ -1,10 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { SearchX } from 'lucide-react';
 import styles from './Skills.module.css';
 import { SkillCard } from './SkillCard';
 import { SkillCardSkeleton } from './SkillCardSkeleton';
+import { SkillDetailModal } from './SkillDetailModal';
 import type { AISkillFile } from '@aegis/core';
 
 interface SkillsGridProps {
@@ -13,6 +14,8 @@ interface SkillsGridProps {
 }
 
 export function SkillsGrid({ skills, isLoading }: SkillsGridProps): React.ReactElement {
+  const [selectedSkill, setSelectedSkill] = useState<AISkillFile | null>(null);
+
   if (isLoading) {
     return (
       <div className={styles.grid}>
@@ -34,10 +37,26 @@ export function SkillsGrid({ skills, isLoading }: SkillsGridProps): React.ReactE
   }
 
   return (
-    <div className={styles.grid}>
-      {skills.map((skill) => (
-        <SkillCard key={skill.id} skill={skill} />
-      ))}
-    </div>
+    <>
+      <div className={styles.grid}>
+        {skills.map((skill) => (
+          <div
+            key={skill.id}
+            onClick={() => setSelectedSkill(skill)}
+            style={{ display: 'contents' }}
+          >
+            <SkillCard skill={skill} />
+          </div>
+        ))}
+      </div>
+
+      {selectedSkill && (
+        <SkillDetailModal
+          skill={selectedSkill}
+          isOpen={true}
+          onClose={() => setSelectedSkill(null)}
+        />
+      )}
+    </>
   );
 }
