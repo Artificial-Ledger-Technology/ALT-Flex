@@ -86,8 +86,18 @@ export async function hacksRoutes(server: FastifyInstance): Promise<void> {
             pageSize: { type: 'integer', default: 20, minimum: 1, maximum: 100 },
             sortBy: { type: 'string', enum: ['date', 'lossUsd', 'protocolName'], default: 'date' },
             sortOrder: { type: 'string', enum: ['asc', 'desc'], default: 'desc' },
-            attackVector: { type: 'string' },
-            chain: { type: 'string' },
+            attackVector: {
+              anyOf: [
+                { type: 'string' },
+                { type: 'array', items: { type: 'string' } },
+              ]
+            },
+            chain: {
+              anyOf: [
+                { type: 'string' },
+                { type: 'array', items: { type: 'string' } },
+              ]
+            },
             dateFrom: { type: 'string', format: 'date' },
             dateTo: { type: 'string', format: 'date' },
             minLossUsd: { type: 'number', minimum: 0 },

@@ -8,7 +8,7 @@
   "terminal.integrated.profiles.windows": {
     "DevOps Terminal": {
       "source": "PowerShell",
-      "icon": "server",
+      "icon": "shield",
       "color": "terminal.ansiYellow",
       "args": ["-NoLogo"]
     }
@@ -19,15 +19,15 @@
   "terminal.integrated.fontFamily": "'MesloLGS NF', 'CaskaydiaCove Nerd Font', 'Cascadia Code NF', 'FiraCode Nerd Font', 'JetBrainsMono Nerd Font', 'Cascadia Code', Consolas, monospace",
   "workbench.colorCustomizations": {
     "terminal.background": "#0b0f19",
-    "terminal.foreground": "#e0e0e0",
-    "terminalCursor.foreground": "#FF9900",
-    "terminal.ansiBlack": "#1E1E1E",
-    "terminal.ansiRed": "#E83B46",
-    "terminal.ansiGreen": "#47D16E",
-    "terminal.ansiYellow": "#FFCC00",
-    "terminal.ansiBlue": "#0DB7ED",
-    "terminal.ansiMagenta": "#8E44AD",
-    "terminal.ansiCyan": "#00C4CC",
-    "terminal.ansiWhite": "#F0F0F0"
+    "terminal.foreground": "#f1f5f9",
+    "terminalCursor.foreground": "#ffd700",
+    "terminal.ansiBlack": "#0b0f19",
+    "terminal.ansiRed": "#ef4444",
+    "terminal.ansiGreen": "#2ecc71",
+    "terminal.ansiYellow": "#ffd700",
+    "terminal.ansiBlue": "#38bdf8",
+    "terminal.ansiMagenta": "#bc8cff",
+    "terminal.ansiCyan": "#00c4cc",
+    "terminal.ansiWhite": "#f1f5f9"
   }
 }

@@ -65,11 +65,11 @@ export const HackSortQuerySchema = createSortQuerySchema(HACK_SORT_FIELDS, 'date
  * ```
  */
 export const HackListQuerySchema = PaginationQuerySchema.merge(HackSortQuerySchema).extend({
-  /** Filter by primary attack vector (enum value) */
-  attackVector: AttackVectorSchema.optional(),
+  /** Filter by primary attack vector(s) (enum value or array of enum values) */
+  attackVector: z.union([AttackVectorSchema, z.array(AttackVectorSchema)]).optional(),
 
-  /** Filter by blockchain network (enum value) */
-  chain: ChainSchema.optional(),
+  /** Filter by blockchain network(s) (enum value or array of enum values) */
+  chain: z.union([ChainSchema, z.array(ChainSchema)]).optional(),
 
   /** Filter by date range start (inclusive) — ISO 8601 date string */
   dateFrom: z.coerce.date().optional(),
