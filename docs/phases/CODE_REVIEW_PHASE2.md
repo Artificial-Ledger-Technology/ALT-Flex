@@ -503,18 +503,18 @@ Implement the `SyncHacksUseCase` — the application-layer orchestrator that coo
 
 **Acceptance Criteria**:
 
-- [ ] Orchestrates full ETL flow in correct order
-- [ ] Calls `DefiLlamaAdapter.fetchAllHacks()`
-- [ ] Passes raw data through `HackNormalizer`
-- [ ] Upserts normalized data via `IHackDataPort.saveBatch()`
-- [ ] Calls `DeFiHackLabsAdapter.fetchPocMappings()`
-- [ ] Cross-references POCs with stored incidents
-- [ ] Invalidates Redis cache (`aegis:hacks:*`)
-- [ ] Logs sync result to `etl_sync_log` (records added, updated, duration)
-- [ ] Reports progress to BullMQ job handler (0%→25%→50%→75%→100%)
-- [ ] Handles partial failures (some records fail, others succeed)
-- [ ] Returns `SyncResult` with summary statistics
-- [ ] Unit tests with mocked ports (≥10 test cases)
+- [x] Orchestrates full ETL flow in correct order
+- [x] Calls `DefiLlamaAdapter.fetchAllHacks()`
+- [x] Passes raw data through `HackNormalizer`
+- [x] Upserts normalized data via `IHackDataPort.saveBatch()`
+- [x] Calls `DeFiHackLabsAdapter.fetchPocMappings()`
+- [x] Cross-references POCs with stored incidents
+- [x] Invalidates Redis cache (`aegis:hacks:*`)
+- [x] Logs sync result to `etl_sync_log` (records added, updated, duration)
+- [x] Reports progress to BullMQ job handler (0%→25%→50%→75%→100%)
+- [x] Handles partial failures (some records fail, others succeed)
+- [x] Returns `SyncResult` with summary statistics
+- [x] Unit tests with mocked ports (≥10 test cases)
 
 ---
 

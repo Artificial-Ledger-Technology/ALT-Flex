@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 import { Shield } from 'lucide-react';
 import { HacksTable } from '@/components/hacks/HacksTable';
 import { HacksTableSkeleton } from '@/components/hacks/HacksTableSkeleton';
+import { HacksFilterSidebar } from '@/components/hacks/HacksFilterSidebar';
 import { hacksApi } from '@/lib/api-client';
 import { HacksDashboardCharts } from '@/components/hacks/HacksDashboardCharts';
 
@@ -19,9 +20,14 @@ interface HackPageProps {
     pageSize?: string;
     sortBy?: string;
     sortOrder?: string;
-    attackVector?: string;
-    chain?: string;
+    attackVector?: string | string[];
+    chain?: string | string[];
     search?: string;
+    dateFrom?: string;
+    dateTo?: string;
+    minLossUsd?: string;
+    maxLossUsd?: string;
+    hasFoundryPoc?: string;
   }>;
 }
 
@@ -34,9 +40,14 @@ export default async function HacksPage({ searchParams }: HackPageProps): Promis
     pageSize: params.pageSize ? parseInt(params.pageSize) : 20,
     sortBy: (params.sortBy as 'date' | 'lossUsd' | 'protocolName') || 'date',
     sortOrder: (params.sortOrder as 'asc' | 'desc') || 'desc',
-    attackVector: params.attackVector as AttackVector | undefined,
-    chain: params.chain as Chain | undefined,
+    attackVector: params.attackVector as AttackVector | AttackVector[] | undefined,
+    chain: params.chain as Chain | Chain[] | undefined,
     search: params.search,
+    dateFrom: params.dateFrom ? new Date(params.dateFrom) : undefined,
+    dateTo: params.dateTo ? new Date(params.dateTo) : undefined,
+    minLossUsd: params.minLossUsd ? parseFloat(params.minLossUsd) : undefined,
+    maxLossUsd: params.maxLossUsd ? parseFloat(params.maxLossUsd) : undefined,
+    hasFoundryPoc: params.hasFoundryPoc === 'true' ? true : undefined,
   };
 
   // Pre-fetch data for the table
@@ -70,12 +81,20 @@ export default async function HacksPage({ searchParams }: HackPageProps): Promis
 
       <HacksDashboardCharts />
 
-      <section>
-        <Suspense fallback={<HacksTableSkeleton />}>
-          {/* Await the data resolution in the server component and pass it */}
-          <HacksTableWrapper dataPromise={dataPromise} />
-        </Suspense>
-      </section>
+      <div style={{ display: 'flex', gap: 'var(--space-6)', position: 'relative' }}>
+        <aside style={{ width: '300px', flexShrink: 0 }}>
+          <Suspense fallback={<div style={{ width: 300, height: 500, backgroundColor: 'var(--bg-secondary)', borderRadius: 'var(--radius-lg)' }} />}>
+            <HacksFilterSidebar />
+          </Suspense>
+        </aside>
+
+        <section style={{ flexGrow: 1, minWidth: 0 }}>
+          <Suspense fallback={<HacksTableSkeleton />}>
+            {/* Await the data resolution in the server component and pass it */}
+            <HacksTableWrapper dataPromise={dataPromise} />
+          </Suspense>
+        </section>
+      </div>
     </div>
   );
 }
