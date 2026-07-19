@@ -1,4 +1,22 @@
-import type { HackListQuery, HackIncident, AISkillFile, SkillSafetyResponse } from '@aegis/core';
+import type {
+  HackListQuery,
+  HackIncident,
+  AISkillFile,
+  SkillSafetyResponse,
+  SafetyStatsResponse,
+  SafetyRulesResponse,
+  SafetyTimelineResponse,
+  TopFindingsResponse,
+} from '@aegis/core';
+
+export interface RecentScan {
+  id: string;
+  skillName: string;
+  label: 'safe' | 'suspicious' | 'malicious' | 'unanalyzed';
+  score: number;
+  findingsCount: number;
+  timestamp: string;
+}
 
 export interface DashboardStats {
   totalIncidents: number;
@@ -240,5 +258,85 @@ export const skillsApi = {
 
     const responseData: unknown = await response.json();
     return responseData as SkillSafetyResponse;
+  },
+};
+
+export const safetyApi = {
+  async getStats(): Promise<SafetyStatsResponse> {
+    const response = await fetch(`${API_BASE}/safety/stats`);
+    if (!response.ok) throw new Error('Failed to fetch safety stats');
+    const data: unknown = await response.json();
+    return data as SafetyStatsResponse;
+  },
+
+  async getRules(): Promise<SafetyRulesResponse> {
+    const response = await fetch(`${API_BASE}/safety/rules`);
+    if (!response.ok) throw new Error('Failed to fetch safety rules');
+    const data: unknown = await response.json();
+    return data as SafetyRulesResponse;
+  },
+
+  async getTimeline(interval: 'day' | 'week' | 'month' = 'day'): Promise<SafetyTimelineResponse> {
+    const params = new URLSearchParams({ interval });
+    const response = await fetch(`${API_BASE}/safety/timeline?${params.toString()}`);
+    if (!response.ok) throw new Error('Failed to fetch safety timeline');
+    const data: unknown = await response.json();
+    return data as SafetyTimelineResponse;
+  },
+
+  async getTopFindings(limit = 10): Promise<TopFindingsResponse> {
+    const params = new URLSearchParams({ limit: limit.toString() });
+    const response = await fetch(`${API_BASE}/safety/findings/top?${params.toString()}`);
+    if (!response.ok) throw new Error('Failed to fetch top findings');
+    const data: unknown = await response.json();
+    return data as TopFindingsResponse;
+  },
+
+  async getRecentScans(): Promise<{ data: RecentScan[] }> {
+    // Mock data since endpoint does not exist yet
+    return Promise.resolve({
+      data: [
+        {
+          id: '1',
+          skillName: 'Flash Loan Exploit Pattern',
+          label: 'malicious',
+          score: 92,
+          findingsCount: 4,
+          timestamp: new Date().toISOString(),
+        },
+        {
+          id: '2',
+          skillName: 'Reentrancy Guard Template',
+          label: 'safe',
+          score: 15,
+          findingsCount: 0,
+          timestamp: new Date(Date.now() - 3600000).toISOString(),
+        },
+        {
+          id: '3',
+          skillName: 'Arbitrage Bot Logic',
+          label: 'suspicious',
+          score: 65,
+          findingsCount: 2,
+          timestamp: new Date(Date.now() - 7200000).toISOString(),
+        },
+        {
+          id: '4',
+          skillName: 'Basic ERC20 Implementation',
+          label: 'safe',
+          score: 5,
+          findingsCount: 0,
+          timestamp: new Date(Date.now() - 86400000).toISOString(),
+        },
+        {
+          id: '5',
+          skillName: 'Obfuscated DelegateCall',
+          label: 'malicious',
+          score: 98,
+          findingsCount: 6,
+          timestamp: new Date(Date.now() - 90000000).toISOString(),
+        },
+      ],
+    });
   },
 };
