@@ -45,10 +45,10 @@ export type {
 } from '@aegis/core';
 
 // ── Engine-specific Application Layer (populated in Phase 2+) ───────────────
-// export * from './application/index.js';
+export * from './application/index.js';
 
 // ── Engine-specific Adapter Layer (populated in Phase 2+) ───────────────────
-// export * from './adapters/index.js';
+export * from './adapters/index.js';
 
 // ── Engine-specific Domain Extensions (populated in Phase 2+) ───────────────
 // export * from './domain/index.js';

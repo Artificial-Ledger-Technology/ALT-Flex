@@ -4,6 +4,7 @@ import { Shield } from 'lucide-react';
 import { HacksTable } from '@/components/hacks/HacksTable';
 import { HacksTableSkeleton } from '@/components/hacks/HacksTableSkeleton';
 import { hacksApi } from '@/lib/api-client';
+import { HacksDashboardCharts } from '@/components/hacks/HacksDashboardCharts';
 
 import type { AttackVector, Chain } from '@aegis/core';
 
@@ -66,6 +67,8 @@ export default async function HacksPage({ searchParams }: HackPageProps): Promis
           </p>
         </div>
       </header>
+
+      <HacksDashboardCharts />
 
       <section>
         <Suspense fallback={<HacksTableSkeleton />}>

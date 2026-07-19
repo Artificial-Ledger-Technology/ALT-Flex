@@ -62,7 +62,7 @@ async function correlationIdPlugin(server: FastifyInstance): Promise<void> {
     request.id = correlationId;
 
     // Echo correlation ID back on the response
-    reply.header('x-correlation-id', correlationId);
+    void reply.header('x-correlation-id', correlationId);
   });
 }
 

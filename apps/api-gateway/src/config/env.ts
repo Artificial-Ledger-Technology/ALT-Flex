@@ -39,7 +39,7 @@ export const env = validateEnv(GatewayEnvSchema);
  * Prefers DATABASE_URL if explicitly set, otherwise constructs from parts.
  */
 export function getDatabaseUrl(): string {
-  if (env.DATABASE_URL) {
+  if (env.DATABASE_URL !== undefined && env.DATABASE_URL !== '') {
     return env.DATABASE_URL;
   }
 

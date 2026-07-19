@@ -36,6 +36,8 @@ import { hacksRoutes } from './routes/hacks.routes.js';
 import { systemRoutes } from './routes/system.routes.js';
 import { forensicsRoutes } from './routes/forensics.routes.js';
 import { skillsRoutes } from './routes/skills.routes.js';
+import { adminRoutes } from './routes/admin.routes.js';
+import { safetyRoutes } from './routes/safety.routes.js';
 
 // ── Configuration ────────────────────────────────────────────────────────────
 const PORT = parseInt(process.env['API_PORT'] ?? '4000', 10);
@@ -97,6 +99,12 @@ async function registerRoutes(): Promise<void> {
 
   // P1-ARCH-004: AI Skills Explorer API (Engine β)
   await server.register(skillsRoutes);
+
+  // P2-ETL-006: Admin Job Queue Dashboard
+  await server.register(adminRoutes);
+
+  // P3-SCAN-011: Safety Analytics Dashboard API
+  await server.register(safetyRoutes, { prefix: '/api/v1/safety' });
 }
 
 // ── Graceful Shutdown ────────────────────────────────────────────────────────

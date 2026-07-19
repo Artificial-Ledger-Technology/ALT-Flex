@@ -24,6 +24,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+/* eslint-disable no-console */
+
 import pg from 'pg';
 
 const { Client } = pg;

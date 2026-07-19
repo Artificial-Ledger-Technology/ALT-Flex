@@ -56,3 +56,9 @@ export type {
 
 // ── Cache Port ───────────────────────────────────────────────────────────────
 export type { ICachePort } from './ICachePort.js';
+
+// ── Hack Source Port (ETL) ───────────────────────────────────────────────────
+export type { IHackSourcePort } from './IHackSourcePort.js';
+
+// ── Skill Source Port (ETL) ──────────────────────────────────────────────────
+export type { ISkillSourcePort } from './ISkillSourcePort.js';

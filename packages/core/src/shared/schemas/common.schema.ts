@@ -75,7 +75,10 @@ export type SortOrder = z.infer<typeof SortOrderSchema>;
 export function createSortQuerySchema<T extends string>(
   fields: readonly [T, ...T[]],
   defaultField: T,
-) {
+): z.ZodObject<{
+  sortBy: z.ZodDefault<z.ZodEnum<[T, ...T[]]>>;
+  sortOrder: typeof SortOrderSchema;
+}> {
   return z.object({
     sortBy: z
       .enum(fields, {
@@ -105,7 +108,15 @@ export function createSortQuerySchema<T extends string>(
  * const HackListResponseSchema = createPaginatedResponseSchema(HackIncidentSchema);
  * ```
  */
-export function createPaginatedResponseSchema<T extends z.ZodTypeAny>(itemSchema: T) {
+export function createPaginatedResponseSchema<T extends z.ZodTypeAny>(
+  itemSchema: T,
+): z.ZodObject<{
+  data: z.ZodArray<T>;
+  total: z.ZodNumber;
+  page: z.ZodNumber;
+  pageSize: z.ZodNumber;
+  totalPages: z.ZodNumber;
+}> {
   return z.object({
     /** Array of items for the current page */
     data: z.array(itemSchema),

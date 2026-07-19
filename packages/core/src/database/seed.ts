@@ -21,6 +21,8 @@
 
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 
 import pg from 'pg';
 import { HACK_INCIDENTS_SEED } from './seeds/hack-incidents.seed.js';

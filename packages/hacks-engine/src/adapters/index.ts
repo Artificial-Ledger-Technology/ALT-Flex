@@ -1,14 +1,11 @@
-/**
- * @module @aegis/hacks-engine/adapters
- *
- * Infrastructure adapters for the Hacks Engine.
- * Concrete implementations of driven ports defined in @aegis/core:
- * - PostgreSQL repository for hack incidents
- * - Redis cache adapter
- * - DefiLlama API client
- * - DeFiHackLabs GitHub client
- *
- * @hexagonal Adapter Layer — Engine α (Driven/Secondary)
- */
+export * from './defillama-adapter.config.js';
+export * from './defillama-adapter.js';
+export * from './defihacklabs-adapter.config.js';
+export * from './defihacklabs-adapter.js';
+export * from './postgres/postgres-hack-repository.js';
+export * from './redis/redis-cache-adapter.js';
 
-export { PostgresHackRepository } from './postgres-hack.repository.js';
+// Normalizers
+export * from './attack-vector-classifier.js';
+export * from './chain-normalizer.js';
+export * from './hack-normalizer.js';
