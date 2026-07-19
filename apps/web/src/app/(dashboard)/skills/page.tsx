@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import { SkillsGrid } from '../../../components/skills/SkillsGrid';
+import { SkillsFilterSidebar } from '../../../components/skills/SkillsFilterSidebar';
 import { useSkills } from '../../../hooks/useSkills';
 import styles from '../../../components/skills/Skills.module.css';
 
@@ -29,8 +30,27 @@ export default function SkillsExplorerPage(): React.ReactElement {
         )}
       </div>
 
-      <div style={{ flexGrow: 1 }}>
-        <SkillsGrid skills={skills} isLoading={isLoading} />
+      <div style={{ display: 'flex', gap: 'var(--space-6)', flexGrow: 1, position: 'relative' }}>
+        <aside style={{ width: '300px', flexShrink: 0 }}>
+          <Suspense
+            fallback={
+              <div
+                style={{
+                  width: 300,
+                  height: 500,
+                  backgroundColor: 'var(--bg-secondary)',
+                  borderRadius: 'var(--radius-lg)',
+                }}
+              />
+            }
+          >
+            <SkillsFilterSidebar />
+          </Suspense>
+        </aside>
+
+        <section style={{ flexGrow: 1, minWidth: 0 }}>
+          <SkillsGrid skills={skills} isLoading={isLoading} />
+        </section>
       </div>
     </div>
   );

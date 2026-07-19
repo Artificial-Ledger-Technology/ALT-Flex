@@ -1,4 +1,4 @@
-import type { HackListQuery, HackIncident, AISkillFile } from '@aegis/core';
+import type { HackListQuery, HackIncident, AISkillFile, SkillSafetyResponse } from '@aegis/core';
 
 export interface DashboardStats {
   totalIncidents: number;
@@ -227,5 +227,18 @@ export const skillsApi = {
     if (!response.ok) {
       throw new Error(`Failed to toggle star: ${response.statusText}`);
     }
+  },
+
+  async getSkillSafety(id: string): Promise<SkillSafetyResponse> {
+    const response = await fetch(`${API_BASE}/skills/${id}/safety`, {
+      method: 'GET',
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch skill safety: ${response.statusText}`);
+    }
+
+    const responseData: unknown = await response.json();
+    return responseData as SkillSafetyResponse;
   },
 };
