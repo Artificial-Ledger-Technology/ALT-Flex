@@ -14,11 +14,7 @@ export function SeverityBadge({ label }: BadgeProps): React.ReactNode {
     return styles.severityLow ?? '';
   };
 
-  return (
-    <span className={`${styles.badge ?? ''} ${getSeverityClass(label)}`}>
-      {label}
-    </span>
-  );
+  return <span className={`${styles.badge ?? ''} ${getSeverityClass(label)}`}>{label}</span>;
 }
 
 export function ChainBadge({ label }: BadgeProps): React.ReactNode {
@@ -33,17 +29,18 @@ export function ChainBadge({ label }: BadgeProps): React.ReactNode {
     return styles.chainDefault ?? '';
   };
 
-  return (
-    <span className={`${styles.badge} ${getChainClass(label)}`}>
-      {label}
-    </span>
-  );
+  return <span className={`${styles.badge} ${getChainClass(label)}`}>{label}</span>;
 }
 
 export function VectorBadge({ label }: BadgeProps): React.ReactNode {
-  return (
-    <span className={`${styles.badge ?? ''} ${styles.vectorBadge ?? ''}`}>
-      {label}
-    </span>
-  );
+  const getVectorClass = (vector: string): string => {
+    const v = vector.toLowerCase();
+    if (v.includes('flash') || v.includes('loan')) return styles.vectorFlashLoan ?? '';
+    if (v.includes('reentrancy')) return styles.vectorReentrancy ?? '';
+    if (v.includes('oracle') || v.includes('price')) return styles.vectorOracle ?? '';
+    if (v.includes('bridge')) return styles.vectorBridge ?? '';
+    return styles.vectorBadge ?? '';
+  };
+
+  return <span className={`${styles.badge ?? ''} ${getVectorClass(label)}`}>{label}</span>;
 }

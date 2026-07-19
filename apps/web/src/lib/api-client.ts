@@ -9,7 +9,9 @@ export interface PaginatedResponse<T> {
   totalPages: number;
 }
 
-const API_BASE = '/api/v1';
+import { clientEnv } from './env';
+
+const API_BASE = `${clientEnv.NEXT_PUBLIC_API_URL}/api/v1`;
 
 export const hacksApi = {
   async getHacks(params?: HackListQuery): Promise<PaginatedResponse<HackIncident>> {
@@ -21,7 +23,7 @@ export const hacksApi = {
         }
       });
     }
-    
+
     const queryStr = searchParams.toString();
     const url = `${API_BASE}/hacks${queryStr ? `?${queryStr}` : ''}`;
 
@@ -52,5 +54,5 @@ export const hacksApi = {
     }
 
     return (await response.json()) as HackIncident;
-  }
+  },
 };
