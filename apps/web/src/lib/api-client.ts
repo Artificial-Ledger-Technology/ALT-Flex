@@ -85,31 +85,79 @@ export const hacksApi = {
     return responseData as HackIncident;
   },
 
-  async getDashboardStats(): Promise<DashboardStats> {
-    const response = await fetch(`${API_BASE}/hacks/stats`);
+  async getDashboardStats(
+    params?: Record<string, string | string[] | boolean | number>,
+  ): Promise<DashboardStats> {
+    const searchParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== '') {
+          if (Array.isArray(value)) value.forEach((v) => searchParams.append(key, String(v)));
+          else searchParams.append(key, String(value));
+        }
+      });
+    }
+    const queryStr = searchParams.toString();
+    const response = await fetch(`${API_BASE}/hacks/stats${queryStr ? `?${queryStr}` : ''}`);
     if (!response.ok) throw new Error(`Failed to fetch stats: ${response.statusText}`);
     const responseData: unknown = await response.json();
     return responseData as DashboardStats;
   },
 
   async getTimelineStats(
-    granularity: 'day' | 'week' | 'month' | 'year' = 'month',
+    params?: Record<string, string | string[] | boolean | number>,
   ): Promise<{ timeline: TimelineDataPoint[] }> {
-    const response = await fetch(`${API_BASE}/hacks/stats/timeline?granularity=${granularity}`);
+    const searchParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== '') {
+          if (Array.isArray(value)) value.forEach((v) => searchParams.append(key, String(v)));
+          else searchParams.append(key, String(value));
+        }
+      });
+    }
+    const queryStr = searchParams.toString();
+    const response = await fetch(
+      `${API_BASE}/hacks/stats/timeline${queryStr ? `?${queryStr}` : ''}`,
+    );
     if (!response.ok) throw new Error(`Failed to fetch timeline: ${response.statusText}`);
     const responseData: unknown = await response.json();
     return responseData as { timeline: TimelineDataPoint[] };
   },
 
-  async getVectorStats(): Promise<{ vectors: VectorStat[] }> {
-    const response = await fetch(`${API_BASE}/hacks/vectors`);
+  async getVectorStats(
+    params?: Record<string, string | string[] | boolean | number>,
+  ): Promise<{ vectors: VectorStat[] }> {
+    const searchParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== '') {
+          if (Array.isArray(value)) value.forEach((v) => searchParams.append(key, String(v)));
+          else searchParams.append(key, String(value));
+        }
+      });
+    }
+    const queryStr = searchParams.toString();
+    const response = await fetch(`${API_BASE}/hacks/vectors${queryStr ? `?${queryStr}` : ''}`);
     if (!response.ok) throw new Error(`Failed to fetch vectors: ${response.statusText}`);
     const responseData: unknown = await response.json();
     return responseData as { vectors: VectorStat[] };
   },
 
-  async getChainStats(): Promise<{ chains: ChainStat[] }> {
-    const response = await fetch(`${API_BASE}/hacks/chains`);
+  async getChainStats(
+    params?: Record<string, string | string[] | boolean | number>,
+  ): Promise<{ chains: ChainStat[] }> {
+    const searchParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== '') {
+          if (Array.isArray(value)) value.forEach((v) => searchParams.append(key, String(v)));
+          else searchParams.append(key, String(value));
+        }
+      });
+    }
+    const queryStr = searchParams.toString();
+    const response = await fetch(`${API_BASE}/hacks/chains${queryStr ? `?${queryStr}` : ''}`);
     if (!response.ok) throw new Error(`Failed to fetch chains: ${response.statusText}`);
     const responseData: unknown = await response.json();
     return responseData as { chains: ChainStat[] };

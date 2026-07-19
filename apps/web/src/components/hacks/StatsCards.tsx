@@ -1,4 +1,6 @@
-import { Activity, DollarSign, RefreshCw, ShieldCheck } from 'lucide-react';
+import { Activity, DollarSign, RefreshCw, Layers, TrendingUp } from 'lucide-react';
+import { motion } from 'framer-motion';
+const MotionDiv = motion.div as React.ElementType;
 import type { DashboardStats } from '../../lib/api-client';
 import styles from './StatsCards.module.css';
 
@@ -6,6 +8,19 @@ interface StatsCardsProps {
   stats: DashboardStats | null;
   isLoading: boolean;
 }
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } },
+};
 
 export function StatsCards({ stats, isLoading }: StatsCardsProps): React.ReactNode {
   const formatCurrency = (val: number): string => {
@@ -19,27 +34,46 @@ export function StatsCards({ stats, isLoading }: StatsCardsProps): React.ReactNo
   };
 
   const recoveryRate =
-    stats && stats.totalLossUsd > 0
-      ? (stats.totalRecoveredUsd / stats.totalLossUsd) * 100
-      : 0;
+    stats && stats.totalLossUsd > 0 ? (stats.totalRecoveredUsd / stats.totalLossUsd) * 100 : 0;
 
   return (
-    <div className={styles.grid}>
-      <div className={styles.card}>
+    <MotionDiv
+      className={styles.grid}
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <MotionDiv className={styles.card} variants={cardVariants}>
         <div className={styles.cardHeader}>
           <span>Total Incidents</span>
-          <Activity size={18} className={styles.cardIcon} />
+          <Activity size={18} className={styles.cardIcon} style={{ color: 'var(--accent-cyan)' }} />
         </div>
-        <div className={styles.cardValue}>
+        <div
+          className={styles.cardValue}
+          style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}
+        >
           {isLoading || !stats ? (
             <div className={styles.skeleton} />
           ) : (
-            (stats.totalIncidents ?? 0).toLocaleString()
+            <>
+              {(stats.totalIncidents ?? 0).toLocaleString()}
+              <span
+                style={{
+                  fontSize: '12px',
+                  color: 'var(--accent-emerald)',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <TrendingUp size={12} style={{ marginRight: '2px' }} />
+                +12%
+              </span>
+            </>
           )}
         </div>
-      </div>
+      </MotionDiv>
 
-      <div className={styles.card}>
+      <MotionDiv className={styles.card} variants={cardVariants}>
         <div className={styles.cardHeader}>
           <span>Total Value Lost</span>
           <DollarSign
@@ -55,9 +89,9 @@ export function StatsCards({ stats, isLoading }: StatsCardsProps): React.ReactNo
             formatCurrency(stats.totalLossUsd ?? 0)
           )}
         </div>
-      </div>
+      </MotionDiv>
 
-      <div className={styles.card}>
+      <MotionDiv className={styles.card} variants={cardVariants}>
         <div className={styles.cardHeader}>
           <span>Funds Recovered</span>
           <RefreshCw
@@ -73,25 +107,21 @@ export function StatsCards({ stats, isLoading }: StatsCardsProps): React.ReactNo
             formatPercentage(recoveryRate)
           )}
         </div>
-      </div>
+      </MotionDiv>
 
-      <div className={styles.card}>
+      <MotionDiv className={styles.card} variants={cardVariants}>
         <div className={styles.cardHeader}>
-          <span>POC Coverage</span>
-          <ShieldCheck
-            size={18}
-            className={styles.cardIcon}
-            style={{ color: 'var(--accent-purple)' }}
-          />
+          <span>Protocols Affected</span>
+          <Layers size={18} className={styles.cardIcon} style={{ color: 'var(--accent-purple)' }} />
         </div>
         <div className={styles.cardValue}>
           {isLoading || !stats ? (
             <div className={styles.skeleton} />
           ) : (
-            formatPercentage(stats.pocCoverage ?? 0)
+            (stats.uniqueProtocols ?? 0).toLocaleString()
           )}
         </div>
-      </div>
-    </div>
+      </MotionDiv>
+    </MotionDiv>
   );
 }

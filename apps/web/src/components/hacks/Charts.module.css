@@ -58,16 +58,16 @@
   margin-bottom: var(--space-6);
 }
 
-.timelineGrid {
+.chartsGrid2Col {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--space-4);
 }
 
-.distributionGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: var(--space-4);
+@media (min-width: 1024px) {
+  .chartsGrid2Col {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 .errorBanner {

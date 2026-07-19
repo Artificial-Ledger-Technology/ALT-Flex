@@ -1,13 +1,6 @@
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Cell,
-} from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { motion } from 'framer-motion';
+const MotionDiv = motion.div as React.ElementType;
 import type { ChainStat } from '../../lib/api-client';
 import styles from './Charts.module.css';
 
@@ -45,7 +38,12 @@ export function ChainChart({ data, isLoading }: ChainChartProps): React.ReactNod
   };
 
   return (
-    <div className={styles.chartCard}>
+    <MotionDiv
+      className={styles.chartCard}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.3 }}
+    >
       <div className={styles.chartHeader}>
         <h3 className={styles.chartTitle}>Losses by Chain</h3>
       </div>
@@ -53,40 +51,25 @@ export function ChainChart({ data, isLoading }: ChainChartProps): React.ReactNod
         {isLoading ? (
           <div className={styles.skeleton} />
         ) : data.length === 0 ? (
-          <div className={styles.emptyState}>
-            No data available
-          </div>
+          <div className={styles.emptyState}>No data available</div>
         ) : (
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={data}
-              layout="vertical"
-              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-            >
-              <CartesianGrid
-                strokeDasharray="3 3"
-                stroke="var(--border-subtle)"
-                horizontal={false}
-              />
-              <XAxis
-                type="number"
-                tickFormatter={formatCurrency}
-                stroke="var(--text-muted)"
-                fontSize={12}
-                tickLine={false}
-                axisLine={false}
-              />
-              <YAxis
-                dataKey="chain"
-                type="category"
-                stroke="var(--text-muted)"
-                fontSize={12}
-                tickLine={false}
-                axisLine={false}
-                width={80}
-              />
+            <PieChart>
+              <Pie
+                data={data}
+                cx="50%"
+                cy="50%"
+                innerRadius={60}
+                outerRadius={100}
+                paddingAngle={2}
+                dataKey="totalLossUsd"
+                nameKey="chain"
+              >
+                {data.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={getChainColor(entry.chain)} />
+                ))}
+              </Pie>
               <Tooltip
-                cursor={{ fill: 'var(--bg-tertiary)' }}
                 contentStyle={{
                   backgroundColor: 'var(--bg-tertiary)',
                   borderColor: 'var(--border-subtle)',
@@ -98,15 +81,15 @@ export function ChainChart({ data, isLoading }: ChainChartProps): React.ReactNod
                   'Total Loss',
                 ]}
               />
-              <Bar dataKey="totalLossUsd" radius={[0, 4, 4, 0]}>
-                {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={getChainColor(entry.chain)} />
-                ))}
-              </Bar>
-            </BarChart>
+              <Legend
+                verticalAlign="bottom"
+                height={36}
+                wrapperStyle={{ fontSize: '12px', color: 'var(--text-muted)' }}
+              />
+            </PieChart>
           </ResponsiveContainer>
         )}
       </div>
-    </div>
+    </MotionDiv>
   );
 }
