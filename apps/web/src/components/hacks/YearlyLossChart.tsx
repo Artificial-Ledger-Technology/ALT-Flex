@@ -1,32 +1,33 @@
 import {
-  AreaChart,
-  Area,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  Cell,
 } from 'recharts';
 import { motion } from 'framer-motion';
 const MotionDiv = motion.div as React.ElementType;
 import type { TimelineDataPoint } from '../../lib/api-client';
 import styles from './Charts.module.css';
 
-interface TimelineChartProps {
+interface YearlyLossChartProps {
   data: TimelineDataPoint[];
   isLoading: boolean;
 }
 
-export function TimelineChart({ data, isLoading }: TimelineChartProps): React.ReactNode {
+export function YearlyLossChart({ data, isLoading }: YearlyLossChartProps): React.ReactNode {
   const formatCurrency = (value: number): string => {
     if (value >= 1e9) return `$${(value / 1e9).toFixed(1)}B`;
     if (value >= 1e6) return `$${(value / 1e6).toFixed(1)}M`;
     return `$${value.toLocaleString()}`;
   };
 
-  const formatDate = (dateStr: string): string => {
+  const formatYear = (dateStr: string): string => {
     const d = new Date(dateStr);
-    return d.toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
+    return d.getFullYear().toString();
   };
 
   return (
@@ -34,10 +35,10 @@ export function TimelineChart({ data, isLoading }: TimelineChartProps): React.Re
       className={styles.chartCard}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.1 }}
+      transition={{ duration: 0.5, delay: 0.4 }}
     >
       <div className={styles.chartHeader}>
-        <h3 className={styles.chartTitle}>Losses Over Time</h3>
+        <h3 className={styles.chartTitle}>Losses by Year</h3>
       </div>
       <div className={styles.chartContainer}>
         {isLoading ? (
@@ -46,17 +47,11 @@ export function TimelineChart({ data, isLoading }: TimelineChartProps): React.Re
           <div className={styles.emptyState}>No data available</div>
         ) : (
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-              <defs>
-                <linearGradient id="colorLoss" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#0ea5e9" stopOpacity={0} />
-                </linearGradient>
-              </defs>
+            <BarChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle)" vertical={false} />
               <XAxis
                 dataKey="timestamp"
-                tickFormatter={formatDate}
+                tickFormatter={formatYear}
                 stroke="var(--text-muted)"
                 fontSize={12}
                 tickLine={false}
@@ -72,23 +67,25 @@ export function TimelineChart({ data, isLoading }: TimelineChartProps): React.Re
                 dx={-10}
               />
               <Tooltip
+                cursor={{ fill: 'var(--bg-tertiary)' }}
                 contentStyle={{
                   backgroundColor: 'var(--bg-tertiary)',
                   borderColor: 'var(--border-subtle)',
                   borderRadius: 'var(--radius-md)',
                 }}
                 itemStyle={{ color: 'var(--text-primary)' }}
-                labelFormatter={formatDate}
-                formatter={(value: number): [string, string] => [formatCurrency(value), 'Loss']}
+                labelFormatter={formatYear}
+                formatter={(value: number): [string, string] => [
+                  formatCurrency(value),
+                  'Total Loss',
+                ]}
               />
-              <Area
-                type="monotone"
-                dataKey="lossUsd"
-                stroke="#0ea5e9"
-                fillOpacity={1}
-                fill="url(#colorLoss)"
-              />
-            </AreaChart>
+              <Bar dataKey="lossUsd" radius={[4, 4, 0, 0]}>
+                {data.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill="var(--accent-purple)" />
+                ))}
+              </Bar>
+            </BarChart>
           </ResponsiveContainer>
         )}
       </div>
