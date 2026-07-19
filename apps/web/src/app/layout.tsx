@@ -2,8 +2,9 @@ import type { Metadata } from 'next';
 import { Inter, Outfit } from 'next/font/google';
 import '../styles/globals.css';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
+import { SWRProvider } from '@/components/providers/SWRProvider';
 
-const inter = Inter({ 
+const inter = Inter({
   subsets: ['latin'],
   variable: '--font-sans',
   display: 'swap',
@@ -35,7 +36,7 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          {children}
+          <SWRProvider>{children}</SWRProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import useSWR from 'swr';
 import { useSearchParams } from 'next/navigation';
 import {
   hacksApi,
@@ -16,98 +17,91 @@ export interface HacksStatsData {
   chains: ChainStat[];
 }
 
+/**
+ * Convert URLSearchParams into a Record for API consumption.
+ */
+function searchParamsToRecord(
+  searchParams: URLSearchParams | null,
+): Record<string, string | string[]> {
+  const params: Record<string, string | string[]> = {};
+  if (searchParams === null) return params;
+
+  searchParams.forEach((value, key) => {
+    const existing = params[key];
+    if (existing !== undefined) {
+      if (Array.isArray(existing)) {
+        existing.push(value);
+      } else {
+        params[key] = [existing, value];
+      }
+    } else {
+      params[key] = value;
+    }
+  });
+
+  return params;
+}
+
+/**
+ * SWR-powered hook for all hacks dashboard statistics.
+ * Each stat request is independently cached and retried.
+ */
 export function useHacksStats(): HacksStatsData & { isLoading: boolean; error: Error | null } {
   const searchParams = useSearchParams();
+  const params = searchParamsToRecord(searchParams);
+  const paramKey = JSON.stringify(params);
 
-  const [data, setData] = useState<HacksStatsData>({
-    dashboard: null,
-    timeline: [],
-    timelineYearly: [],
-    vectors: [],
-    chains: [],
-  });
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<Error | null>(null);
+  const dashboardFetcher = async (): Promise<DashboardStats> => hacksApi.getDashboardStats(params);
+  const timelineFetcher = async (): Promise<{ timeline: TimelineDataPoint[] }> =>
+    hacksApi.getTimelineStats({ ...params, granularity: 'month' });
+  const timelineYearlyFetcher = async (): Promise<{ timeline: TimelineDataPoint[] }> =>
+    hacksApi.getTimelineStats({ ...params, granularity: 'year' });
+  const vectorsFetcher = async (): Promise<{ vectors: VectorStat[] }> =>
+    hacksApi.getVectorStats(params);
+  const chainsFetcher = async (): Promise<{ chains: ChainStat[] }> =>
+    hacksApi.getChainStats(params);
 
-  useEffect(() => {
-    let mounted = true;
+  const dashboard = useSWR<DashboardStats, Error>([`/hacks/stats`, paramKey], dashboardFetcher);
 
-    async function fetchStats(): Promise<void> {
-      try {
-        setIsLoading(true);
-        setError(null);
+  const timeline = useSWR<{ timeline: TimelineDataPoint[] }, Error>(
+    [`/hacks/stats/timeline/month`, paramKey],
+    timelineFetcher,
+  );
 
-        // Convert searchParams to an object
-        const params: Record<string, string | string[]> = {};
-        if (searchParams) {
-          searchParams.forEach((value, key) => {
-            if (params[key]) {
-              if (Array.isArray(params[key])) {
-                params[key].push(value);
-              } else {
-                params[key] = [params[key], value];
-              }
-            } else {
-              params[key] = value;
-            }
-          });
-        }
+  const timelineYearly = useSWR<{ timeline: TimelineDataPoint[] }, Error>(
+    [`/hacks/stats/timeline/year`, paramKey],
+    timelineYearlyFetcher,
+  );
 
-        const [dashboardRes, timelineRes, timelineYearRes, vectorsRes, chainsRes] =
-          await Promise.allSettled([
-            hacksApi.getDashboardStats(params),
-            hacksApi.getTimelineStats({ ...params, granularity: 'month' }),
-            hacksApi.getTimelineStats({ ...params, granularity: 'year' }),
-            hacksApi.getVectorStats(params),
-            hacksApi.getChainStats(params),
-          ]);
+  const vectors = useSWR<{ vectors: VectorStat[] }, Error>(
+    [`/hacks/vectors`, paramKey],
+    vectorsFetcher,
+  );
 
-        if (mounted) {
-          setData({
-            dashboard: dashboardRes.status === 'fulfilled' ? dashboardRes.value : null,
-            timeline: timelineRes.status === 'fulfilled' ? timelineRes.value.timeline : [],
-            timelineYearly:
-              timelineYearRes.status === 'fulfilled' ? timelineYearRes.value.timeline : [],
-            vectors: vectorsRes.status === 'fulfilled' ? vectorsRes.value.vectors : [],
-            chains: chainsRes.status === 'fulfilled' ? chainsRes.value.chains : [],
-          });
+  const chains = useSWR<{ chains: ChainStat[] }, Error>([`/hacks/chains`, paramKey], chainsFetcher);
 
-          const rejected = [
-            dashboardRes,
-            timelineRes,
-            timelineYearRes,
-            vectorsRes,
-            chainsRes,
-          ].filter((r) => r.status === 'rejected');
-          if (rejected.length > 0) {
-            console.error('Some stats failed to load:', rejected);
-            if (dashboardRes.status === 'rejected') {
-              setError(
-                dashboardRes.reason instanceof Error
-                  ? dashboardRes.reason
-                  : new Error('Failed to load dashboard statistics'),
-              );
-            }
-          }
-        }
-      } catch (err) {
-        if (mounted) {
-          setError(err instanceof Error ? err : new Error('Failed to fetch stats'));
-        }
-      } finally {
-        if (mounted) {
-          setIsLoading(false);
-        }
-      }
-    }
+  const isLoading =
+    dashboard.isLoading ||
+    timeline.isLoading ||
+    timelineYearly.isLoading ||
+    vectors.isLoading ||
+    chains.isLoading;
 
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    fetchStats();
+  const firstError =
+    dashboard.error ??
+    timeline.error ??
+    timelineYearly.error ??
+    vectors.error ??
+    chains.error ??
+    null;
 
-    return (): void => {
-      mounted = false;
-    };
-  }, [searchParams]);
-
-  return { ...data, isLoading, error };
+  return {
+    dashboard: dashboard.data ?? null,
+    timeline: timeline.data?.timeline ?? [],
+    timelineYearly: timelineYearly.data?.timeline ?? [],
+    vectors: vectors.data?.vectors ?? [],
+    chains: chains.data?.chains ?? [],
+    isLoading,
+    error: firstError ?? null,
+  };
 }
