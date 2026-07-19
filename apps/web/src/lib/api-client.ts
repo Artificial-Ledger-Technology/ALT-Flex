@@ -1,4 +1,4 @@
-import type { HackListQuery, HackIncident } from '@aegis/core';
+import type { HackListQuery, HackIncident, AISkillFile } from '@aegis/core';
 
 export interface DashboardStats {
   totalIncidents: number;
@@ -161,5 +161,71 @@ export const hacksApi = {
     if (!response.ok) throw new Error(`Failed to fetch chains: ${response.statusText}`);
     const responseData: unknown = await response.json();
     return responseData as { chains: ChainStat[] };
+  },
+};
+
+export const skillsApi = {
+  async getSkills(
+    params?: Record<string, string | string[] | boolean | number>,
+  ): Promise<PaginatedResponse<AISkillFile>> {
+    const searchParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== '') {
+          if (Array.isArray(value)) value.forEach((v) => searchParams.append(key, String(v)));
+          else searchParams.append(key, String(value));
+        }
+      });
+    }
+
+    const queryStr = searchParams.toString();
+    const url = `${API_BASE}/skills${queryStr ? `?${queryStr}` : ''}`;
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch skills: ${response.statusText}`);
+    }
+
+    const responseData: unknown = await response.json();
+    return responseData as PaginatedResponse<AISkillFile>;
+  },
+
+  async getSkillContent(id: string): Promise<{ content: string }> {
+    const response = await fetch(`${API_BASE}/skills/${id}/content`, {
+      method: 'GET',
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch skill content: ${response.statusText}`);
+    }
+
+    const responseData: unknown = await response.json();
+    return responseData as { content: string };
+  },
+
+  async incrementCopyCount(id: string): Promise<void> {
+    const response = await fetch(`${API_BASE}/skills/${id}/copy`, {
+      method: 'POST',
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to increment copy count: ${response.statusText}`);
+    }
+  },
+
+  async toggleStar(id: string): Promise<void> {
+    const response = await fetch(`${API_BASE}/skills/${id}/star`, {
+      method: 'POST',
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to toggle star: ${response.statusText}`);
+    }
   },
 };
