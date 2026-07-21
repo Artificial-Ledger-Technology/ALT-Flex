@@ -510,16 +510,16 @@ style P012 fill:#2ecc71,color:#fff
 | ---------------- | ----------------------------------------------- | ------ |
 | Design system    | CSS tokens, dark mode, typography               | ✅     |
 | Layout shell     | Sidebar, header, routing, mobile menu           | ✅     |
-| Hacks table      | 100+ rows, sorting, pagination, expansion       | ⬜     |
-| Hacks filters    | All filter types, URL sync, clear all           | ⬜     |
-| Hacks charts     | Timeline, vector bars, chain donut, stats cards | ⬜     |
-| Skills cards     | Grid, copy, star, safety badges                 | ⬜     |
-| Skills filters   | Platform/language/safety, detail modal          | ⬜     |
-| Safety dashboard | Label distribution, rule performance, timeline  | ⬜     |
-| API client       | Type-safe, SWR hooks, error handling            | ⬜     |
+| Hacks table      | 100+ rows, sorting, pagination, expansion       | ✅     |
+| Hacks filters    | All filter types, URL sync, clear all           | ✅     |
+| Hacks charts     | Timeline, vector bars, chain donut, stats cards | ✅     |
+| Skills cards     | Grid, copy, star, safety badges                 | ✅     |
+| Skills filters   | Platform/language/safety, detail modal          | ✅     |
+| Safety dashboard | Label distribution, rule performance, timeline  | ✅     |
+| API client       | Type-safe, SWR hooks, error handling            | ✅     |
 | Responsive       | Mobile/tablet/desktop tested                    | ✅     |
 | Accessibility    | Lighthouse ≥ 90                                 | ✅     |
-| Animations       | Micro-animations, reduced-motion respected      | ⬜     |
+| Animations       | Micro-animations, reduced-motion respected      | ✅     |
 
 > **⛔ Phase 5 CANNOT begin until all Phase Gate Criteria are ✅.**
 
