@@ -7,6 +7,7 @@ import { HacksFilterSidebar } from '@/components/hacks/HacksFilterSidebar';
 import { hacksApi } from '@/lib/api-client';
 import { HacksDashboardCharts } from '@/components/hacks/HacksDashboardCharts';
 
+import layoutStyles from './HacksLayout.module.css';
 import type { AttackVector, Chain } from '@aegis/core';
 
 export const metadata = {
@@ -81,14 +82,25 @@ export default async function HacksPage({ searchParams }: HackPageProps): Promis
 
       <HacksDashboardCharts />
 
-      <div style={{ display: 'flex', gap: 'var(--space-6)', position: 'relative' }}>
-        <aside style={{ width: '300px', flexShrink: 0 }}>
-          <Suspense fallback={<div style={{ width: 300, height: 500, backgroundColor: 'var(--bg-secondary)', borderRadius: 'var(--radius-lg)' }} />}>
+      <div className={layoutStyles.layoutContainer}>
+        <aside className={layoutStyles.sidebarContainer}>
+          <Suspense
+            fallback={
+              <div
+                style={{
+                  width: '100%',
+                  height: 500,
+                  backgroundColor: 'var(--bg-secondary)',
+                  borderRadius: 'var(--radius-lg)',
+                }}
+              />
+            }
+          >
             <HacksFilterSidebar />
           </Suspense>
         </aside>
 
-        <section style={{ flexGrow: 1, minWidth: 0 }}>
+        <section className={layoutStyles.mainContainer}>
           <Suspense fallback={<HacksTableSkeleton />}>
             {/* Await the data resolution in the server component and pass it */}
             <HacksTableWrapper dataPromise={dataPromise} />

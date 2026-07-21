@@ -5,6 +5,7 @@ import { SkillsGrid } from '../../../components/skills/SkillsGrid';
 import { SkillsFilterSidebar } from '../../../components/skills/SkillsFilterSidebar';
 import { useSkills } from '../../../hooks/useSkills';
 import styles from '../../../components/skills/Skills.module.css';
+import layoutStyles from '../../../styles/DashboardLayout.module.css';
 
 export default function SkillsExplorerPage(): React.ReactElement {
   const { skills, isLoading, total } = useSkills();
@@ -30,13 +31,13 @@ export default function SkillsExplorerPage(): React.ReactElement {
         )}
       </div>
 
-      <div style={{ display: 'flex', gap: 'var(--space-6)', flexGrow: 1, position: 'relative' }}>
-        <aside style={{ width: '300px', flexShrink: 0 }}>
+      <div className={layoutStyles.layoutContainer}>
+        <aside className={layoutStyles.sidebarContainer}>
           <Suspense
             fallback={
               <div
                 style={{
-                  width: 300,
+                  width: '100%',
                   height: 500,
                   backgroundColor: 'var(--bg-secondary)',
                   borderRadius: 'var(--radius-lg)',
@@ -48,7 +49,7 @@ export default function SkillsExplorerPage(): React.ReactElement {
           </Suspense>
         </aside>
 
-        <section style={{ flexGrow: 1, minWidth: 0 }}>
+        <section className={layoutStyles.mainContainer}>
           <SkillsGrid skills={skills} isLoading={isLoading} />
         </section>
       </div>

@@ -1,0 +1,26 @@
+.layoutContainer {
+  display: flex;
+  gap: var(--space-6);
+  position: relative;
+  flex-direction: column;
+}
+
+.sidebarContainer {
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.mainContainer {
+  flex-grow: 1;
+  min-width: 0;
+}
+
+@media (min-width: 640px) {
+  .layoutContainer {
+    flex-direction: row;
+  }
+  
+  .sidebarContainer {
+    width: 300px;
+  }
+}

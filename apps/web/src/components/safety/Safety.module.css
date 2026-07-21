@@ -26,7 +26,13 @@
   gap: var(--space-4);
 }
 
-@media (min-width: 768px) {
+@media (min-width: 640px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
   .statsGrid {
     grid-template-columns: repeat(4, 1fr);
   }

@@ -98,6 +98,16 @@ h4 { font-size: var(--font-size-xl); }
 }
 
 /* Accessibility */
+*:focus-visible {
+  outline: 2px solid var(--accent-cyan);
+  outline-offset: 2px;
+  border-radius: 1px;
+}
+
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

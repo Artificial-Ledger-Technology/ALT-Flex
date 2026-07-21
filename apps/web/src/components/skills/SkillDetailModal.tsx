@@ -15,6 +15,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { skillsApi } from '../../lib/api-client';
 import type { AISkillFile, SkillSafetyResponse } from '@aegis/core';
+import styles from './SkillDetailModal.module.css';
 
 interface SkillDetailModalProps {
   skill: AISkillFile;
@@ -33,8 +34,13 @@ export function SkillDetailModal({
   const [isCopied, setIsCopied] = useState(false);
 
   useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      window.addEventListener('keydown', handleKeyDown);
       const fetchData = async (): Promise<void> => {
         try {
           setIsLoading(true);
@@ -58,8 +64,9 @@ export function SkillDetailModal({
     }
     return (): void => {
       document.body.style.overflow = 'unset';
+      window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isOpen, skill.id]);
+  }, [isOpen, skill.id, onClose]);
 
   if (!isOpen) return null;
 
@@ -95,11 +102,18 @@ export function SkillDetailModal({
         : 'markdown';
 
   return (
-    <div style={overlayStyle} onClick={onClose}>
-      <div style={modalStyle} onClick={(e): void => e.stopPropagation()}>
+    <div style={overlayStyle} onClick={onClose} role="presentation">
+      <div
+        style={modalStyle}
+        onClick={(e): void => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+      >
         <div style={headerStyle}>
           <div>
             <h2
+              id="modal-title"
               style={{ margin: 0, fontSize: 'var(--font-size-xl)', color: 'var(--text-primary)' }}
             >
               {skill.name}
@@ -127,7 +141,7 @@ export function SkillDetailModal({
           </div>
         </div>
 
-        <div style={contentLayout}>
+        <div className={styles.contentLayout}>
           <div style={codeSectionStyle}>
             {isLoading ? (
               <div style={loadingStyle}>Loading content...</div>
@@ -148,7 +162,7 @@ export function SkillDetailModal({
             )}
           </div>
 
-          <div style={sidebarSectionStyle}>
+          <div className={styles.sidebarSection}>
             <h3
               style={{
                 margin: '0 0 var(--space-4) 0',
@@ -311,29 +325,11 @@ const actionBtnStyle: React.CSSProperties = {
   border: '1px solid var(--border-subtle)',
 };
 
-const contentLayout: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'row',
-  flexGrow: 1,
-  overflow: 'hidden',
-};
-
 const codeSectionStyle: React.CSSProperties = {
   flexGrow: 1,
   padding: 'var(--space-4)',
   overflowY: 'auto',
   backgroundColor: 'var(--bg-primary)',
-};
-
-const sidebarSectionStyle: React.CSSProperties = {
-  width: '300px',
-  flexShrink: 0,
-  borderLeft: '1px solid var(--border-subtle)',
-  backgroundColor: 'var(--bg-secondary)',
-  padding: 'var(--space-4)',
-  display: 'flex',
-  flexDirection: 'column',
-  overflowY: 'auto',
 };
 
 const loadingStyle: React.CSSProperties = {
