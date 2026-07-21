@@ -64,7 +64,7 @@
   gap: var(--space-4);
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 640px) {
   .chartsGrid2Col {
     grid-template-columns: 1fr 1fr;
   }

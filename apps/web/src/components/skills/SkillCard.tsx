@@ -127,8 +127,11 @@ export function SkillCard({ skill }: SkillCardProps): React.ReactElement {
         <span
           className={`${styles.badge} ${getSafetyClass()}`}
           style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+          aria-label={`Safety: ${skill.safetyLabel}`}
         >
-          {getSafetyIcon()}
+          <span aria-hidden="true" style={{ display: 'flex' }}>
+            {getSafetyIcon()}
+          </span>
           {skill.safetyLabel}
         </span>
       </div>

@@ -243,23 +243,4 @@
   }
 }
 
-/* Mobile Drawer (Responsive) */
-@media (max-width: 768px) {
-  .sidebarContainer {
-    position: fixed;
-    top: 0;
-    left: -100%;
-    height: 100vh;
-    width: 280px;
-    z-index: 50;
-    border-radius: 0;
-    border: none;
-    border-right: 1px solid var(--border-subtle);
-    overflow-y: auto;
-    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
 
-  .sidebarContainer.open {
-    left: 0;
-  }
-}

@@ -15,8 +15,8 @@
 
   /* Text Colors */
   --text-primary: hsl(210 40% 96%);
-  --text-secondary: hsl(215 20% 65%);
-  --text-muted: hsl(215 15% 45%);
+  --text-secondary: hsl(215 20% 70%); /* increased contrast */
+  --text-muted: hsl(215 15% 55%); /* increased contrast */
 
   /* Borders */
   --border-subtle: hsl(222 20% 22%);
@@ -86,8 +86,8 @@
   
   /* Text Colors */
   --text-primary: hsl(222 47% 11%);
-  --text-secondary: hsl(215 20% 35%);
-  --text-muted: hsl(215 15% 55%);
+  --text-secondary: hsl(215 20% 30%); /* increased contrast */
+  --text-muted: hsl(215 15% 45%); /* increased contrast */
 
   /* Borders */
   --border-subtle: hsl(222 20% 90%);

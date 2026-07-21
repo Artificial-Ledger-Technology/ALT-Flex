@@ -43,16 +43,9 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps): React.ReactN
   return (
     <>
       {/* Mobile overlay */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
-          onClick={onClose}
-        />
-      )}
+      {isOpen && <div className="fixed inset-0 bg-black/50 z-30 lg:hidden" onClick={onClose} />}
 
-      <aside
-        className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ''}`}
-      >
+      <aside className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ''}`}>
         <div className={styles.logoContainer}>
           <Shield className="w-8 h-8 text-cyan-400" style={{ color: 'var(--accent-cyan)' }} />
           <span className={styles.logoText}>
@@ -60,11 +53,11 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps): React.ReactN
           </span>
         </div>
 
-        <nav className={styles.nav}>
+        <nav className={styles.nav} aria-label="Main Navigation">
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
             const isActive = pathname.startsWith(item.href) && item.href !== '#';
-            
+
             if (item.disabled) {
               return (
                 <div

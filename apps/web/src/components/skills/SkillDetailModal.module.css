@@ -1,0 +1,28 @@
+.contentLayout {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+@media (min-width: 640px) {
+  .contentLayout {
+    flex-direction: row;
+  }
+  .sidebarSection {
+    width: 300px;
+    border-left: 1px solid var(--border-subtle);
+    border-top: none;
+  }
+}
+
+.sidebarSection {
+  width: 100%;
+  flex-shrink: 0;
+  border-top: 1px solid var(--border-subtle);
+  background-color: var(--bg-secondary);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}

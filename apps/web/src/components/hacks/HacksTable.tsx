@@ -111,41 +111,85 @@ export function HacksTable({ data }: HacksTableProps): React.ReactNode {
         <table className={styles.table}>
           <thead>
             <tr>
-              <th className={styles.th} style={{ width: '40px' }}></th>
+              <th className={styles.th} style={{ width: '40px' }} scope="col">
+                <span className="sr-only">Expand</span>
+              </th>
               <th
                 className={`${styles.th} ${styles.thSortable}`}
                 onClick={() => handleSort('date')}
+                scope="col"
+                aria-sort={
+                  currentSortBy === 'date'
+                    ? currentSortOrder === 'asc'
+                      ? 'ascending'
+                      : 'descending'
+                    : 'none'
+                }
               >
                 Date {renderSortIcon('date')}
               </th>
               <th
                 className={`${styles.th} ${styles.thSortable}`}
                 onClick={() => handleSort('protocolName')}
+                scope="col"
+                aria-sort={
+                  currentSortBy === 'protocolName'
+                    ? currentSortOrder === 'asc'
+                      ? 'ascending'
+                      : 'descending'
+                    : 'none'
+                }
               >
                 Protocol {renderSortIcon('protocolName')}
               </th>
               <th
                 className={`${styles.th} ${styles.thSortable}`}
                 onClick={() => handleSort('chain')}
+                scope="col"
+                aria-sort={
+                  currentSortBy === 'chain'
+                    ? currentSortOrder === 'asc'
+                      ? 'ascending'
+                      : 'descending'
+                    : 'none'
+                }
               >
                 Chain {renderSortIcon('chain')}
               </th>
               <th
                 className={`${styles.th} ${styles.thSortable}`}
                 onClick={() => handleSort('lossUsd')}
+                scope="col"
+                aria-sort={
+                  currentSortBy === 'lossUsd'
+                    ? currentSortOrder === 'asc'
+                      ? 'ascending'
+                      : 'descending'
+                    : 'none'
+                }
               >
                 Loss (USD) {renderSortIcon('lossUsd')}
               </th>
               <th
                 className={`${styles.th} ${styles.thSortable}`}
                 onClick={() => handleSort('attackVector')}
+                scope="col"
+                aria-sort={
+                  currentSortBy === 'attackVector'
+                    ? currentSortOrder === 'asc'
+                      ? 'ascending'
+                      : 'descending'
+                    : 'none'
+                }
               >
                 Attack Vector {renderSortIcon('attackVector')}
               </th>
-              <th className={styles.th} style={{ textAlign: 'center' }}>
+              <th className={styles.th} style={{ textAlign: 'center' }} scope="col">
                 POC
               </th>
-              <th className={styles.th}>Sources</th>
+              <th className={styles.th} scope="col">
+                Sources
+              </th>
             </tr>
           </thead>
           <tbody>

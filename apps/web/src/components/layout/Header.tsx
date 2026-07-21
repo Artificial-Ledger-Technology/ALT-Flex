@@ -8,9 +8,10 @@ import styles from './Header.module.css';
 
 interface HeaderProps {
   onMenuAction: () => void;
+  isMenuOpen: boolean;
 }
 
-export function Header({ onMenuAction }: HeaderProps): React.ReactNode {
+export function Header({ onMenuAction, isMenuOpen }: HeaderProps): React.ReactNode {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -26,28 +27,31 @@ export function Header({ onMenuAction }: HeaderProps): React.ReactNode {
           className={styles.mobileMenuBtn}
           onClick={onMenuAction}
           aria-label="Toggle menu"
+          aria-expanded={isMenuOpen}
+          aria-controls="sidebar-nav"
         >
           <Menu />
         </button>
-        
+
         <div className={styles.breadcrumbsContainer}>
           <Breadcrumbs />
         </div>
-        
+
         <div className={styles.searchContainer}>
-          <Search className={styles.searchIcon} />
-          <input 
-            type="text" 
-            placeholder="Search protocols, incidents..." 
+          <Search className={styles.searchIcon} aria-hidden="true" />
+          <input
+            type="text"
+            placeholder="Search protocols, incidents..."
             className={styles.searchInput}
+            aria-label="Search"
           />
         </div>
       </div>
 
       <div className={styles.rightSection}>
         {mounted && (
-          <button 
-            className={styles.iconBtn} 
+          <button
+            className={styles.iconBtn}
             aria-label="Toggle theme"
             title="Toggle light/dark theme"
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}

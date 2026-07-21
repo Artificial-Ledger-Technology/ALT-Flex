@@ -24,10 +24,8 @@ export function AppShell({ children }: AppShellProps): React.ReactNode {
     <div className={styles.appShell}>
       <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
       <div className={styles.mainContent}>
-        <Header onMenuAction={toggleSidebar} />
-        <main className={styles.pageContainer}>
-          {children}
-        </main>
+        <Header onMenuAction={toggleSidebar} isMenuOpen={isSidebarOpen} />
+        <main className={styles.pageContainer}>{children}</main>
       </div>
     </div>
   );

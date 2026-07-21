@@ -63,14 +63,31 @@ function RulePerformanceTable({
         <table className={styles.dataGrid}>
           <thead>
             <tr>
-              <th style={{ width: '40%' }} onClick={(): void => handleSort('name')}>
+              <th
+                style={{ width: '40%' }}
+                onClick={(): void => handleSort('name')}
+                scope="col"
+                aria-sort={
+                  sortField === 'name' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none'
+                }
+              >
                 Rule {sortField === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}
               </th>
-              <th>Category</th>
-              <th onClick={(): void => handleSort('hitCount')}>
+              <th scope="col">Category</th>
+              <th
+                onClick={(): void => handleSort('hitCount')}
+                scope="col"
+                aria-sort={
+                  sortField === 'hitCount'
+                    ? sortOrder === 'asc'
+                      ? 'ascending'
+                      : 'descending'
+                    : 'none'
+                }
+              >
                 Hits {sortField === 'hitCount' && (sortOrder === 'asc' ? '↑' : '↓')}
               </th>
-              <th>FPR</th>
+              <th scope="col">FPR</th>
             </tr>
           </thead>
           <tbody>
@@ -130,10 +147,10 @@ function RecentScansTable({
         <table className={styles.dataGrid}>
           <thead>
             <tr>
-              <th>Skill / ID</th>
-              <th>Label</th>
-              <th>Score</th>
-              <th>Time</th>
+              <th scope="col">Skill / ID</th>
+              <th scope="col">Label</th>
+              <th scope="col">Score</th>
+              <th scope="col">Time</th>
             </tr>
           </thead>
           <tbody>
