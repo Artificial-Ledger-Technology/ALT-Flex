@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return, @typescript-eslint/require-await, @typescript-eslint/no-explicit-any */
 import type { NextConfig } from 'next';
 
 // In Docker, the web container must reach the API gateway via its service name
@@ -16,6 +17,43 @@ const nextConfig: NextConfig = {
         destination: `${apiProxyUrl}/api/:path*`,
       },
     ];
+  },
+  webpack: (config, { isServer, webpack }) => {
+    config.resolve.extensionAlias = {
+      '.js': ['.ts', '.tsx', '.js', '.jsx'],
+      '.mjs': ['.mts', '.mjs'],
+      '.cjs': ['.cts', '.cjs'],
+    };
+
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        net: false,
+        tls: false,
+        dns: false,
+        fs: false,
+        crypto: false,
+        async_hooks: false,
+      };
+
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        'node:crypto': false,
+        'node:async_hooks': false,
+        'node:net': false,
+        'node:tls': false,
+        'node:dns': false,
+        'node:fs': false,
+      };
+
+      config.plugins.push(
+        new webpack.NormalModuleReplacementPlugin(/^node:/, (resource: { request: string }) => {
+          resource.request = resource.request.replace(/^node:/, '');
+        }),
+      );
+    }
+
+    return config;
   },
 };
 
