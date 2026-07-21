@@ -108,6 +108,16 @@
   background-color: rgba(239, 68, 68, 0.1);
   color: var(--accent-red);
   border: 1px solid rgba(239, 68, 68, 0.2);
+  animation: pulseMalicious 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulseMalicious {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0);
+  }
 }
 
 .badgeUnanalyzed {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/strict-boolean-expressions, @typescript-eslint/explicit-function-return-type */
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -11,11 +12,15 @@ import {
   HelpCircle,
   ExternalLink,
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { skillsApi } from '../../lib/api-client';
+import { useToast } from '../ui/ToastContext';
 import type { AISkillFile, SkillSafetyResponse } from '@aegis/core';
 import styles from './SkillDetailModal.module.css';
+
+const MotionSpan = motion.span as any;
 
 interface SkillDetailModalProps {
   skill: AISkillFile;
@@ -32,6 +37,7 @@ export function SkillDetailModal({
   const [safety, setSafety] = useState<SkillSafetyResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isCopied, setIsCopied] = useState(false);
+  const { success: toastSuccess, error: toastError } = useToast();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -75,9 +81,11 @@ export function SkillDetailModal({
       await navigator.clipboard.writeText(content);
       setIsCopied(true);
       await skillsApi.incrementCopyCount(skill.id).catch(console.error);
+      toastSuccess('Skill content copied to clipboard!');
       setTimeout(() => setIsCopied(false), 2000);
     } catch (err) {
       console.error('Failed to copy', err);
+      toastError('Failed to copy skill content.');
     }
   };
 
@@ -132,7 +140,18 @@ export function SkillDetailModal({
               }}
               title="Copy Full Content"
             >
-              {isCopied ? <Check size={18} color="var(--accent-emerald)" /> : <Copy size={18} />}
+              {isCopied ? (
+                <MotionSpan
+                  initial={{ scale: 0 }}
+                  animate={{ scale: [1, 1.3, 1] }}
+                  transition={{ duration: 0.3 }}
+                  style={{ display: 'flex' }}
+                >
+                  <Check size={18} color="var(--accent-emerald)" />
+                </MotionSpan>
+              ) : (
+                <Copy size={18} />
+              )}
               <span>Copy Full</span>
             </button>
             <button style={closeBtnStyle} onClick={onClose} aria-label="Close modal">

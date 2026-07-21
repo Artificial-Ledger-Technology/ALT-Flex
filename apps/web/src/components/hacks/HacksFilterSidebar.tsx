@@ -1,21 +1,21 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/strict-boolean-expressions, @typescript-eslint/explicit-function-return-type */
 'use client';
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { 
-  ChevronDown, 
-  Filter, 
-  Search
-} from 'lucide-react';
+import { ChevronDown, Filter, Search } from 'lucide-react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import styles from './HacksFilterSidebar.module.css';
 
-import { 
-  getAllAttackVectors, 
-  getAttackVectorMetadata, 
-  getAllChains, 
+const MotionDiv = motion.div as any;
+
+import {
+  getAllAttackVectors,
+  getAttackVectorMetadata,
+  getAllChains,
   getChainMetadata,
   type AttackVector,
-  type Chain
+  type Chain,
 } from '@aegis/core';
 
 interface AccordionSectionProps {
@@ -25,15 +25,37 @@ interface AccordionSectionProps {
   children: React.ReactNode;
 }
 
-const AccordionSection: React.FC<AccordionSectionProps> = ({ title, isOpen, onToggle, children }) => (
-  <div className={styles.filterSection}>
-    <div className={styles.sectionHeader} onClick={onToggle}>
-      <span className={styles.sectionTitle}>{title}</span>
-      <ChevronDown size={16} className={`${styles.chevron} ${isOpen ? styles.open : ''}`} />
+const AccordionSection: React.FC<AccordionSectionProps> = ({
+  title,
+  isOpen,
+  onToggle,
+  children,
+}) => {
+  const shouldReduceMotion = useReducedMotion();
+
+  return (
+    <div className={styles.filterSection}>
+      <div className={styles.sectionHeader} onClick={onToggle}>
+        <span className={styles.sectionTitle}>{title}</span>
+        <ChevronDown size={16} className={`${styles.chevron} ${isOpen ? styles.open : ''}`} />
+      </div>
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <MotionDiv
+            className={styles.sectionContent}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: shouldReduceMotion ? 0 : 0.3, ease: 'easeInOut' }}
+            style={{ overflow: 'hidden' }}
+          >
+            {children}
+          </MotionDiv>
+        )}
+      </AnimatePresence>
     </div>
-    {isOpen && <div className={styles.sectionContent}>{children}</div>}
-  </div>
-);
+  );
+};
 
 export function HacksFilterSidebar() {
   const router = useRouter();
@@ -48,7 +70,7 @@ export function HacksFilterSidebar() {
   const [minLoss, setMinLoss] = useState(searchParams.get('minLossUsd') || '');
   const [maxLoss, setMaxLoss] = useState(searchParams.get('maxLossUsd') || '');
   const [hasPoc, setHasPoc] = useState<boolean | null>(
-    searchParams.has('hasFoundryPoc') ? searchParams.get('hasFoundryPoc') === 'true' : null
+    searchParams.has('hasFoundryPoc') ? searchParams.get('hasFoundryPoc') === 'true' : null,
   );
 
   // Section open state
@@ -68,7 +90,7 @@ export function HacksFilterSidebar() {
     setDateTo(searchParams.get('dateTo') || '');
     setMinLoss(searchParams.get('minLossUsd') || '');
     setMaxLoss(searchParams.get('maxLossUsd') || '');
-    
+
     if (searchParams.has('hasFoundryPoc')) {
       setHasPoc(searchParams.get('hasFoundryPoc') === 'true');
     } else {
@@ -82,25 +104,28 @@ export function HacksFilterSidebar() {
   }, [searchParams]);
 
   const toggleSection = (key: string) => {
-    setOpenSections(prev => ({ ...prev, [key]: !prev[key] }));
+    setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const handleApplyFilters = useCallback((updates: Record<string, string | string[] | null>) => {
-    const newParams = new URLSearchParams(searchParams.toString());
-    // Always reset to page 1 on filter change
-    newParams.delete('page');
+  const handleApplyFilters = useCallback(
+    (updates: Record<string, string | string[] | null>) => {
+      const newParams = new URLSearchParams(searchParams.toString());
+      // Always reset to page 1 on filter change
+      newParams.delete('page');
 
-    Object.entries(updates).forEach(([key, value]) => {
-      newParams.delete(key);
-      if (Array.isArray(value)) {
-        value.forEach(v => newParams.append(key, v));
-      } else if (value !== null && value !== '') {
-        newParams.set(key, value);
-      }
-    });
+      Object.entries(updates).forEach(([key, value]) => {
+        newParams.delete(key);
+        if (Array.isArray(value)) {
+          value.forEach((v) => newParams.append(key, v));
+        } else if (value !== null && value !== '') {
+          newParams.set(key, value);
+        }
+      });
 
-    router.push(`?${newParams.toString()}`, { scroll: false });
-  }, [searchParams, router]);
+      router.push(`?${newParams.toString()}`, { scroll: false });
+    },
+    [searchParams, router],
+  );
 
   // Debounced Search Apply
   useEffect(() => {
@@ -114,14 +139,14 @@ export function HacksFilterSidebar() {
 
   const toggleVector = (vector: AttackVector) => {
     const next = selectedVectors.includes(vector)
-      ? selectedVectors.filter(v => v !== vector)
+      ? selectedVectors.filter((v) => v !== vector)
       : [...selectedVectors, vector];
     handleApplyFilters({ attackVector: next });
   };
 
   const toggleChain = (chain: Chain) => {
     const next = selectedChains.includes(chain)
-      ? selectedChains.filter(c => c !== chain)
+      ? selectedChains.filter((c) => c !== chain)
       : [...selectedChains, chain];
     handleApplyFilters({ chain: next });
   };
@@ -149,9 +174,7 @@ export function HacksFilterSidebar() {
         <div className={styles.headerTitle}>
           <Filter size={20} />
           Filters
-          {activeFilterCount > 0 && (
-            <span className={styles.filterBadge}>{activeFilterCount}</span>
-          )}
+          {activeFilterCount > 0 && <span className={styles.filterBadge}>{activeFilterCount}</span>}
         </div>
         {activeFilterCount > 0 && (
           <button className={styles.clearButton} onClick={clearAllFilters} type="button">
@@ -160,27 +183,44 @@ export function HacksFilterSidebar() {
         )}
       </div>
 
-      <AccordionSection title="Search" isOpen={!!openSections.search} onToggle={() => toggleSection('search')}>
+      <AccordionSection
+        title="Search"
+        isOpen={!!openSections.search}
+        onToggle={() => toggleSection('search')}
+      >
         <div style={{ position: 'relative' }}>
-          <Search size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
-          <input 
-            type="text" 
+          <Search
+            size={16}
+            style={{
+              position: 'absolute',
+              left: '10px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              color: 'var(--text-secondary)',
+            }}
+          />
+          <input
+            type="text"
             className={styles.searchInput}
             style={{ paddingLeft: '32px' }}
-            placeholder="Protocol name..." 
+            placeholder="Protocol name..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
       </AccordionSection>
 
-      <AccordionSection title="Attack Vectors" isOpen={!!openSections.vectors} onToggle={() => toggleSection('vectors')}>
-        {getAllAttackVectors().map(vector => {
+      <AccordionSection
+        title="Attack Vectors"
+        isOpen={!!openSections.vectors}
+        onToggle={() => toggleSection('vectors')}
+      >
+        {getAllAttackVectors().map((vector) => {
           const meta = getAttackVectorMetadata(vector);
           return (
             <label key={vector} className={styles.checkboxRow}>
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 className={styles.checkboxInput}
                 checked={selectedVectors.includes(vector)}
                 onChange={() => toggleVector(vector)}
@@ -193,33 +233,39 @@ export function HacksFilterSidebar() {
         })}
       </AccordionSection>
 
-      <AccordionSection title="Chains" isOpen={!!openSections.chains} onToggle={() => toggleSection('chains')}>
-        {getAllChains().map(chain => {
+      <AccordionSection
+        title="Chains"
+        isOpen={!!openSections.chains}
+        onToggle={() => toggleSection('chains')}
+      >
+        {getAllChains().map((chain) => {
           const meta = getChainMetadata(chain);
           return (
             <label key={chain} className={styles.checkboxRow}>
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 className={styles.checkboxInput}
                 checked={selectedChains.includes(chain)}
                 onChange={() => toggleChain(chain)}
               />
               <div className={styles.checkboxLabel}>
-                <span className={styles.checkboxTitle}>
-                  {meta.displayName}
-                </span>
+                <span className={styles.checkboxTitle}>{meta.displayName}</span>
               </div>
             </label>
           );
         })}
       </AccordionSection>
 
-      <AccordionSection title="Date Range" isOpen={!!openSections.dates} onToggle={() => toggleSection('dates')}>
+      <AccordionSection
+        title="Date Range"
+        isOpen={!!openSections.dates}
+        onToggle={() => toggleSection('dates')}
+      >
         <div className={styles.inputGroup}>
           <label className={styles.inputLabel}>From Date</label>
-          <input 
-            type="date" 
-            className={styles.inputField} 
+          <input
+            type="date"
+            className={styles.inputField}
             value={dateFrom}
             onChange={(e) => {
               setDateFrom(e.target.value);
@@ -229,8 +275,8 @@ export function HacksFilterSidebar() {
         </div>
         <div className={styles.inputGroup}>
           <label className={styles.inputLabel}>To Date</label>
-          <input 
-            type="date" 
+          <input
+            type="date"
             className={styles.inputField}
             value={dateTo}
             onChange={(e) => {
@@ -241,13 +287,17 @@ export function HacksFilterSidebar() {
         </div>
       </AccordionSection>
 
-      <AccordionSection title="Loss Amount (USD)" isOpen={!!openSections.losses} onToggle={() => toggleSection('losses')}>
+      <AccordionSection
+        title="Loss Amount (USD)"
+        isOpen={!!openSections.losses}
+        onToggle={() => toggleSection('losses')}
+      >
         <div className={styles.rangeInputs}>
           <div className={styles.inputGroup} style={{ flex: 1 }}>
             <label className={styles.inputLabel}>Min USD</label>
-            <input 
-              type="number" 
-              className={styles.inputField} 
+            <input
+              type="number"
+              className={styles.inputField}
               placeholder="0"
               value={minLoss}
               onChange={(e) => setMinLoss(e.target.value)}
@@ -257,9 +307,9 @@ export function HacksFilterSidebar() {
           <span className={styles.rangeSeparator}>-</span>
           <div className={styles.inputGroup} style={{ flex: 1 }}>
             <label className={styles.inputLabel}>Max USD</label>
-            <input 
-              type="number" 
-              className={styles.inputField} 
+            <input
+              type="number"
+              className={styles.inputField}
               placeholder="∞"
               value={maxLoss}
               onChange={(e) => setMaxLoss(e.target.value)}
@@ -269,10 +319,14 @@ export function HacksFilterSidebar() {
         </div>
       </AccordionSection>
 
-      <AccordionSection title="Foundry POC" isOpen={!!openSections.poc} onToggle={() => toggleSection('poc')}>
+      <AccordionSection
+        title="Foundry POC"
+        isOpen={!!openSections.poc}
+        onToggle={() => toggleSection('poc')}
+      >
         <label className={styles.checkboxRow}>
-          <input 
-            type="checkbox" 
+          <input
+            type="checkbox"
             className={styles.checkboxInput}
             checked={hasPoc === true}
             onChange={(e) => {

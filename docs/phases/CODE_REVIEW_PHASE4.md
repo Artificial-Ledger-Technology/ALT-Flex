@@ -397,18 +397,18 @@ Audit and refine all pages for mobile/tablet responsiveness and accessibility co
 
 **Acceptance Criteria**:
 
-- [ ] Mobile (< 640px): single column, slide-out navigation, stacked charts
-- [ ] Tablet (640–1024px): two-column grid, side panel filters
-- [ ] Desktop (> 1024px): full sidebar, multi-column layouts
-- [ ] WCAG 2.1 AA:
-- [ ] All interactive elements keyboard navigable
-- [ ] Color contrast ≥ 4.5:1 for text
-- [ ] ARIA labels on icons and badges
-- [ ] Focus indicators visible
-- [ ] Screen reader friendly table headers
-- [ ] Touch targets ≥ 44px on mobile
-- [ ] No horizontal scroll at any breakpoint
-- [ ] Dark mode tested at all breakpoints
+- [x] Mobile (< 640px): single column, slide-out navigation, stacked charts
+- [x] Tablet (640–1024px): two-column grid, side panel filters
+- [x] Desktop (> 1024px): full sidebar, multi-column layouts
+- [x] WCAG 2.1 AA:
+- [x] All interactive elements keyboard navigable
+- [x] Color contrast ≥ 4.5:1 for text
+- [x] ARIA labels on icons and badges
+- [x] Focus indicators visible
+- [x] Screen reader friendly table headers
+- [x] Touch targets ≥ 44px on mobile
+- [x] No horizontal scroll at any breakpoint
+- [x] Dark mode tested at all breakpoints
 
 ---
 
@@ -517,8 +517,8 @@ style P012 fill:#2ecc71,color:#fff
 | Skills filters   | Platform/language/safety, detail modal          | ⬜     |
 | Safety dashboard | Label distribution, rule performance, timeline  | ⬜     |
 | API client       | Type-safe, SWR hooks, error handling            | ⬜     |
-| Responsive       | Mobile/tablet/desktop tested                    | ⬜     |
-| Accessibility    | Lighthouse ≥ 90                                 | ⬜     |
+| Responsive       | Mobile/tablet/desktop tested                    | ✅     |
+| Accessibility    | Lighthouse ≥ 90                                 | ✅     |
 | Animations       | Micro-animations, reduced-motion respected      | ⬜     |
 
 > **⛔ Phase 5 CANNOT begin until all Phase Gate Criteria are ✅.**

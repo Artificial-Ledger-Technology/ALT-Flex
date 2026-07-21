@@ -6,10 +6,8 @@ import { motion } from 'framer-motion';
 import { Copy, Check, Star, ShieldAlert, ShieldCheck, Shield, HelpCircle } from 'lucide-react';
 import styles from './Skills.module.css';
 import { skillsApi } from '../../lib/api-client';
+import { useToast } from '../ui/ToastContext';
 import type { AISkillFile } from '@aegis/core';
-
-// Ensure framer-motion compatibility with React 19
-const MotionDiv = motion.div as React.ElementType;
 
 interface SkillCardProps {
   skill: AISkillFile;
@@ -21,6 +19,7 @@ export function SkillCard({ skill }: SkillCardProps): React.ReactElement {
   const [starCount, setStarCount] = useState(skill.starCount ?? 0);
   const [copyCount, setCopyCount] = useState(skill.copyCount ?? 0);
   const [isActioning, setIsActioning] = useState(false);
+  const { success: toastSuccess, error: toastError } = useToast();
 
   const getSafetyIcon = (): React.ReactElement | null => {
     switch (skill.safetyLabel) {
@@ -75,8 +74,10 @@ export function SkillCard({ skill }: SkillCardProps): React.ReactElement {
       setTimeout(() => {
         setIsCopied(false);
       }, 2000);
+      toastSuccess('Skill copied to clipboard!');
     } catch (err) {
       console.error('Failed to copy skill content', err);
+      toastError('Failed to copy skill content.');
     } finally {
       setIsActioning(false);
     }
@@ -104,12 +105,7 @@ export function SkillCard({ skill }: SkillCardProps): React.ReactElement {
   };
 
   return (
-    <MotionDiv
-      className={styles.card}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-    >
+    <div className={styles.card}>
       <div className={styles.cardHeader}>
         <div className={styles.titleGroup}>
           <h3 className={styles.title}>{skill.name}</h3>
@@ -172,10 +168,21 @@ export function SkillCard({ skill }: SkillCardProps): React.ReactElement {
             title="Copy to Clipboard"
             type="button"
           >
-            {isCopied ? <Check size={16} color="var(--accent-emerald)" /> : <Copy size={16} />}
+            {isCopied ? (
+              <motion.span
+                initial={{ scale: 0 }}
+                animate={{ scale: [1, 1.3, 1] }}
+                transition={{ duration: 0.3 }}
+                style={{ display: 'flex' }}
+              >
+                <Check size={16} color="var(--accent-emerald)" />
+              </motion.span>
+            ) : (
+              <Copy size={16} />
+            )}
           </button>
         </div>
       </div>
-    </MotionDiv>
+    </div /* Replaced MotionDiv with div since stagger parent handles it */>
   );
 }

@@ -1,10 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, @typescript-eslint/explicit-function-return-type, @typescript-eslint/strict-boolean-expressions */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, @typescript-eslint/explicit-function-return-type, @typescript-eslint/strict-boolean-expressions, @typescript-eslint/no-explicit-any */
 'use client';
 
 import React, { useState } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import { motion, useReducedMotion } from 'framer-motion';
 import type { HackIncident } from '@aegis/core';
 import type { PaginatedResponse } from '@/lib/api-client';
+
+const MotionTbody = motion.tbody as any;
+const MotionTr = motion.tr as any;
 import { ChainBadge, VectorBadge } from './HackBadges';
 import styles from './HacksTable.module.css';
 import {
@@ -92,6 +96,16 @@ export function HacksTable({ data }: HacksTableProps): React.ReactNode {
     ) : (
       <ChevronDown size={14} className={styles.sortIcon} />
     );
+  };
+
+  const shouldReduceMotion = useReducedMotion();
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { staggerChildren: 0.05 } },
+  };
+  const rowVariants = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 10 },
+    show: { opacity: 1, y: 0 },
   };
 
   if (!data || data.data.length === 0) {
@@ -192,17 +206,18 @@ export function HacksTable({ data }: HacksTableProps): React.ReactNode {
               </th>
             </tr>
           </thead>
-          <tbody>
+          <MotionTbody variants={containerVariants} initial="hidden" animate="show">
             {data.data.map((hack) => {
               const isExpanded = expandedRows.has(hack.id);
               return (
                 <React.Fragment key={hack.id}>
-                  <tr
+                  <MotionTr
+                    variants={rowVariants}
                     className={`${styles.tr} ${isExpanded ? styles.trExpanded : ''}`}
                     onClick={() => toggleRow(hack.id)}
                     style={{ cursor: 'pointer' }}
                     tabIndex={0}
-                    onKeyDown={(e) => {
+                    onKeyDown={(e: React.KeyboardEvent<HTMLTableRowElement>) => {
                       if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
                         toggleRow(hack.id);
@@ -251,7 +266,7 @@ export function HacksTable({ data }: HacksTableProps): React.ReactNode {
                         <span style={{ color: '#52525b' }}>-</span>
                       )}
                     </td>
-                  </tr>
+                  </MotionTr>
 
                   {isExpanded && (
                     <tr>
@@ -309,7 +324,7 @@ export function HacksTable({ data }: HacksTableProps): React.ReactNode {
                 </React.Fragment>
               );
             })}
-          </tbody>
+          </MotionTbody>
         </table>
       </div>
 

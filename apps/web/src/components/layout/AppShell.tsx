@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
+import { ToastProvider } from '../ui/ToastContext';
 import styles from './AppShell.module.css';
 
 interface AppShellProps {
@@ -21,12 +22,14 @@ export function AppShell({ children }: AppShellProps): React.ReactNode {
   };
 
   return (
-    <div className={styles.appShell}>
-      <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
-      <div className={styles.mainContent}>
-        <Header onMenuAction={toggleSidebar} isMenuOpen={isSidebarOpen} />
-        <main className={styles.pageContainer}>{children}</main>
+    <ToastProvider>
+      <div className={styles.appShell}>
+        <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
+        <div className={styles.mainContent}>
+          <Header onMenuAction={toggleSidebar} isMenuOpen={isSidebarOpen} />
+          <main className={styles.pageContainer}>{children}</main>
+        </div>
       </div>
-    </div>
+    </ToastProvider>
   );
 }
