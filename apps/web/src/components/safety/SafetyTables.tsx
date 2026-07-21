@@ -1,9 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/strict-boolean-expressions, @typescript-eslint/explicit-function-return-type */
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import styles from './Safety.module.css';
 import type { SafetyRulesResponse } from '@aegis/core';
 import type { RecentScan } from '../../lib/api-client';
+
+const MotionTbody = motion.tbody as any;
+const MotionTr = motion.tr as any;
 
 export function SafetyTables({
   rules,
@@ -44,6 +49,15 @@ function RulePerformanceTable({
       return sortOrder === 'asc' ? comp : -comp;
     });
   }, [rules, sortField, sortOrder]);
+  const shouldReduceMotion = useReducedMotion();
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { staggerChildren: 0.05 } },
+  };
+  const rowVariants = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 10 },
+    show: { opacity: 1, y: 0 },
+  };
 
   const handleSort = (field: 'hitCount' | 'name'): void => {
     if (sortField === field) {
@@ -90,9 +104,9 @@ function RulePerformanceTable({
               <th scope="col">FPR</th>
             </tr>
           </thead>
-          <tbody>
+          <MotionTbody variants={containerVariants} initial="hidden" animate="show">
             {sortedRules.map((rule) => (
-              <tr key={rule.ruleId}>
+              <MotionTr key={rule.ruleId} variants={rowVariants}>
                 <td>
                   <div style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{rule.name}</div>
                   <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{rule.ruleId}</div>
@@ -104,16 +118,16 @@ function RulePerformanceTable({
                     ? `${(rule.falsePositiveRate * 100).toFixed(1)}%`
                     : 'N/A'}
                 </td>
-              </tr>
+              </MotionTr>
             ))}
             {sortedRules.length === 0 && (
-              <tr>
+              <MotionTr variants={rowVariants}>
                 <td colSpan={4} style={{ textAlign: 'center', padding: 'var(--space-6)' }}>
                   No rule data available
                 </td>
-              </tr>
+              </MotionTr>
             )}
-          </tbody>
+          </MotionTbody>
         </table>
       </div>
     </div>
@@ -138,6 +152,16 @@ function RecentScansTable({
     }
   };
 
+  const shouldReduceMotion = useReducedMotion();
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { staggerChildren: 0.05 } },
+  };
+  const rowVariants = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 10 },
+    show: { opacity: 1, y: 0 },
+  };
+
   return (
     <div className={styles.tableCard}>
       <div className={styles.tableHeader}>
@@ -153,9 +177,9 @@ function RecentScansTable({
               <th scope="col">Time</th>
             </tr>
           </thead>
-          <tbody>
+          <MotionTbody variants={containerVariants} initial="hidden" animate="show">
             {recentScans?.data.map((scan) => (
-              <tr key={scan.id}>
+              <MotionTr key={scan.id} variants={rowVariants}>
                 <td>
                   <div
                     style={{
@@ -200,16 +224,16 @@ function RecentScansTable({
                     })}
                   </span>
                 </td>
-              </tr>
+              </MotionTr>
             ))}
             {(!recentScans || recentScans.data.length === 0) && (
-              <tr>
+              <MotionTr variants={rowVariants}>
                 <td colSpan={4} style={{ textAlign: 'center', padding: 'var(--space-6)' }}>
                   No recent scans
                 </td>
-              </tr>
+              </MotionTr>
             )}
-          </tbody>
+          </MotionTbody>
         </table>
       </div>
     </div>
