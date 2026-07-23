@@ -100,6 +100,8 @@ services:
       - ./apps/web/public:/app/apps/web/public
       - ./apps/web/tsconfig.json:/app/apps/web/tsconfig.json
       - ./apps/web/next.config.ts:/app/apps/web/next.config.ts
+      - ./packages/core/src:/app/packages/core/src
+      - ./packages/core/tsconfig.json:/app/packages/core/tsconfig.json
     env_file: .env
     environment:
       NODE_ENV: development

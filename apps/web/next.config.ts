@@ -9,7 +9,37 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   // Monorepo: Allow importing from workspace packages
   transpilePackages: ['@aegis/core'],
+  experimental: {
+    optimizePackageImports: ['@aegis/core'],
+  },
   output: 'standalone',
+  webpack: (config, { isServer, webpack }) => {
+    config.resolve.extensionAlias = {
+      '.js': ['.ts', '.tsx', '.js', '.jsx'],
+      '.mjs': ['.mts', '.mjs'],
+      '.cjs': ['.cts', '.cjs'],
+    };
+    if (!isServer) {
+      config.plugins.push(
+        new webpack.NormalModuleReplacementPlugin(/^node:/, (resource: { request: string }) => {
+          resource.request = resource.request.replace(/^node:/, '');
+        })
+      );
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        dns: false,
+        net: false,
+        tls: false,
+        fs: false,
+        child_process: false,
+        pg: false,
+        'pg-native': false,
+        ioredis: false,
+        async_hooks: false,
+      };
+    }
+    return config;
+  },
   async rewrites() {
     return [
       {

@@ -174,7 +174,9 @@ class ApiClient {
 
 // ── Singleton Instance ──────────────────────────────────────────────────────
 
-const API_BASE = `${clientEnv.NEXT_PUBLIC_API_URL}/api/v1`;
+const API_BASE = typeof window === 'undefined'
+  ? `${process.env.API_PROXY_URL || 'http://api-gateway:4000'}/api/v1`
+  : `${clientEnv.NEXT_PUBLIC_API_URL}/api/v1`;
 const apiClient = new ApiClient(API_BASE);
 
 // ── SWR Fetcher ─────────────────────────────────────────────────────────────
