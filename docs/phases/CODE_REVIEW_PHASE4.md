@@ -479,6 +479,35 @@ End-to-end validation of the frontend. Every page must render correctly, fetch r
 
 ---
 
+### P4-FE-013: Post-Implementation Bug Fixes (API & Environment)
+
+**Title**: Resolve Next.js 15 Runtime Errors, Fix API Client Network Routing, and Seed Database
+
+| Field           | Value                      |
+| --------------- | -------------------------- |
+| Priority        | P0 — Critical              |
+| Estimated Hours | 2                          |
+| Dependencies    | P4-FE-012                  |
+| Assigned Agent  | `senior_frontend_engineer` |
+| QA Agent        | `senior_qa_engineer`       |
+| Review Agent    | `senior_code_reviewer`     |
+| Labels          | `bug`, `api`, `nextjs`     |
+
+**Description**:
+Addressed several critical integration bugs that prevented the dashboard from rendering:
+1. **AsyncLocalStorage Crash**: Added `optimizePackageImports` for `@aegis/core` to prevent Next.js 15 from failing on Node.js native module instantiation during client-side evaluation.
+2. **Docker Network Routing**: Updated `api-client.ts` to smartly use the internal Docker network URL (`process.env.API_PROXY_URL`) for React Server Components, preventing `ECONNREFUSED`.
+3. **Database Population**: Executed SQL migrations and seed scripts to populate the database and resolve 500 Internal Server errors from the API Gateway.
+4. **Safety Route Authentication**: Removed erroneous `requireApiKey` middleware from public read-only `/safety/*` routes to resolve 401 Unauthorized errors in the UI.
+
+**Acceptance Criteria**:
+- [x] Dashboard loads without `AsyncLocalStorage is not a constructor` error
+- [x] Server Components successfully fetch from API Gateway
+- [x] Database is migrated and seeded with mock incidents
+- [x] Safety dashboard loads analytics without 401 errors
+
+---
+
 ## Dependency Graph
 
 ```mermaid

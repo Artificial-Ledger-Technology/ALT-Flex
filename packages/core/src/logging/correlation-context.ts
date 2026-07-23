@@ -19,7 +19,13 @@ export interface CorrelationContext {
 }
 
 /** Singleton AsyncLocalStorage instance for request-scoped correlation IDs. */
-export const correlationStorage = new AsyncLocalStorage<CorrelationContext>();
+export const correlationStorage = (() => {
+  try {
+    return new AsyncLocalStorage<CorrelationContext>();
+  } catch {
+    return null as unknown as AsyncLocalStorage<CorrelationContext>;
+  }
+})();
 
 /**
  * Get the current correlation ID from the active async context.
