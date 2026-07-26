@@ -62,3 +62,15 @@ export type { IHackSourcePort } from './IHackSourcePort.js';
 
 // ── Skill Source Port (ETL) ──────────────────────────────────────────────────
 export type { ISkillSourcePort } from './ISkillSourcePort.js';
+
+// ── RPC Port (Forensic Engine — Phase 5) ─────────────────────────────────────
+export type {
+  IRpcPort,
+  RpcBlock,
+  RpcTransaction,
+  RpcTransactionReceipt,
+  RpcLog,
+  RpcTraceResult,
+  CallRequest,
+  LogFilter,
+} from './IRpcPort.js';
