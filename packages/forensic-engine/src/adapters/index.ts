@@ -3,13 +3,20 @@
  *
  * Infrastructure adapters for the Forensic Engine.
  * Concrete implementations of driven ports defined in @aegis/core:
- * - Foundry CLI integration for POC simulation
- * - Viem/ethers.js RPC client for transaction tracing
- * - PostgreSQL repository for exploit POCs
+ * - Multi-chain RPC provider for forensic data access
+ * - Foundry CLI integration for POC simulation (Phase 5+)
+ * - PostgreSQL repository for exploit POCs (Phase 5+)
  *
  * @hexagonal Adapter Layer — Engine γ (Driven/Secondary)
  */
 
-// Adapters will be added in Phase 5 as Foundry integration is implemented.
-// Examples: FoundrySimulator, ViemTraceClient, PostgresExploitPocRepository
-export {};
+// ── RPC Adapter (P5-EVM-001) ────────────────────────────────────────────────
+export {
+  ChainRpcProvider,
+  ChainNotSupportedError,
+  RpcRequestError,
+  RateLimiter,
+  buildChainConfigs,
+  SUPPORTED_CHAINS,
+  type ChainRpcConfig,
+} from './rpc/index.js';

@@ -23,6 +23,7 @@ export type {
   ForkParameters,
   // Ports
   IChainDataPort,
+  IRpcPort,
   TransactionData,
   TransactionTrace,
   InternalCall,
@@ -31,6 +32,14 @@ export type {
   ContractInfo,
   PaginatedResult,
   SortConfig,
+  // RPC Types
+  RpcBlock,
+  RpcTransaction,
+  RpcTransactionReceipt,
+  RpcLog,
+  RpcTraceResult,
+  CallRequest,
+  LogFilter,
   // API Schemas
   ForensicPocListQuery,
   ForensicPocDetailParams,
@@ -40,11 +49,11 @@ export type {
   ForensicJobProgress,
 } from '@aegis/core';
 
-// ── Engine-specific Application Layer (populated in Phase 2+) ───────────────
+// ── Engine-specific Application Layer (populated in Phase 5+) ───────────────
 // export * from './application/index.js';
 
-// ── Engine-specific Adapter Layer (populated in Phase 2+) ───────────────────
-// export * from './adapters/index.js';
+// ── Engine-specific Adapter Layer (P5-EVM-001+) ─────────────────────────────
+export * from './adapters/index.js';
 
-// ── Engine-specific Domain Extensions (populated in Phase 2+) ───────────────
+// ── Engine-specific Domain Extensions (populated in Phase 5+) ───────────────
 // export * from './domain/index.js';
