@@ -1,0 +1,58 @@
+{
+  "test/Exploit.t.sol:ExploitTest": {
+    "test_results": {
+      "testExploit()": {
+        "status": "Success",
+        "reason": null,
+        "counterexample": null,
+        "logs": [
+          {
+            "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+            "topics": [
+              "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+              "0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+              "0x00000000000000000000000028c6c06298d514db089934071355e5743bf21d60"
+            ],
+            "data": "0x00000000000000000000000000000000000000000000000000000000003d0900"
+          },
+          {
+            "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "topics": [
+              "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+              "0x00000000000000000000000028c6c06298d514db089934071355e5743bf21d60",
+              "0x000000000000000000000000dead000000000000000000000000000000000000"
+            ],
+            "data": "0x0000000000000000000000000000000000000000000000000000000005f5e100"
+          }
+        ],
+        "kind": { "Standard": [0] },
+        "traces": [
+          {
+            "type": "CALL",
+            "from": "0x1234567890abcdef1234567890abcdef12345678",
+            "to": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+            "value": "0",
+            "gasUsed": "45000",
+            "input": "0xa9059cbb",
+            "output": "0x0000000000000000000000000000000000000000000000000000000000000001"
+          },
+          {
+            "type": "STATICCALL",
+            "from": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+            "to": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "value": "0",
+            "gasUsed": "2100",
+            "input": "0x70a08231",
+            "output": "0x0000000000000000000000000000000000000000000000000000000005f5e100"
+          }
+        ],
+        "labeled_addresses": {
+          "0xdAC17F958D2ee523a2206206994597C13D831ec7": "USDT",
+          "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": "USDC"
+        },
+        "duration": { "secs": 2, "nanos": 450000000 },
+        "gas_used": 1250000
+      }
+    }
+  }
+}
