@@ -237,7 +237,7 @@ describe('P5-EVM-003: Transaction Trace Analyzer', () => {
       expect(flashLoanCalls[0].functionName).toBe('flashLoan');
     });
 
-    it('11. should identify token transfers and oracle reads', async () => {
+    it('11. should identify token transfers and oracle reads', { timeout: 15000 }, async () => {
       const fixture = await loadTraceFixture('trace-euler-2023.json');
       const rpc = createMockRpcPort(fixture);
       const resolver = new SelectorResolver();

@@ -239,11 +239,16 @@ ALT-Flex/                               ← Git root / pnpm workspace root
 │   └── forensic-engine/                ← 🔬 @aegis/forensic-engine — Engine γ
 │       └── src/
 │           ├── adapters/
-│           │   ├── foundry/            ← Foundry CLI wrapper
-│           │   └── rpc/                ← Multi-chain RPC providers (viem)
-│           ├── application/            ← SimulateExploit · TraceTransaction
-│           ├── domain/
+│           │   ├── foundry/            ← Foundry CLI wrapper (P5-EVM-002)
+│           │   ├── rpc/                ← Multi-chain RPC providers (P5-EVM-001)
+│           │   ├── tracing/            ← Transaction trace analyzer (P5-EVM-003)
+│           │   ├── storage/            ← Storage diff analyzer (P5-EVM-004)
+│           │   └── patterns/           ← 10 exploit pattern detectors (P5-EVM-005)
+│           ├── application/            ← ForensicAnalysisUseCase (P5-EVM-006)
+│           ├── domain/                 ← Trace, storage, pattern, report types
+│           ├── evaluation/             ← Pattern evaluator & confusion matrix (P5-EVM-012)
 │           └── infrastructure/
+│               └── queue/              ← BullMQ forensics job queue
 │
 ├── apps/
 │   ├── web/                            ← 🌐 @aegis/web — Next.js 15 Frontend
@@ -258,7 +263,7 @@ ALT-Flex/                               ← Git root / pnpm workspace root
 │   │       │   ├── ui/                 ← Base UI primitives
 │   │       │   ├── hacks/              ← HackCard, HackTable, FilterSidebar
 │   │       │   ├── skills/             ← SkillCard, SafetyBadge, CopyButton
-│   │       │   ├── forensics/          ← TraceViewer, ExploitSimulator
+│   │       │   ├── forensics/          ← TraceViewer, StorageDiffInspector, PatternReport
 │   │       │   └── layout/             ← Header, Sidebar, Footer
 │   │       ├── lib/                    ← API client, utilities
 │   │       ├── hooks/                  ← Custom React hooks
@@ -470,6 +475,29 @@ export class FoundryAdapter implements IForensicRunnerPort {
 }
 ```
 
+### Forensic Dashboard — Frontend Components
+
+The Forensic Dashboard provides interactive visualization for all forensic analysis outputs.
+Navigate to `/hacks/{id}/forensics` to access the full forensic view.
+
+**Trace Viewer** — Interactive call tree with expand/collapse, gas flame chart, and detail panel.
+Renders 1000+ nodes at 60fps using `@tanstack/react-virtual` virtualization.
+
+<!-- TODO: Add screenshot of Trace Viewer prototype -->
+<!-- ![Trace Viewer](assets/screenshots/trace-viewer.png) -->
+
+**Storage Diff Inspector** — Side-by-side before/after comparison of contract storage mutations.
+Color-coded rows (green = balance increase, red = decrease, amber = state change) with copy-to-clipboard.
+
+<!-- TODO: Add screenshot of Storage Diff Inspector prototype -->
+<!-- ![Storage Diff Inspector](assets/screenshots/storage-diff-inspector.png) -->
+
+**Pattern Report** — Detected exploit patterns with confidence scores, evidence links, and
+Mermaid-rendered attack flow diagrams.
+
+<!-- TODO: Add screenshot of Pattern Report prototype -->
+<!-- ![Pattern Report](assets/screenshots/pattern-report.png) -->
+
 ---
 
 ## Architecture Decision Records
@@ -489,11 +517,11 @@ export class FoundryAdapter implements IForensicRunnerPort {
 | Phase                        | Timeline   | Status             | Key Deliverables                                                                                                              |
 | ---------------------------- | ---------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
 | **Phase 0 — Init**           | Week 1–2   | ✅ **Done**        | Monorepo scaffold · pnpm workspace · Turbo config · Domain blueprints · Docker Compose · Dev tooling                          |
-| **Phase 1 — Architecture**   | Week 3–4   | 🔄 **In Progress** | `ARCHITECTURE.md` ✅ · API contracts ✅ · DB migrations ✅ · Seed data ✅ · Integration tests ✅ · P1-ARCH-009 remaining     |
-| **Phase 2 — ETL Pipeline**   | Week 5–8   | ⏳ Planned         | DefiLlama sync worker · DeFiHackLabs scraper · BullMQ queues · PostgreSQL pipeline                                            |
-| **Phase 3 — Safety Scanner** | Week 9–16  | ⏳ Planned         | AST parser · Heuristic safety rules · Safety label classifier **(Thesis 1 core)**                                             |
-| **Phase 4 — Frontend**       | Week 17–22 | ⏳ Planned         | Hacks Dashboard · AI Skills Explorer · Forensic trace viewer · AEGIS design system                                            |
-| **Phase 5 — EVM Forensics**  | Week 23–32 | ⏳ Planned         | Foundry POC integration · Trace visualization · Root-cause mapping **(Thesis 2 core)**                                        |
+| **Phase 1 — Architecture**   | Week 3–4   | ✅ **Done**        | `ARCHITECTURE.md` · API contracts · DB migrations · Seed data · Integration tests                                             |
+| **Phase 2 — ETL Pipeline**   | Week 5–8   | ✅ **Done**        | DefiLlama sync worker · DeFiHackLabs scraper · BullMQ queues · PostgreSQL pipeline                                            |
+| **Phase 3 — Safety Scanner** | Week 9–16  | ✅ **Done**        | AST parser · Heuristic safety rules · Safety label classifier **(Thesis 1 core)**                                             |
+| **Phase 4 — Frontend**       | Week 17–22 | ✅ **Done**        | Hacks Dashboard · AI Skills Explorer · Forensic trace viewer · AEGIS design system                                            |
+| **Phase 5 — EVM Forensics**  | Week 23–32 | ✅ **Done**        | Foundry POC integration · Trace visualization · Root-cause mapping **(Thesis 2 core)**                                        |
 | **Phase 6 — Production**     | Week 33–40 | ⏳ Planned         | Terraform · CI/CD · Production deployment · Performance evaluation                                                            |
 
 ### Phase 1 Task Tracker
@@ -508,7 +536,25 @@ export class FoundryAdapter implements IForensicRunnerPort {
 | P1-ARCH-006   | System & Gateway Endpoints                 | ✅ Complete     | #48   | Sr. Software Engineer       |
 | P1-ARCH-007   | PostgreSQL Migrations & Seed Infra         | ✅ Complete     | #49   | Sr. Data Architect          |
 | P1-ARCH-008   | Create Seed Data (DefiLlama/DeFiHackLabs)  | ✅ Complete     | —     | Sr. Data Architect          |
-| P1-ARCH-009   | Final Phase Gate Review                    | 🔄 In Progress  | —     | Sr. Code Reviewer           |
+| P1-ARCH-009   | Final Phase Gate Review                    | ✅ Complete     | —     | Sr. Code Reviewer           |
+
+### Phase 5 Task Tracker
+
+| Task ID       | Title                                        | Status          | Assignee                      |
+| ------------- | -------------------------------------------- | --------------- | ----------------------------- |
+| P5-EVM-001    | Multi-Chain RPC Provider Layer               | ✅ Complete     | Sr. Blockchain Engineer       |
+| P5-EVM-002    | Foundry Integration Service                  | ✅ Complete     | Sr. Blockchain Engineer       |
+| P5-EVM-003    | Transaction Trace Analyzer                   | ✅ Complete     | Sr. Blockchain Engineer       |
+| P5-EVM-004    | Storage Diff Analyzer                        | ✅ Complete     | Sr. Blockchain Engineer       |
+| P5-EVM-005    | Exploit Pattern Recognizer                   | ✅ Complete     | Sr. Blockchain Engineer       |
+| P5-EVM-006    | Forensic Analysis Use Case                   | ✅ Complete     | Sr. Blockchain Engineer       |
+| P5-EVM-007    | Forensic API Endpoints                       | ✅ Complete     | Sr. API Design Engineer       |
+| P5-EVM-008    | Trace Viewer UI                              | ✅ Complete     | Sr. Frontend Engineer         |
+| P5-EVM-009    | Storage Diff Inspector UI                    | ✅ Complete     | Sr. Frontend Engineer         |
+| P5-EVM-010    | Pattern Report UI                            | ✅ Complete     | Sr. Frontend Engineer         |
+| P5-EVM-011    | Evaluation Dataset                           | ✅ Complete     | Sr. Blockchain Engineer       |
+| P5-EVM-012    | Pattern Evaluator                            | ✅ Complete     | Sr. Blockchain Engineer       |
+| P5-EVM-013    | Validation & Phase Gate                      | ✅ Complete     | Sr. QA Engineer               |
 
 ---
 
@@ -855,7 +901,39 @@ git push origin feature/P1-ARCH-001-hex-diagrams
 
 ## Changelogs
 
-### 🛡️ [03.1.0] — 2026-04-26 · Phase 1 — Architecture 🔄 **In Progress**
+### 🛡️ [03.5.0] — 2026-08-03 · Phase 5 — Deep EVM Integration ✅ **Complete**
+
+#### Forensic Engine Backend (P5-EVM-001 → P5-EVM-006)
+
+- Implemented `ChainRpcProvider` with multi-chain support (Ethereum, BSC, Polygon, Arbitrum, Optimism, Avalanche, Base), automatic failover, and configurable rate limiting
+- Built `FoundryService` for programmatic `forge test` execution with fork-mode simulation, output parsing, and POC downloading from DeFiHackLabs
+- Created `TransactionTraceAnalyzer` for `debug_traceTransaction` call tree extraction with selector decoding, reentrancy detection, and gas breakdown analysis
+- Implemented `StorageDiffAnalyzer` for pre/post-exploit state comparison with layout decoding and balance change interpretation
+- Built `ExploitPatternRecognizer` with 10 individual detectors: Flash Loan, Reentrancy, Oracle Manipulation, Access Control, Arithmetic Overflow, Front Running, Delegate Call Injection, Self Destruct, Logic Error, Bridge Exploit
+- Created `ForensicAnalysisUseCase` orchestrating the full trace → storage → pattern pipeline
+
+#### Forensic API & Frontend (P5-EVM-007 → P5-EVM-010)
+
+- Wired forensic analysis capabilities to the API Gateway with simulation, tracing, and report endpoints
+- Built interactive `TraceViewer` with virtualized call tree rendering (1000+ nodes at 60fps) using `@tanstack/react-virtual`
+- Created `StorageDiffInspector` with collapsible per-contract sections, color-coded balance changes, and copy-to-clipboard
+- Implemented `PatternReport` with confidence bars, evidence links, and Mermaid-based attack flow diagrams
+
+#### Academic Evaluation Pipeline (P5-EVM-011 → P5-EVM-012)
+
+- Curated 62 labeled transaction entries spanning all 10 attack pattern types
+- Built pattern evaluator computing per-pattern Precision/Recall/F1, macro/micro averages, confusion matrix, and threshold sensitivity analysis
+- Documented evaluation methodology for Thesis Chapter 3
+
+#### Validation & Phase Gate (P5-EVM-013)
+
+- 145 unit tests passing across 8 test files (exceeds ≥120 requirement)
+- All engineering and academic acceptance criteria met
+- Published `PHASE5_GATE_REPORT.md` with detailed pass/fail tabulation
+
+---
+
+### 🛡️ [03.1.0] — 2026-04-26 · Phase 1 — Architecture ✅ **Complete**
 
 #### Architecture Documentation (P1-ARCH-001 → P1-ARCH-002)
 
