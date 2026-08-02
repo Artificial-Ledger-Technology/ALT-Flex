@@ -36,3 +36,11 @@ export {
   ForkUnavailableError,
 } from './foundry/index.js';
 
+// ── Tracing Adapter (P5-EVM-003) ────────────────────────────────────────────
+export {
+  TransactionTraceAnalyzer,
+  SelectorResolver,
+  TraceNotAvailableError,
+  TraceTooLargeError,
+  TraceDepthExceededError,
+} from './tracing/index.js';
