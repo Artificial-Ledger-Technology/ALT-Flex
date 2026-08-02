@@ -23,3 +23,20 @@ export type {
   RawForgeLogEntry,
   RawForgeDecodedLog,
 } from './forge-types.js';
+
+// ── Trace Domain Types (P5-EVM-003) ─────────────────────────────────────────
+export type {
+  CallType,
+  CallTreeNode,
+  DecodedCall,
+  DecodedArg,
+  TransactionTraceResult,
+  GasBreakdown,
+  ValueFlowEntry,
+  TraceSummary,
+  ReentrancyMatch,
+  DelegateCallMatch,
+  CallCategory,
+  CategorizedCall,
+  DecodedEvent as TraceDecodedEvent,
+} from './trace-types.js';

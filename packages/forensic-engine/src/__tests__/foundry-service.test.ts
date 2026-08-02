@@ -74,7 +74,7 @@ describe('P5-EVM-002: Foundry Integration Service', () => {
     let downloader: PocDownloader;
     let cacheDir: string;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       cacheDir = path.join(os.tmpdir(), `aegis-test-cache-${Date.now()}`);
       downloader = new PocDownloader({ cacheDir });
     });
@@ -98,15 +98,11 @@ describe('P5-EVM-002: Foundry Integration Service', () => {
       });
       vi.stubGlobal('fetch', fetchMock);
 
-      const content = await downloader.downloadFromGitHub(
-        'src/test/2023-03/Euler_exp.t.sol',
-      );
+      const content = await downloader.downloadFromGitHub('src/test/2023-03/Euler_exp.t.sol');
 
       expect(content).toContain('pragma solidity');
       expect(fetchMock).toHaveBeenCalledOnce();
-      expect(fetchMock).toHaveBeenCalledWith(
-        expect.stringContaining('SunWeb3Sec/DeFiHackLabs'),
-      );
+      expect(fetchMock).toHaveBeenCalledWith(expect.stringContaining('SunWeb3Sec/DeFiHackLabs'));
 
       vi.unstubAllGlobals();
     });
@@ -150,7 +146,8 @@ describe('P5-EVM-002: Foundry Integration Service', () => {
     });
 
     it('5. should create correct directory structure', async () => {
-      const pocContent = '// SPDX-License-Identifier: MIT\npragma solidity ^0.8.17;\ncontract Test {}';
+      const pocContent =
+        '// SPDX-License-Identifier: MIT\npragma solidity ^0.8.17;\ncontract Test {}';
 
       projectDir = await builder.createProject(pocContent, 'Exploit.t.sol', {
         forkUrl: 'https://eth-mainnet.g.alchemy.com/v2/test-key',
@@ -167,9 +164,7 @@ describe('P5-EVM-002: Foundry Integration Service', () => {
       expect(tomlStat.isFile()).toBe(true);
 
       // Verify test file exists
-      const testStat = await fs.stat(
-        path.join(projectDir, 'test', 'Exploit.t.sol'),
-      );
+      const testStat = await fs.stat(path.join(projectDir, 'test', 'Exploit.t.sol'));
       expect(testStat.isFile()).toBe(true);
 
       // Verify forge-std stub exists
@@ -179,14 +174,13 @@ describe('P5-EVM-002: Foundry Integration Service', () => {
       expect(forgeStdStat.isFile()).toBe(true);
 
       // Verify remappings.txt exists
-      const remappingsStat = await fs.stat(
-        path.join(projectDir, 'remappings.txt'),
-      );
+      const remappingsStat = await fs.stat(path.join(projectDir, 'remappings.txt'));
       expect(remappingsStat.isFile()).toBe(true);
     });
 
     it('6. should generate correct foundry.toml content', async () => {
-      const pocContent = '// SPDX-License-Identifier: MIT\npragma solidity ^0.8.17;\ncontract Test {}';
+      const pocContent =
+        '// SPDX-License-Identifier: MIT\npragma solidity ^0.8.17;\ncontract Test {}';
 
       projectDir = await builder.createProject(pocContent, 'Test.t.sol', {
         forkUrl: 'https://eth-mainnet.g.alchemy.com/v2/test-key',
@@ -196,10 +190,7 @@ describe('P5-EVM-002: Foundry Integration Service', () => {
         blockTimestamp: 1_678_700_000,
       });
 
-      const tomlContent = await fs.readFile(
-        path.join(projectDir, 'foundry.toml'),
-        'utf-8',
-      );
+      const tomlContent = await fs.readFile(path.join(projectDir, 'foundry.toml'), 'utf-8');
 
       expect(tomlContent).toContain('[profile.default]');
       expect(tomlContent).toContain('solc_version = "0.8.17"');
@@ -238,9 +229,7 @@ describe('P5-EVM-002: Foundry Integration Service', () => {
       expect(result.duration).toBe(2450); // 2 secs + 450ms
 
       // Verify first log
-      expect(result.logs[0]?.address).toBe(
-        '0xdAC17F958D2ee523a2206206994597C13D831ec7',
-      );
+      expect(result.logs[0]?.address).toBe('0xdAC17F958D2ee523a2206206994597C13D831ec7');
       expect(result.logs[0]?.topics).toHaveLength(3);
 
       // Verify first trace
@@ -298,12 +287,8 @@ describe('P5-EVM-002: Foundry Integration Service', () => {
       // Verify CALL trace
       const callTrace = result.traces.find((t) => t.type === 'CALL');
       expect(callTrace).toBeDefined();
-      expect(callTrace?.from).toBe(
-        '0x1234567890abcdef1234567890abcdef12345678',
-      );
-      expect(callTrace?.to).toBe(
-        '0xdAC17F958D2ee523a2206206994597C13D831ec7',
-      );
+      expect(callTrace?.from).toBe('0x1234567890abcdef1234567890abcdef12345678');
+      expect(callTrace?.to).toBe('0xdAC17F958D2ee523a2206206994597C13D831ec7');
       expect(callTrace?.value).toBe(0n);
       expect(callTrace?.input).toBe('0xa9059cbb');
 
@@ -321,9 +306,7 @@ describe('P5-EVM-002: Foundry Integration Service', () => {
 
       // First log — USDT Transfer
       const usdtLog = result.logs[0];
-      expect(usdtLog?.address).toBe(
-        '0xdAC17F958D2ee523a2206206994597C13D831ec7',
-      );
+      expect(usdtLog?.address).toBe('0xdAC17F958D2ee523a2206206994597C13D831ec7');
       expect(usdtLog?.topics).toHaveLength(3);
       expect(usdtLog?.data).toBe(
         '0x00000000000000000000000000000000000000000000000000000000003d0900',
@@ -331,9 +314,7 @@ describe('P5-EVM-002: Foundry Integration Service', () => {
 
       // Second log — USDC Transfer
       const usdcLog = result.logs[1];
-      expect(usdcLog?.address).toBe(
-        '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-      );
+      expect(usdcLog?.address).toBe('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48');
     });
   });
 
@@ -345,15 +326,11 @@ describe('P5-EVM-002: Foundry Integration Service', () => {
       const pocContent =
         '// SPDX-License-Identifier: MIT\npragma solidity ^0.8.17;\ncontract Test {}';
 
-      const projectDir = await builder.createProject(
-        pocContent,
-        'Test.t.sol',
-        {
-          forkUrl: 'https://localhost:8545',
-          forkBlockNumber: 100,
-          solcVersion: '0.8.17',
-        },
-      );
+      const projectDir = await builder.createProject(pocContent, 'Test.t.sol', {
+        forkUrl: 'https://localhost:8545',
+        forkBlockNumber: 100,
+        solcVersion: '0.8.17',
+      });
 
       // Verify directory exists
       const statBefore = await fs.stat(projectDir);
@@ -374,24 +351,16 @@ describe('P5-EVM-002: Foundry Integration Service', () => {
       const builder = new FoundryProjectBuilder();
 
       // Caret version
-      expect(
-        builder.extractSolcVersion('pragma solidity ^0.8.17;'),
-      ).toBe('0.8.17');
+      expect(builder.extractSolcVersion('pragma solidity ^0.8.17;')).toBe('0.8.17');
 
       // Range version
-      expect(
-        builder.extractSolcVersion('pragma solidity >=0.8.0 <0.9.0;'),
-      ).toBe('0.8.0');
+      expect(builder.extractSolcVersion('pragma solidity >=0.8.0 <0.9.0;')).toBe('0.8.0');
 
       // Exact version
-      expect(
-        builder.extractSolcVersion('pragma solidity 0.6.12;'),
-      ).toBe('0.6.12');
+      expect(builder.extractSolcVersion('pragma solidity 0.6.12;')).toBe('0.6.12');
 
       // No pragma — returns default
-      expect(
-        builder.extractSolcVersion('contract Foo {}'),
-      ).toBe('0.8.20');
+      expect(builder.extractSolcVersion('contract Foo {}')).toBe('0.8.20');
     });
   });
 
@@ -404,9 +373,7 @@ describe('P5-EVM-002: Foundry Integration Service', () => {
       });
 
       const url = resolver.resolve(Chain.ETHEREUM);
-      expect(url).toBe(
-        'https://eth-mainnet.g.alchemy.com/v2/test-alchemy-key',
-      );
+      expect(url).toBe('https://eth-mainnet.g.alchemy.com/v2/test-alchemy-key');
     });
 
     it('should fall back to Infura when Alchemy slug is unavailable', () => {
@@ -415,9 +382,7 @@ describe('P5-EVM-002: Foundry Integration Service', () => {
       });
 
       const url = resolver.resolve(Chain.AVALANCHE);
-      expect(url).toBe(
-        'https://avalanche-mainnet.infura.io/v3/test-infura-key',
-      );
+      expect(url).toBe('https://avalanche-mainnet.infura.io/v3/test-infura-key');
     });
 
     it('should fall back to public RPC when no API keys', () => {
@@ -430,9 +395,7 @@ describe('P5-EVM-002: Foundry Integration Service', () => {
     it('should throw ForkUnavailableError for unsupported chain', () => {
       const resolver = new ForgeRpcResolver({});
 
-      expect(() => resolver.resolve(Chain.UNKNOWN)).toThrow(
-        ForkUnavailableError,
-      );
+      expect(() => resolver.resolve(Chain.UNKNOWN)).toThrow(ForkUnavailableError);
     });
 
     it('should report supported chains correctly', () => {
@@ -451,10 +414,7 @@ describe('P5-EVM-002: Foundry Integration Service', () => {
 
   describe('Error Classes', () => {
     it('should create ForgeCompilationError with compiler output', () => {
-      const error = new ForgeCompilationError(
-        'Error: Undeclared identifier',
-        '0.8.17',
-      );
+      const error = new ForgeCompilationError('Error: Undeclared identifier', '0.8.17');
       expect(error.name).toBe('ForgeCompilationError');
       expect(error.compilerOutput).toBe('Error: Undeclared identifier');
       expect(error.solcVersion).toBe('0.8.17');
@@ -462,10 +422,7 @@ describe('P5-EVM-002: Foundry Integration Service', () => {
     });
 
     it('should create PocDownloadError with status code', () => {
-      const error = new PocDownloadError(
-        'src/test/Exploit.t.sol',
-        404,
-      );
+      const error = new PocDownloadError('src/test/Exploit.t.sol', 404);
       expect(error.name).toBe('PocDownloadError');
       expect(error.filePath).toBe('src/test/Exploit.t.sol');
       expect(error.statusCode).toBe(404);
@@ -473,9 +430,7 @@ describe('P5-EVM-002: Foundry Integration Service', () => {
     });
 
     it('should create ForkUnavailableError with URL', () => {
-      const error = new ForkUnavailableError(
-        'https://eth-mainnet.g.alchemy.com/v2/invalid',
-      );
+      const error = new ForkUnavailableError('https://eth-mainnet.g.alchemy.com/v2/invalid');
       expect(error.name).toBe('ForkUnavailableError');
       expect(error.forkUrl).toContain('alchemy.com');
     });
