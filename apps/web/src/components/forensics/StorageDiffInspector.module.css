@@ -1,0 +1,231 @@
+/* apps/web/src/components/forensics/StorageDiffInspector.module.css */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+  width: 100%;
+}
+
+/* Summary Card */
+.summaryCard {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+}
+
+.summaryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: var(--spacing-4);
+}
+
+.metricBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.metricTitle {
+  font-size: var(--font-size-sm);
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.metricValueGain {
+  font-family: var(--font-display);
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: #34d399; /* Green for gain */
+}
+
+.metricValueLoss {
+  font-family: var(--font-display);
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: #ef4444; /* Red for loss */
+}
+
+.tokenSummaryList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.tokenRow {
+  display: flex;
+  justify-content: space-between;
+  background: var(--bg-tertiary);
+  padding: var(--spacing-2) var(--spacing-4);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  align-items: center;
+}
+
+.tokenSymbol {
+  font-weight: 600;
+  color: var(--text-primary);
+  width: 100px;
+}
+
+.tokenAttacker {
+  color: #34d399;
+  font-family: var(--font-mono);
+  width: 150px;
+  text-align: right;
+}
+
+.tokenProtocol {
+  color: #ef4444;
+  font-family: var(--font-mono);
+  width: 150px;
+  text-align: right;
+}
+
+/* Contract Section */
+.contractSection {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.contractHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-4) var(--spacing-6);
+  background: var(--bg-tertiary);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.contractHeader:hover {
+  background: var(--bg-hover);
+}
+
+.contractInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.contractName {
+  font-family: var(--font-display);
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.contractAddress {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.expandIcon {
+  color: var(--text-secondary);
+}
+
+/* Table */
+.tableContainer {
+  overflow-x: auto;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  min-width: 800px;
+}
+
+.th {
+  padding: var(--spacing-3) var(--spacing-4);
+  background: var(--bg-tertiary);
+  color: var(--text-tertiary);
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.td {
+  padding: var(--spacing-3) var(--spacing-4);
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  vertical-align: top;
+}
+
+.tr:hover .td {
+  background: var(--bg-hover);
+}
+
+/* Status Colors */
+.colorIncrease {
+  color: #34d399;
+}
+
+.colorDecrease {
+  color: #ef4444;
+}
+
+.colorChange {
+  color: #f59e0b;
+}
+
+/* Cells */
+.slotCell {
+  font-family: var(--font-mono);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.hexValue {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-tertiary);
+  word-break: break-all;
+  margin-top: 4px;
+}
+
+.decodedValue {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.unknownWarning {
+  color: #f59e0b;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-size-xs);
+}
+
+.copyBtn {
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  border-radius: 4px;
+}
+
+.copyBtn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
