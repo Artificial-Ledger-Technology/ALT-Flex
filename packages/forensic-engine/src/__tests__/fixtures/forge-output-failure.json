@@ -1,0 +1,38 @@
+{
+  "test/Exploit.t.sol:ExploitTest": {
+    "test_results": {
+      "testExploit()": {
+        "status": "Failure",
+        "reason": "Assertion failed: expected profit > 0, actual: -500000",
+        "counterexample": null,
+        "logs": [
+          {
+            "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "topics": [
+              "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+              "0x000000000000000000000000dead000000000000000000000000000000000000",
+              "0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+            ],
+            "data": "0x00000000000000000000000000000000000000000000000000000000000f4240"
+          }
+        ],
+        "kind": { "Standard": [0] },
+        "traces": [
+          {
+            "type": "CALL",
+            "from": "0x1234567890abcdef1234567890abcdef12345678",
+            "to": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "value": "0",
+            "gasUsed": "35000",
+            "input": "0xa9059cbb",
+            "output": "0x",
+            "error": "EVM revert: Assertion failed"
+          }
+        ],
+        "labeled_addresses": {},
+        "duration": { "secs": 1, "nanos": 200000000 },
+        "gas_used": 850000
+      }
+    }
+  }
+}

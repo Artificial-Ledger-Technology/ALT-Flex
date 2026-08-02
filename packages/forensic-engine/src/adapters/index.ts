@@ -4,7 +4,7 @@
  * Infrastructure adapters for the Forensic Engine.
  * Concrete implementations of driven ports defined in @aegis/core:
  * - Multi-chain RPC provider for forensic data access
- * - Foundry CLI integration for POC simulation (Phase 5+)
+ * - Foundry CLI integration for POC simulation
  * - PostgreSQL repository for exploit POCs (Phase 5+)
  *
  * @hexagonal Adapter Layer — Engine γ (Driven/Secondary)
@@ -20,3 +20,19 @@ export {
   SUPPORTED_CHAINS,
   type ChainRpcConfig,
 } from './rpc/index.js';
+
+// ── Foundry Adapter (P5-EVM-002) ────────────────────────────────────────────
+export {
+  FoundryService,
+  ForgeOutputParser,
+  PocDownloader,
+  FoundryProjectBuilder,
+  ForgeRpcResolver,
+  ForgeNotInstalledError,
+  ForgeCompilationError,
+  ForgeExecutionTimeoutError,
+  ForgeExecutionError,
+  PocDownloadError,
+  ForkUnavailableError,
+} from './foundry/index.js';
+

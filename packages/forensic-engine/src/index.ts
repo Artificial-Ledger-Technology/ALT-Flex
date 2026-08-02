@@ -50,10 +50,10 @@ export type {
 } from '@aegis/core';
 
 // ── Engine-specific Application Layer (populated in Phase 5+) ───────────────
-// export * from './application/index.js';
+// export * from './application/index.js';  // Uncomment when use cases are added
 
 // ── Engine-specific Adapter Layer (P5-EVM-001+) ─────────────────────────────
 export * from './adapters/index.js';
 
-// ── Engine-specific Domain Extensions (populated in Phase 5+) ───────────────
-// export * from './domain/index.js';
+// ── Engine-specific Domain Extensions (P5-EVM-002+) ────────────────────────
+export * from './domain/index.js';

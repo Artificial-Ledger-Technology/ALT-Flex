@@ -8,6 +8,18 @@
  * @hexagonal Domain Layer — Engine γ
  */
 
-// Domain extensions will be added in Phase 5 as Foundry integration is implemented.
-// Examples: SimulationPolicy, TraceAnalysisSpecification, ForkChainRules
-export {};
+// ── Forge Domain Types (P5-EVM-002) ─────────────────────────────────────────
+export type {
+  ForgeCallType,
+  ForgeTrace,
+  ForgeLog,
+  ForgeTestResult,
+  FoundryProjectConfig,
+  SimulationRequest,
+  SimulationResult,
+  RawForgeJsonOutput,
+  RawForgeContractResult,
+  RawForgeTestEntry,
+  RawForgeLogEntry,
+  RawForgeDecodedLog,
+} from './forge-types.js';
