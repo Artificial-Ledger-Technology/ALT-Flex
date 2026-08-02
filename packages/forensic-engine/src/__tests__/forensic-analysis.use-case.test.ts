@@ -79,13 +79,13 @@ describe('ForensicAnalysisUseCase', () => {
     events: [],
     gasBreakdown: {},
     valueFlow: [],
-    summary: { totalNodes: 1, maxDepth: 0, uniqueContracts: ['0xtarget'], callTypes: {} as any },
+    summary: { totalCalls: 1, maxDepth: 0, uniqueContracts: 1, totalValueTransferred: 0n, hasReentrancy: false, hasDelegateCalls: false, valueTransfers: 0, reentrancyMatches: [], delegateCallMatches: [], categorizedCalls: [] } as any,
   };
 
   describe('analyzeTrace', () => {
     it('1. should execute full pipeline and persist report', async () => {
       traceAnalyzer.analyze.mockResolvedValue(mockTraceResult);
-      patternRecognizer.analyze.mockReturnValue({ matches: [], metadata: {} as any });
+      patternRecognizer.analyze.mockReturnValue({ patterns: [], primaryPattern: undefined, overallConfidence: undefined });
 
       const report = await useCase.analyzeTrace(mockHackId, mockChain, mockTxHash);
 
@@ -99,7 +99,7 @@ describe('ForensicAnalysisUseCase', () => {
     it('2. should discover slots if events are present in trace', async () => {
       const traceWithEvents = { ...mockTraceResult, events: [{ name: 'Transfer' } as any] };
       traceAnalyzer.analyze.mockResolvedValue(traceWithEvents);
-      patternRecognizer.analyze.mockReturnValue({ matches: [], metadata: {} as any });
+      patternRecognizer.analyze.mockReturnValue({ patterns: [], primaryPattern: undefined, overallConfidence: undefined });
       slotDiscoverer.discoverFromEvents.mockReturnValue([{ slot: '0x1', contractAddress: '0xtarget' }]);
 
       await useCase.analyzeTrace(mockHackId, mockChain, mockTxHash);
@@ -109,19 +109,21 @@ describe('ForensicAnalysisUseCase', () => {
 
     it('3. should default to UNKNOWN pattern if none detected', async () => {
       traceAnalyzer.analyze.mockResolvedValue(mockTraceResult);
-      patternRecognizer.analyze.mockReturnValue({ matches: [], metadata: {} as any });
+      patternRecognizer.analyze.mockReturnValue({ patterns: [], primaryPattern: undefined, overallConfidence: undefined });
 
       const report = await useCase.analyzeTrace(mockHackId, mockChain, mockTxHash);
 
       expect(report.patterns.primaryPattern).toBe('UNKNOWN');
-      expect(report.patterns.confidence).toBe(0);
+      // confidence is undefined when no patterns detected, mapped from overallConfidence
+      expect(report.patterns.confidence).toBeUndefined();
     });
 
     it('4. should map primary pattern when detected', async () => {
       traceAnalyzer.analyze.mockResolvedValue(mockTraceResult);
       patternRecognizer.analyze.mockReturnValue({
-        matches: [{ patternId: 'FLASH_LOAN', confidence: 0.95 } as any],
-        metadata: {} as any,
+        patterns: [{ patternId: 'FLASH_LOAN', confidence: 0.95 } as any],
+        primaryPattern: 'FLASH_LOAN',
+        overallConfidence: 0.95,
       });
 
       const report = await useCase.analyzeTrace(mockHackId, mockChain, mockTxHash);
@@ -139,7 +141,7 @@ describe('ForensicAnalysisUseCase', () => {
 
     it('6. should call updateProgress correctly', async () => {
       traceAnalyzer.analyze.mockResolvedValue(mockTraceResult);
-      patternRecognizer.analyze.mockReturnValue({ matches: [], metadata: {} as any });
+      patternRecognizer.analyze.mockReturnValue({ patterns: [], primaryPattern: undefined, overallConfidence: undefined });
       const updateProgress = vi.fn();
 
       await useCase.analyzeTrace(mockHackId, mockChain, mockTxHash, updateProgress);

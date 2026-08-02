@@ -258,7 +258,7 @@ describe('PatternEvaluator', () => {
       const cm = buildConfusionMatrix(MINI_DATASET, map, 0.30);
       const md = formatConfusionMatrixMarkdown(cm);
 
-      expect(md).toContain('Truth \\ Pred');
+      expect(md).toContain('Truth \\\\ Pred');
       expect(md).toContain('FLASH_LO');
       expect(md).toContain('|');
     });
