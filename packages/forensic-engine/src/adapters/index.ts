@@ -51,3 +51,20 @@ export {
   StorageLayoutDecoder,
   StorageSlotDiscoverer,
 } from './storage/index.js';
+
+// ── Pattern Recognition Adapter (P5-EVM-005) ────────────────────────────────
+export {
+  ExploitPatternRecognizer,
+  PatternConfigLoader,
+  FlashLoanDetector,
+  ReentrancyDetector,
+  OracleManipulationDetector,
+  AccessControlDetector,
+  ArithmeticOverflowDetector,
+  FrontRunningDetector,
+  DelegateCallInjectionDetector,
+  SelfDestructDetector,
+  LogicErrorDetector,
+  BridgeExploitDetector,
+} from './patterns/index.js';
+

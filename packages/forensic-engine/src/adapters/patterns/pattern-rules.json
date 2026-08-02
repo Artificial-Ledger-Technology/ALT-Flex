@@ -1,0 +1,179 @@
+{
+  "version": "1.0.0",
+  "description": "Declarative pattern rules for the ExploitPatternRecognizer. Each pattern has configurable function signatures, known addresses, and tuning parameters.",
+  "rules": {
+    "FLASH_LOAN": {
+      "minConfidence": 0.3,
+      "functionSignatures": [
+        "flashLoan",
+        "flashloan",
+        "flash",
+        "flashBorrow",
+        "executeOperation",
+        "onFlashLoan",
+        "receiveFlashLoan"
+      ],
+      "knownAddresses": [],
+      "parameters": {
+        "minTransferValue": "1000000",
+        "requireBidirectionalTransfer": true,
+        "oracleBoostFactor": 0.15
+      }
+    },
+    "REENTRANCY": {
+      "minConfidence": 0.3,
+      "functionSignatures": [
+        "withdraw",
+        "withdrawAll",
+        "redeem",
+        "claimReward",
+        "call"
+      ],
+      "knownAddresses": [],
+      "parameters": {
+        "minRecursionDepth": 2,
+        "storageMutationBoost": 0.2
+      }
+    },
+    "ORACLE_MANIPULATION": {
+      "minConfidence": 0.3,
+      "functionSignatures": [
+        "latestAnswer",
+        "latestRoundData",
+        "getRoundData",
+        "getReserves",
+        "getPrice",
+        "price",
+        "consult",
+        "observe",
+        "slot0"
+      ],
+      "knownAddresses": [],
+      "parameters": {
+        "swapSignatures": [
+          "swap",
+          "swapExactTokensForTokens",
+          "swapTokensForExactTokens",
+          "exactInputSingle",
+          "exactInput"
+        ],
+        "liquiditySignatures": [
+          "addLiquidity",
+          "removeLiquidity",
+          "mint",
+          "burn"
+        ]
+      }
+    },
+    "ACCESS_CONTROL": {
+      "minConfidence": 0.3,
+      "functionSignatures": [
+        "transferOwnership",
+        "renounceOwnership",
+        "pause",
+        "unpause",
+        "upgradeTo",
+        "upgradeToAndCall",
+        "setOwner",
+        "grantRole",
+        "revokeRole",
+        "initialize",
+        "init",
+        "setAdmin",
+        "changeAdmin"
+      ],
+      "knownAddresses": [],
+      "parameters": {
+        "ownershipStorageSlots": ["0x0", "0x33"]
+      }
+    },
+    "ARITHMETIC_OVERFLOW": {
+      "minConfidence": 0.3,
+      "functionSignatures": [
+        "transfer",
+        "transferFrom",
+        "mint",
+        "burn",
+        "batchTransfer"
+      ],
+      "knownAddresses": [],
+      "parameters": {
+        "overflowThreshold": "1461501637330902918203684832716283019655932542975",
+        "balanceJumpRatio": 1000000
+      }
+    },
+    "FRONT_RUNNING": {
+      "minConfidence": 0.3,
+      "functionSignatures": [
+        "swap",
+        "swapExactTokensForTokens",
+        "swapTokensForExactTokens",
+        "swapExactETHForTokens",
+        "swapExactTokensForETH",
+        "exactInputSingle",
+        "exactInput",
+        "exactOutputSingle",
+        "multicall"
+      ],
+      "knownAddresses": [],
+      "parameters": {
+        "minSwapPairs": 2,
+        "requireSameOriginAddress": true
+      }
+    },
+    "DELEGATE_CALL_INJECTION": {
+      "minConfidence": 0.3,
+      "functionSignatures": [
+        "delegatecall",
+        "upgradeTo",
+        "upgradeToAndCall",
+        "setImplementation"
+      ],
+      "knownAddresses": [],
+      "parameters": {
+        "suspiciousImplPatterns": ["recently_deployed", "externally_controlled"]
+      }
+    },
+    "SELF_DESTRUCT": {
+      "minConfidence": 0.3,
+      "functionSignatures": [],
+      "knownAddresses": [],
+      "parameters": {
+        "requireBalanceAnomaly": true
+      }
+    },
+    "LOGIC_ERROR": {
+      "minConfidence": 0.3,
+      "functionSignatures": [],
+      "knownAddresses": [],
+      "parameters": {
+        "maxOtherPatternConfidence": 0.5,
+        "minStorageMutations": 1
+      }
+    },
+    "BRIDGE_EXPLOIT": {
+      "minConfidence": 0.3,
+      "functionSignatures": [
+        "relayMessage",
+        "processMessage",
+        "executeMessage",
+        "verifyProof",
+        "verifyMessageHash",
+        "depositFor",
+        "withdraw",
+        "finalizeWithdrawal",
+        "submitBatch",
+        "proveAndProcess"
+      ],
+      "knownAddresses": [],
+      "parameters": {
+        "crossChainIndicators": [
+          "chainId",
+          "sourceChain",
+          "destinationChain",
+          "nonce"
+        ]
+      }
+    }
+  }
+}

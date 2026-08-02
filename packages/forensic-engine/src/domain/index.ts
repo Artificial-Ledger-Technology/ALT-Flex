@@ -48,3 +48,16 @@ export type {
   StorageLayoutType,
   StorageSlotRequirement,
 } from './storage-types.js';
+
+// ── Pattern Recognition Domain Types (P5-EVM-005) ──────────────────────────
+export type {
+  ExploitPatternId,
+  PatternEvidence,
+  PatternMatch,
+  PatternDetectionResult,
+  PatternAnalysisMetadata,
+  PatternRuleConfig,
+  PatternRulesConfig,
+  PatternDetector,
+} from './pattern-types.js';
+
