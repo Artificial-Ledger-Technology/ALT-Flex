@@ -61,3 +61,8 @@ export type {
   PatternDetector,
 } from './pattern-types.js';
 
+// ── Report Domain Types (P5-EVM-006) ─────────────────────────────────────────
+export type {
+  ForensicReport,
+} from './report-types.js';
+

@@ -12,4 +12,4 @@
 
 // Use cases will be added in Phase 5 as Foundry integration is implemented.
 // Examples: SimulateExploitUseCase, TraceTransactionUseCase, ListPocsUseCase
-export {};
+export { ForensicAnalysisUseCase } from './forensic-analysis.use-case.js';
