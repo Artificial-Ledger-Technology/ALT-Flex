@@ -57,3 +57,7 @@ export * from './adapters/index.js';
 
 // ── Engine-specific Domain Extensions (P5-EVM-002+) ────────────────────────
 export * from './domain/index.js';
+
+// ── Infrastructure (P5-EVM-006+) ───────────────────────────────────────────
+export * from './infrastructure/queue/forensics-queue.js';
+export * from './adapters/postgres/postgres-forensic-report.repository.js';
