@@ -10,4 +10,6 @@
 
 // Infrastructure will be added in Phase 5 as background jobs are implemented.
 // Examples: SimulationQueue, TraceQueue, ForensicJobWorker
-export {};
+export * from './queue/forensics-queue.js';
+export * from './queue/forensics-processor.js';
+
