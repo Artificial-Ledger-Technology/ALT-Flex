@@ -26,9 +26,9 @@ const NAV_ITEMS = [
   },
   {
     name: 'Forensics',
-    href: '#',
+    href: '/forensics',
     icon: Microscope,
-    disabled: true,
+    disabled: false,
   },
 ];
 
