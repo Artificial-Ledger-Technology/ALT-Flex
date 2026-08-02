@@ -1,0 +1,396 @@
+/* apps/web/src/components/forensics/TraceViewer.module.css */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-4) var(--spacing-6);
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-secondary);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.actions {
+  display: flex;
+  gap: var(--spacing-3);
+}
+
+.search {
+  padding: var(--spacing-2) var(--spacing-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  outline: none;
+  width: 250px;
+  transition: border-color 0.2s;
+}
+
+.search:focus {
+  border-color: var(--color-primary);
+}
+
+.btn {
+  padding: var(--spacing-2) var(--spacing-4);
+  border-radius: var(--radius-md);
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.mainPanel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.flameChartContainer {
+  padding: var(--spacing-4);
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-tertiary);
+}
+
+.flameChartTitle {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--spacing-2);
+}
+
+.flameChart {
+  width: 100%;
+  height: 60px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+/* Tree List View */
+.treeContainer {
+  flex: 1;
+  overflow: auto;
+  position: relative;
+}
+
+.treeInner {
+  position: relative;
+  min-width: 800px; /* Force horizontal scroll on mobile */
+}
+
+/* Node Row */
+.nodeRow {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 0 var(--spacing-4);
+  font-family: var(--font-mono, monospace);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+  transition: background-color 0.15s;
+}
+
+.nodeRow:hover {
+  background-color: var(--bg-hover);
+  border-bottom-color: var(--border-subtle);
+}
+
+.nodeRow.selected {
+  background-color: rgba(99, 102, 241, 0.1);
+  border-left: 2px solid var(--color-primary);
+}
+
+.nodeIndent {
+  display: flex;
+  height: 100%;
+  position: relative;
+}
+
+/* Tree Connecting Lines */
+.treeLine {
+  width: 20px;
+  height: 100%;
+  position: relative;
+}
+
+.treeLine::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 10px;
+  width: 1px;
+  background-color: var(--border-subtle);
+}
+
+.treeLine.hasChild::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  width: 10px;
+  height: 1px;
+  background-color: var(--border-subtle);
+}
+
+.treeLine.isLastChild::before {
+  bottom: 50%; /* Only draw line down to the middle */
+}
+
+.expandBtn {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  z-index: 10;
+  border-radius: 4px;
+}
+
+.expandBtn:hover {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+/* Node Content Details */
+.nodeContent {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-1) 0;
+  min-width: 0; /* Enable truncation */
+}
+
+.badge {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+}
+
+.badge.call { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+.badge.delegatecall { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+.badge.staticcall { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+.badge.create { background: rgba(139, 92, 246, 0.15); color: #a78bfa; }
+
+.addresses {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  color: var(--text-secondary);
+}
+
+.address {
+  color: var(--text-primary);
+}
+
+.arrow {
+  color: var(--text-tertiary);
+}
+
+.signature {
+  flex: 1;
+  color: var(--color-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gas {
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  text-align: right;
+  min-width: 80px;
+}
+
+.value {
+  color: #34d399;
+  font-size: var(--font-size-xs);
+  text-align: right;
+  min-width: 80px;
+}
+
+.errorText {
+  color: var(--color-danger);
+  font-size: var(--font-size-xs);
+  margin-left: var(--spacing-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nodeRow.error {
+  background-color: rgba(239, 68, 68, 0.05);
+}
+
+/* Detail Panel */
+.detailPanel {
+  width: 400px;
+  border-left: 1px solid var(--border-subtle);
+  background: var(--bg-secondary);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.detailHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-4);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.detailTitle {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.closeBtn {
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
+.closeBtn:hover {
+  color: var(--text-primary);
+}
+
+.detailContent {
+  padding: var(--spacing-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.detailSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.detailSectionTitle {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.hexBlock {
+  background: var(--bg-tertiary);
+  padding: var(--spacing-3);
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono, monospace);
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  word-break: break-all;
+  max-height: 150px;
+  overflow-y: auto;
+  border: 1px solid var(--border-subtle);
+  position: relative;
+}
+
+.copyBtn {
+  position: absolute;
+  top: var(--spacing-2);
+  right: var(--spacing-2);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.copyBtn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.argList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.argItem {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-tertiary);
+  padding: var(--spacing-2) var(--spacing-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+}
+
+.argNameType {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  margin-bottom: 2px;
+}
+
+.argValue {
+  font-family: var(--font-mono, monospace);
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  word-break: break-all;
+}
+
+.errorBox {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: var(--color-danger);
+  padding: var(--spacing-3);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+}
