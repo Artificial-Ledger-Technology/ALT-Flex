@@ -44,3 +44,10 @@ export {
   TraceTooLargeError,
   TraceDepthExceededError,
 } from './tracing/index.js';
+
+// ── Storage Adapter (P5-EVM-004) ────────────────────────────────────────────
+export {
+  StorageDiffAnalyzer,
+  StorageLayoutDecoder,
+  StorageSlotDiscoverer,
+} from './storage/index.js';

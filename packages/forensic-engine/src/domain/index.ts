@@ -40,3 +40,11 @@ export type {
   CategorizedCall,
   DecodedEvent as TraceDecodedEvent,
 } from './trace-types.js';
+
+// ── Storage Domain Types (P5-EVM-004) ───────────────────────────────────────
+export type {
+  StorageDiff,
+  StorageChange,
+  StorageLayoutType,
+  StorageSlotRequirement,
+} from './storage-types.js';
