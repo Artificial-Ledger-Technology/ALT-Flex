@@ -8,7 +8,7 @@
       "@aegis/forensic-engine": ["./src/index.ts"]
     }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*.ts", "src/**/*.json"],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"],
   "references": [{ "path": "../core" }]
 }

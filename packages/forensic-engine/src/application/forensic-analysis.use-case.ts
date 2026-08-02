@@ -1,5 +1,6 @@
 import { type Chain } from '@aegis/core';
-import { type FoundryService, type SimulationRequest } from '../adapters/foundry/index.js';
+import { type FoundryService } from '../adapters/foundry/index.js';
+import { type SimulationRequest } from '../domain/forge-types.js';
 import { type TransactionTraceAnalyzer } from '../adapters/tracing/index.js';
 import { type StorageDiffAnalyzer, type StorageSlotDiscoverer } from '../adapters/storage/index.js';
 import { type ExploitPatternRecognizer } from '../adapters/patterns/index.js';
@@ -40,7 +41,7 @@ export class ForensicAnalysisUseCase {
     const targetContract = traceResult.callTree.to;
     
     // Discover slots from events
-    let slotsToCheck: StorageSlotRequirement[] = [];
+    let slotsToCheck: readonly StorageSlotRequirement[] = [];
     if (traceResult.events) {
       slotsToCheck = this.slotDiscoverer.discoverFromEvents(traceResult.events, targetContract);
     }
@@ -55,8 +56,7 @@ export class ForensicAnalysisUseCase {
     await updateProgress?.(60);
 
     // 3. Pattern recognition
-    // We pass the mock storageDiff as per the current adapter implementation requirements.
-    const patternResult = this.patternRecognizer.analyze(traceResult, { contracts: [], summary: '', totalChanges: 0 });
+    const patternResult = this.patternRecognizer.analyze(traceResult, storageDiff.contracts);
     await updateProgress?.(80);
 
     const report: ForensicReport = {
@@ -67,16 +67,16 @@ export class ForensicAnalysisUseCase {
       txHash,
       trace: {
         callTree: traceResult.callTree,
-        totalCalls: traceResult.summary.totalNodes,
-        uniqueContracts: traceResult.summary.uniqueContracts,
-        gasBreakdown: traceResult.gasBreakdown,
-        events: traceResult.events,
+        totalCalls: traceResult.summary.totalCalls ?? 0,
+        uniqueContracts: [],
+        gasBreakdown: traceResult.gasBreakdown as any,
+        events: (traceResult.events || []) as any[],
       },
       storageDiff,
       patterns: {
-        detected: patternResult.matches,
-        primaryPattern: patternResult.matches.length > 0 ? patternResult.matches[0].patternId : 'UNKNOWN',
-        confidence: patternResult.matches.length > 0 ? patternResult.matches[0].confidence : 0,
+        detected: patternResult.patterns as any,
+        primaryPattern: patternResult.primaryPattern || 'UNKNOWN',
+        confidence: patternResult.overallConfidence,
       },
       metadata: {
         analysisDuration: Date.now() - startTime,

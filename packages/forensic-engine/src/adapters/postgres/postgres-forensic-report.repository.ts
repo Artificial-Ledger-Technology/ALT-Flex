@@ -59,10 +59,19 @@ export class PostgresForensicReportRepository implements IForensicReportReposito
 
   async findByHackIncidentId(hackIncidentId: string): Promise<ForensicReport[]> {
     const result = await this.pool.query('SELECT * FROM forensic_reports WHERE hack_incident_id = $1', [hackIncidentId]);
-    return result.rows.map((row) => this.mapRowToEntity(row));
+    return result.rows.map((row: Record<string, any>) => this.mapRowToEntity(row));
   }
 
-  private mapRowToEntity(row: any): ForensicReport {
+  async findAll(limit = 20, offset = 0): Promise<{ data: ForensicReport[]; total: number }> {
+    const result = await this.pool.query("SELECT * FROM forensic_reports ORDER BY metadata->>'createdAt' DESC LIMIT $1 OFFSET $2", [limit, offset]);
+    const countResult = await this.pool.query('SELECT COUNT(*) FROM forensic_reports');
+    return {
+      data: result.rows.map((row: Record<string, any>) => this.mapRowToEntity(row)),
+      total: parseInt(countResult.rows[0].count, 10),
+    };
+  }
+
+  private mapRowToEntity(row: Record<string, any>): ForensicReport {
     // A proper implementation would also parse bigints from strings back to bigints here.
     // Assuming simple JSON.parse mapping for now in this MVP version.
     return {

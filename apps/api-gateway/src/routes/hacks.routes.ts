@@ -32,10 +32,12 @@ import {
 } from '@aegis/core';
 import { Queue } from 'bullmq';
 import { PostgresHackRepository } from '@aegis/hacks-engine';
+import { PostgresForensicReportRepository } from '@aegis/forensic-engine';
 import { requireApiKey } from '../middleware/api-key.middleware.js';
 
 const dbUrl = process.env['DATABASE_URL'] ?? 'postgresql://aegis:changeme@localhost:5432/aegis_dev';
 const hackRepo = new PostgresHackRepository({ connectionString: dbUrl });
+const reportRepo = new PostgresForensicReportRepository(dbUrl);
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // Constants
@@ -225,6 +227,54 @@ export async function hacksRoutes(server: FastifyInstance): Promise<void> {
           error: 'INTERNAL_ERROR',
           message: 'Failed to fetch hack incident details',
           timestamp: new Date().toISOString(),
+        });
+      }
+    },
+  );
+
+  // ── 2b. GET /api/v1/hacks/:id/forensics — Hack Incident Forensics ─────────
+  server.get(
+    `${ROUTE_PREFIX}/:id/forensics`,
+    {
+      schema: {
+        description: 'Get all forensic reports associated with a specific hack incident',
+        tags: ['Hacks - List & Filter', 'Forensics - Reports'],
+        params: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+          },
+          required: ['id'],
+        },
+        response: {
+          200: {
+            description: 'List of forensic reports',
+            type: 'array',
+            items: { type: 'object', additionalProperties: true },
+          },
+          400: { description: 'Invalid UUID format', type: 'object', additionalProperties: true },
+        },
+      },
+    },
+    async (request: FastifyRequest<{ Params: HackDetailParams }>, reply) => {
+      const parseResult = HackDetailParamsSchema.safeParse(request.params);
+      if (!parseResult.success) {
+        return reply.status(400).send({
+          error: 'VALIDATION_ERROR',
+          code: 'AEGIS-400-002',
+          message: 'Invalid hack incident ID',
+        });
+      }
+
+      try {
+        const { id } = parseResult.data;
+        const reports = await reportRepo.findByHackIncidentId(id);
+        return reply.status(200).send(reports);
+      } catch (error) {
+        request.log.error(error);
+        return reply.status(500).send({
+          error: 'INTERNAL_ERROR',
+          message: 'Failed to fetch forensic reports for hack incident',
         });
       }
     },

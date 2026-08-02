@@ -32,7 +32,11 @@ import {
   type ForensicSimulateJobParams,
   type ForensicTraceRequest,
   type ForensicTraceJobParams,
+  type Chain,
 } from '@aegis/core';
+import Redis from 'ioredis';
+import { createForensicsQueue, PostgresForensicReportRepository } from '@aegis/forensic-engine';
+import { getRedisUrl, getDatabaseUrl } from '../config/env.js';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // Constants
@@ -74,6 +78,10 @@ function notImplemented(
  */
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin registration requires async; actual awaits added in Phase 5
 export async function forensicsRoutes(server: FastifyInstance): Promise<void> {
+  const redis = new Redis(getRedisUrl(), { maxRetriesPerRequest: null });
+  const forensicsQueue = createForensicsQueue(redis);
+  const reportRepo = new PostgresForensicReportRepository(getDatabaseUrl());
+
   /**
    * Admin API keys — parsed once at registration from comma-separated env var.
    * Evaluated here (not module scope) so env vars are available at registration time.
@@ -225,11 +233,11 @@ export async function forensicsRoutes(server: FastifyInstance): Promise<void> {
           required: ['pocId'],
         },
         response: {
-          202: { description: 'Simulation job queued', type: 'object' },
-          400: { description: 'Validation error', type: 'object' },
-          401: { description: 'Missing or invalid API key', type: 'object' },
-          404: { description: 'POC not found', type: 'object' },
-          501: { description: 'Not implemented', type: 'object' },
+          202: { description: 'Simulation job queued', type: 'object', additionalProperties: true },
+          400: { description: 'Validation error', type: 'object', additionalProperties: true },
+          401: { description: 'Missing or invalid API key', type: 'object', additionalProperties: true },
+          404: { description: 'POC not found', type: 'object', additionalProperties: true },
+          501: { description: 'Not implemented', type: 'object', additionalProperties: true },
         },
       },
     },
@@ -260,7 +268,20 @@ export async function forensicsRoutes(server: FastifyInstance): Promise<void> {
         });
       }
 
-      return notImplemented(request, reply);
+      const simulateRequest: ForensicSimulateRequest = request.body;
+      const job = await forensicsQueue.add('simulate', {
+        hackIncidentId: simulateRequest.pocId,
+        chain: 'ethereum' as Chain,
+        mode: 'simulation',
+        simulationRequest: {
+          pocFilePath: simulateRequest.pocId,
+          testFunctionName: 'testExploit',
+          forkUrl: 'http://localhost:8545',
+          forkBlockNumber: simulateRequest.overrides?.forkBlockNumber || 0,
+        },
+      });
+
+      return reply.status(202).send({ jobId: job.id });
     },
   );
 
@@ -298,9 +319,9 @@ export async function forensicsRoutes(server: FastifyInstance): Promise<void> {
               updatedAt: { type: 'string', format: 'date-time' },
             },
           },
-          400: { description: 'Invalid job ID', type: 'object' },
-          404: { description: 'Job not found', type: 'object' },
-          501: { description: 'Not implemented', type: 'object' },
+          400: { description: 'Invalid job ID', type: 'object', additionalProperties: true },
+          404: { description: 'Job not found', type: 'object', additionalProperties: true },
+          501: { description: 'Not implemented', type: 'object', additionalProperties: true },
         },
       },
     },
@@ -346,10 +367,10 @@ export async function forensicsRoutes(server: FastifyInstance): Promise<void> {
           required: ['txHash', 'chain'],
         },
         response: {
-          202: { description: 'Trace job queued', type: 'object' },
-          400: { description: 'Validation error', type: 'object' },
-          401: { description: 'Missing or invalid API key', type: 'object' },
-          501: { description: 'Not implemented', type: 'object' },
+          202: { description: 'Trace job queued', type: 'object', additionalProperties: true },
+          400: { description: 'Validation error', type: 'object', additionalProperties: true },
+          401: { description: 'Missing or invalid API key', type: 'object', additionalProperties: true },
+          501: { description: 'Not implemented', type: 'object', additionalProperties: true },
         },
       },
     },
@@ -380,7 +401,15 @@ export async function forensicsRoutes(server: FastifyInstance): Promise<void> {
         });
       }
 
-      return notImplemented(request, reply);
+      const traceRequest: ForensicTraceRequest = request.body;
+      const job = await forensicsQueue.add('trace', {
+        hackIncidentId: 'UNKNOWN',
+        chain: traceRequest.chain as Chain,
+        mode: 'trace',
+        txHash: traceRequest.txHash,
+      });
+
+      return reply.status(202).send({ jobId: job.id });
     },
   );
 
@@ -418,9 +447,9 @@ export async function forensicsRoutes(server: FastifyInstance): Promise<void> {
               updatedAt: { type: 'string', format: 'date-time' },
             },
           },
-          400: { description: 'Invalid job ID', type: 'object' },
-          404: { description: 'Job not found', type: 'object' },
-          501: { description: 'Not implemented', type: 'object' },
+          400: { description: 'Invalid job ID', type: 'object', additionalProperties: true },
+          404: { description: 'Job not found', type: 'object', additionalProperties: true },
+          501: { description: 'Not implemented', type: 'object', additionalProperties: true },
         },
       },
     },
@@ -443,5 +472,78 @@ export async function forensicsRoutes(server: FastifyInstance): Promise<void> {
     },
   );
 
-  server.log.info(`🔗 Forensics routes registered: 6 endpoints under ${ROUTE_PREFIX}`);
+  // ── 7. GET /api/v1/forensics/jobs/:jobId — Unified Job Status ────────────
+  server.get(
+    `${ROUTE_PREFIX}/jobs/:jobId`,
+    {
+      schema: {
+        description: 'Poll unified job status',
+        tags: ['Forensics - Jobs'],
+        params: { type: 'object', properties: { jobId: { type: 'string' } }, required: ['jobId'] },
+      },
+    },
+    async (request: FastifyRequest<{ Params: { jobId: string } }>, reply) => {
+      const job = await forensicsQueue.getJob(request.params.jobId);
+      if (!job) return reply.status(404).send({ error: 'Job not found' });
+      const state = await job.getState();
+      return reply.send({
+        jobId: job.id,
+        status: state,
+        result: job.returnvalue,
+        error: job.failedReason,
+        progress: job.progress,
+        createdAt: new Date(job.timestamp).toISOString(),
+        updatedAt: job.finishedOn ? new Date(job.finishedOn).toISOString() : null,
+      });
+    },
+  );
+
+  // ── 8. GET /api/v1/forensics/reports/:id — Forensic Report Detail ────────
+  server.get(
+    `${ROUTE_PREFIX}/reports/:id`,
+    {
+      schema: {
+        description: 'Get full forensic report detail',
+        tags: ['Forensics - Reports'],
+        params: { type: 'object', properties: { id: { type: 'string', format: 'uuid' } }, required: ['id'] },
+      },
+    },
+    async (request: FastifyRequest<{ Params: { id: string } }>, reply) => {
+      const report = await reportRepo.findById(request.params.id);
+      if (!report) return reply.status(404).send({ error: 'Report not found' });
+      return reply.send(report);
+    },
+  );
+
+  // ── 9. GET /api/v1/forensics/reports — List Forensic Reports ─────────────
+  server.get(
+    `${ROUTE_PREFIX}/reports`,
+    {
+      schema: {
+        description: 'List forensic reports',
+        tags: ['Forensics - Reports'],
+        querystring: {
+          type: 'object',
+          properties: {
+            page: { type: 'integer', default: 1, minimum: 1 },
+            pageSize: { type: 'integer', default: 20, minimum: 1, maximum: 100 },
+          },
+        },
+      },
+    },
+    async (request: FastifyRequest<{ Querystring: { page: number; pageSize: number } }>, reply) => {
+      const page = request.query.page || 1;
+      const pageSize = request.query.pageSize || 20;
+      const result = await reportRepo.findAll(pageSize, (page - 1) * pageSize);
+      return reply.send({
+        data: result.data,
+        total: result.total,
+        page,
+        pageSize,
+        totalPages: Math.ceil(result.total / pageSize),
+      });
+    },
+  );
+
+  server.log.info(`🔗 Forensics routes registered: 9 endpoints under ${ROUTE_PREFIX}`);
 }
