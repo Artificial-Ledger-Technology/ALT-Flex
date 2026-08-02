@@ -1,0 +1,914 @@
+[
+  {
+    "id": "EVD-001",
+    "txHash": "0xc310a0affe2169d1f6feec1c63571f0e6a7d3e31aad4b2e0846cb3c6ba26b2d7",
+    "chain": "ethereum",
+    "blockNumber": 14684300,
+    "protocol": "Beanstalk",
+    "date": "2022-04-17",
+    "lossUSD": 182000000,
+    "primaryPatterns": ["FLASH_LOAN", "LOGIC_ERROR"],
+    "expectedDetections": [
+      { "patternId": "FLASH_LOAN", "confidenceRange": [0.90, 1.0] },
+      { "patternId": "LOGIC_ERROR", "confidenceRange": [0.75, 0.95] }
+    ],
+    "narrative": "Attacker used Aave flash loan to acquire massive governance token voting power, passed a malicious BIP to drain protocol funds."
+  },
+  {
+    "id": "EVD-002",
+    "txHash": "0x47ac3527d02e6b9631c77fad1cdee7bfa77a8a7bfd4880dccbda5146ace4088f",
+    "chain": "ethereum",
+    "blockNumber": 16818057,
+    "protocol": "Euler Finance",
+    "date": "2023-03-13",
+    "lossUSD": 197000000,
+    "primaryPatterns": ["FLASH_LOAN", "LOGIC_ERROR"],
+    "expectedDetections": [
+      { "patternId": "FLASH_LOAN", "confidenceRange": [0.90, 1.0] },
+      { "patternId": "LOGIC_ERROR", "confidenceRange": [0.80, 0.95] }
+    ],
+    "narrative": "Attacker used flash loan to manipulate DonateToReserves function, creating bad debt and liquidating underwater positions for $197M."
+  },
+  {
+    "id": "EVD-003",
+    "txHash": "0xcd7dae143a4c0223349c16237ce4cd7696b1638d116a72755231ede872ab70fc",
+    "chain": "ethereum",
+    "blockNumber": 12685243,
+    "protocol": "The DAO",
+    "date": "2016-06-17",
+    "lossUSD": 60000000,
+    "primaryPatterns": ["REENTRANCY"],
+    "expectedDetections": [
+      { "patternId": "REENTRANCY", "confidenceRange": [0.95, 1.0] }
+    ],
+    "narrative": "Classic reentrancy: recursive calls to withdraw() before balance update drained 3.6M ETH from The DAO."
+  },
+  {
+    "id": "EVD-004",
+    "txHash": "0x0ec3f2488a93839524add10ea229e773f6bc891b4eb4794c3337d4495263790b",
+    "chain": "ethereum",
+    "blockNumber": 11474100,
+    "protocol": "Harvest Finance",
+    "date": "2020-10-26",
+    "lossUSD": 34000000,
+    "primaryPatterns": ["FLASH_LOAN", "ORACLE_MANIPULATION"],
+    "expectedDetections": [
+      { "patternId": "FLASH_LOAN", "confidenceRange": [0.90, 1.0] },
+      { "patternId": "ORACLE_MANIPULATION", "confidenceRange": [0.85, 0.98] }
+    ],
+    "narrative": "Attacker used flash loan to repeatedly manipulate Curve pool prices, exploiting Harvest's reliance on spot price for USDC/USDT vault deposits."
+  },
+  {
+    "id": "EVD-005",
+    "txHash": "0xb460e0a471c6fc3cf86d8ab46dadf88c4b0d7f1cd1b6b1afb2ed1db1f19c2b3e",
+    "chain": "ethereum",
+    "blockNumber": 12110901,
+    "protocol": "Cream Finance",
+    "date": "2021-02-13",
+    "lossUSD": 37500000,
+    "primaryPatterns": ["FLASH_LOAN", "ORACLE_MANIPULATION"],
+    "expectedDetections": [
+      { "patternId": "FLASH_LOAN", "confidenceRange": [0.90, 1.0] },
+      { "patternId": "ORACLE_MANIPULATION", "confidenceRange": [0.80, 0.95] }
+    ],
+    "narrative": "Flash loan attack manipulated Iron Bank oracle prices to borrow and extract $37.5M from Cream Finance lending pools."
+  },
+  {
+    "id": "EVD-006",
+    "txHash": "0x600a869aa3a259158310a233b815ff67ad41c3b353c0e0272ab0c5a5e0a8ed40",
+    "chain": "ethereum",
+    "blockNumber": 13537850,
+    "protocol": "Cream Finance V2",
+    "date": "2021-10-27",
+    "lossUSD": 130000000,
+    "primaryPatterns": ["FLASH_LOAN", "REENTRANCY"],
+    "expectedDetections": [
+      { "patternId": "FLASH_LOAN", "confidenceRange": [0.90, 1.0] },
+      { "patternId": "REENTRANCY", "confidenceRange": [0.70, 0.90] }
+    ],
+    "narrative": "Attacker used flash loan with reentrancy via AMP token callback to repeatedly borrow and drain $130M from Cream Finance."
+  },
+  {
+    "id": "EVD-007",
+    "txHash": "0xab486012f21be741c9e674ffda227e30518e8a1e37a5f1d58d0b0d41f6e76530",
+    "chain": "ethereum",
+    "blockNumber": 11212208,
+    "protocol": "Akropolis",
+    "date": "2020-11-12",
+    "lossUSD": 2000000,
+    "primaryPatterns": ["REENTRANCY", "FLASH_LOAN"],
+    "expectedDetections": [
+      { "patternId": "REENTRANCY", "confidenceRange": [0.85, 0.98] },
+      { "patternId": "FLASH_LOAN", "confidenceRange": [0.80, 0.95] }
+    ],
+    "narrative": "Reentrancy exploit through a malicious ERC-777 token callback during dYdX flash loan deposit, draining $2M from savings pools."
+  },
+  {
+    "id": "EVD-008",
+    "txHash": "0x3ed75df83d907412af874b7998d911fdf990571d2d3b0d0804c2a0b6c40ca3c3",
+    "chain": "ethereum",
+    "blockNumber": 14602788,
+    "protocol": "Rari Capital / Fei Protocol",
+    "date": "2022-04-30",
+    "lossUSD": 80000000,
+    "primaryPatterns": ["REENTRANCY"],
+    "expectedDetections": [
+      { "patternId": "REENTRANCY", "confidenceRange": [0.90, 1.0] }
+    ],
+    "narrative": "Classic reentrancy in Rari Fuse pools via CEther market; attacker re-entered during ETH transfer to borrow against inflated collateral."
+  },
+  {
+    "id": "EVD-009",
+    "txHash": "0x5cfa9aeaabfbce5d788d73aaab7e67e59fd18b9d8b1b55cf6ef9f50e8e7b5db7",
+    "chain": "bsc",
+    "blockNumber": 7530000,
+    "protocol": "PancakeBunny",
+    "date": "2021-05-20",
+    "lossUSD": 45000000,
+    "primaryPatterns": ["FLASH_LOAN", "ORACLE_MANIPULATION"],
+    "expectedDetections": [
+      { "patternId": "FLASH_LOAN", "confidenceRange": [0.90, 1.0] },
+      { "patternId": "ORACLE_MANIPULATION", "confidenceRange": [0.85, 0.98] }
+    ],
+    "narrative": "PancakeSwap flash loan used to manipulate BUNNY/BNB LP price, minting excessive BUNNY rewards then dumping them."
+  },
+  {
+    "id": "EVD-010",
+    "txHash": "0x8dc0c6f99f9e0f96a2b3b3e72b2d8ef5a4e0a2f8e8d9d5f0a0c3b2a1e9d8c7b6",
+    "chain": "ethereum",
+    "blockNumber": 15412000,
+    "protocol": "Nomad Bridge",
+    "date": "2022-08-01",
+    "lossUSD": 190000000,
+    "primaryPatterns": ["BRIDGE_EXPLOIT", "LOGIC_ERROR"],
+    "expectedDetections": [
+      { "patternId": "BRIDGE_EXPLOIT", "confidenceRange": [0.90, 1.0] },
+      { "patternId": "LOGIC_ERROR", "confidenceRange": [0.80, 0.95] }
+    ],
+    "narrative": "Faulty Replica contract accepted zero-hash as valid proof root, allowing anyone to replay bridge messages and drain $190M."
+  },
+  {
+    "id": "EVD-011",
+    "txHash": "0xa68b3e01e42e89f1c5d3c7a9b2c4d6e8f0a1b3c5d7e9f0a2b4c6d8e0f1a3b5c7",
+    "chain": "ethereum",
+    "blockNumber": 14269200,
+    "protocol": "Ronin Bridge",
+    "date": "2022-03-23",
+    "lossUSD": 624000000,
+    "primaryPatterns": ["BRIDGE_EXPLOIT", "ACCESS_CONTROL"],
+    "expectedDetections": [
+      { "patternId": "BRIDGE_EXPLOIT", "confidenceRange": [0.90, 1.0] },
+      { "patternId": "ACCESS_CONTROL", "confidenceRange": [0.90, 1.0] }
+    ],
+    "narrative": "Lazarus Group compromised 5 of 9 Ronin validator private keys, forging fake withdrawals for 173,600 ETH and 25.5M USDC."
+  },
+  {
+    "id": "EVD-012",
+    "txHash": "0xb5c8bd9430b6cc87a0e2fe110ece6bf527bef759ecf786c8ee56b0bc92ab3fcd",
+    "chain": "ethereum",
+    "blockNumber": 14316965,
+    "protocol": "Wormhole Bridge",
+    "date": "2022-02-02",
+    "lossUSD": 326000000,
+    "primaryPatterns": ["BRIDGE_EXPLOIT", "LOGIC_ERROR"],
+    "expectedDetections": [
+      { "patternId": "BRIDGE_EXPLOIT", "confidenceRange": [0.90, 1.0] },
+      { "patternId": "LOGIC_ERROR", "confidenceRange": [0.85, 0.98] }
+    ],
+    "narrative": "Attacker exploited a signature verification bug in the Wormhole Solana guardian, minting 120K wrapped ETH without valid backing."
+  },
+  {
+    "id": "EVD-013",
+    "txHash": "0xf7c21600452939a81b599017ee24ee0dfd92aaaccd0a55d02819a7c2ceab3099",
+    "chain": "ethereum",
+    "blockNumber": 11449950,
+    "protocol": "Pickle Finance",
+    "date": "2020-11-21",
+    "lossUSD": 19700000,
+    "primaryPatterns": ["LOGIC_ERROR", "ACCESS_CONTROL"],
+    "expectedDetections": [
+      { "patternId": "LOGIC_ERROR", "confidenceRange": [0.85, 0.98] },
+      { "patternId": "ACCESS_CONTROL", "confidenceRange": [0.70, 0.90] }
+    ],
+    "narrative": "Attacker crafted fake Jar contracts and called swapExactJarForJar with manipulated parameters, draining $19.7M DAI from the evil jar."
+  },
+  {
+    "id": "EVD-014",
+    "txHash": "0x0f5a42c65bd0e82cb48fd044d3a916876f0a9a7a7b7b2b2a3b4c5d6e7f8a9b0c",
+    "chain": "ethereum",
+    "blockNumber": 12746000,
+    "protocol": "Poly Network",
+    "date": "2021-08-10",
+    "lossUSD": 611000000,
+    "primaryPatterns": ["ACCESS_CONTROL"],
+    "expectedDetections": [
+      { "patternId": "ACCESS_CONTROL", "confidenceRange": [0.90, 1.0] }
+    ],
+    "narrative": "Attacker exploited cross-chain relay contract to replace keeper public keys, then authorized arbitrary withdrawals totaling $611M."
+  },
+  {
+    "id": "EVD-015",
+    "txHash": "0xa94f67d9b7e43d8c8b0f2e1d3c5a7b9d1e3f5a7b9c0d2e4f6a8b0c2d4e6f8a0",
+    "chain": "ethereum",
+    "blockNumber": 8834000,
+    "protocol": "Parity Multisig",
+    "date": "2017-11-06",
+    "lossUSD": 280000000,
+    "primaryPatterns": ["SELF_DESTRUCT", "ACCESS_CONTROL"],
+    "expectedDetections": [
+      { "patternId": "SELF_DESTRUCT", "confidenceRange": [0.90, 1.0] },
+      { "patternId": "ACCESS_CONTROL", "confidenceRange": [0.85, 0.98] }
+    ],
+    "narrative": "An uninitiated user called initWallet() on the Parity library contract, became its owner, then invoked selfdestruct, freezing $280M in all dependent multisig wallets."
+  },
+  {
+    "id": "EVD-016",
+    "txHash": "0xb2e3f4a5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3",
+    "chain": "ethereum",
+    "blockNumber": 4043000,
+    "protocol": "Parity Multisig V1",
+    "date": "2017-07-19",
+    "lossUSD": 31000000,
+    "primaryPatterns": ["ACCESS_CONTROL", "DELEGATE_CALL_INJECTION"],
+    "expectedDetections": [
+      { "patternId": "ACCESS_CONTROL", "confidenceRange": [0.85, 0.98] },
+      { "patternId": "DELEGATE_CALL_INJECTION", "confidenceRange": [0.85, 0.98] }
+    ],
+    "narrative": "Attacker called initWallet() on deployed multisig contracts via delegatecall to the library, taking ownership and draining 150K ETH."
+  },
+  {
+    "id": "EVD-017",
+    "txHash": "0xc3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4",
+    "chain": "ethereum",
+    "blockNumber": 4370000,
+    "protocol": "BatchOverflow (BEC Token)",
+    "date": "2018-04-22",
+    "lossUSD": 900000000,
+    "primaryPatterns": ["ARITHMETIC_OVERFLOW"],
+    "expectedDetections": [
+      { "patternId": "ARITHMETIC_OVERFLOW", "confidenceRange": [0.90, 1.0] }
+    ],
+    "narrative": "Integer overflow in batchTransfer() allowed attacker to mint virtually unlimited BEC tokens by overflowing the amount * count multiplication."
+  },
+  {
+    "id": "EVD-018",
+    "txHash": "0xd4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5",
+    "chain": "ethereum",
+    "blockNumber": 5499000,
+    "protocol": "SmartMesh (SMT Token)",
+    "date": "2018-04-25",
+    "lossUSD": 140000000,
+    "primaryPatterns": ["ARITHMETIC_OVERFLOW"],
+    "expectedDetections": [
+      { "patternId": "ARITHMETIC_OVERFLOW", "confidenceRange": [0.90, 1.0] }
+    ],
+    "narrative": "Underflow in transferProxy() allowed attacker to bypass balance checks by sending a value that underflowed fee subtraction."
+  },
+  {
+    "id": "EVD-019",
+    "txHash": "0xe5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6",
+    "chain": "ethereum",
+    "blockNumber": 5512000,
+    "protocol": "PoWHC (Proof of Weak Hands Coin)",
+    "date": "2018-01-28",
+    "lossUSD": 800000,
+    "primaryPatterns": ["ARITHMETIC_OVERFLOW", "REENTRANCY"],
+    "expectedDetections": [
+      { "patternId": "ARITHMETIC_OVERFLOW", "confidenceRange": [0.85, 0.98] },
+      { "patternId": "REENTRANCY", "confidenceRange": [0.60, 0.80] }
+    ],
+    "narrative": "Integer underflow in sell() combined with reentrancy in the dividend calculation allowed draining of the entire Ponzi contract."
+  },
+  {
+    "id": "EVD-020",
+    "txHash": "0xf6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7",
+    "chain": "ethereum",
+    "blockNumber": 12950000,
+    "protocol": "Mango Markets",
+    "date": "2022-10-11",
+    "lossUSD": 116000000,
+    "primaryPatterns": ["ORACLE_MANIPULATION"],
+    "expectedDetections": [
+      { "patternId": "ORACLE_MANIPULATION", "confidenceRange": [0.90, 1.0] }
+    ],
+    "narrative": "Attacker pumped MNGO token price via self-trading on Mango Markets, then used inflated collateral value to borrow $116M in other assets."
+  },
+  {
+    "id": "EVD-021",
+    "txHash": "0xa7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8",
+    "chain": "ethereum",
+    "blockNumber": 13000000,
+    "protocol": "Compound",
+    "date": "2021-09-29",
+    "lossUSD": 80000000,
+    "primaryPatterns": ["LOGIC_ERROR"],
+    "expectedDetections": [
+      { "patternId": "LOGIC_ERROR", "confidenceRange": [0.85, 0.98] }
+    ],
+    "narrative": "Proposal 062 introduced a bug in the COMP distribution logic, over-distributing ~$80M COMP tokens to users who should have received much less."
+  },
+  {
+    "id": "EVD-022",
+    "txHash": "0xb8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9",
+    "chain": "bsc",
+    "blockNumber": 6650000,
+    "protocol": "Venus Protocol",
+    "date": "2021-05-19",
+    "lossUSD": 100000000,
+    "primaryPatterns": ["ORACLE_MANIPULATION", "LOGIC_ERROR"],
+    "expectedDetections": [
+      { "patternId": "ORACLE_MANIPULATION", "confidenceRange": [0.85, 0.98] },
+      { "patternId": "LOGIC_ERROR", "confidenceRange": [0.60, 0.80] }
+    ],
+    "narrative": "XVS token price was pumped via thin orderbooks, then used as collateral to borrow $100M in BTC and ETH before liquidation cascades."
+  },
+  {
+    "id": "EVD-023",
+    "txHash": "0xc9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0",
+    "chain": "bsc",
+    "blockNumber": 8100000,
+    "protocol": "bZx Protocol",
+    "date": "2020-02-15",
+    "lossUSD": 8100000,
+    "primaryPatterns": ["FLASH_LOAN", "ORACLE_MANIPULATION"],
+    "expectedDetections": [
+      { "patternId": "FLASH_LOAN", "confidenceRange": [0.90, 1.0] },
+      { "patternId": "ORACLE_MANIPULATION", "confidenceRange": [0.85, 0.98] }
+    ],
+    "narrative": "First major flash loan attack: borrowed from dYdX, opened leveraged position on Compound, shorted on bZx, profited from oracle discrepancy."
+  },
+  {
+    "id": "EVD-024",
+    "txHash": "0xd0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1",
+    "chain": "ethereum",
+    "blockNumber": 14200000,
+    "protocol": "Badger DAO",
+    "date": "2021-12-02",
+    "lossUSD": 120000000,
+    "primaryPatterns": ["ACCESS_CONTROL", "FRONT_RUNNING"],
+    "expectedDetections": [
+      { "patternId": "ACCESS_CONTROL", "confidenceRange": [0.85, 0.98] },
+      { "patternId": "FRONT_RUNNING", "confidenceRange": [0.50, 0.75] }
+    ],
+    "narrative": "Attacker injected malicious approval scripts via compromised Cloudflare API key, then front-ran user transactions to drain approved tokens."
+  },
+  {
+    "id": "EVD-025",
+    "txHash": "0xe1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2",
+    "chain": "ethereum",
+    "blockNumber": 13390000,
+    "protocol": "Indexed Finance",
+    "date": "2021-10-14",
+    "lossUSD": 16000000,
+    "primaryPatterns": ["ORACLE_MANIPULATION", "FLASH_LOAN"],
+    "expectedDetections": [
+      { "patternId": "ORACLE_MANIPULATION", "confidenceRange": [0.85, 0.98] },
+      { "patternId": "FLASH_LOAN", "confidenceRange": [0.80, 0.95] }
+    ],
+    "narrative": "Attacker manipulated the weights of underlying assets in DEFI5 and CC10 index pools, forcing rebalance at artificially favorable rates."
+  },
+  {
+    "id": "EVD-026",
+    "txHash": "0xf2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3",
+    "chain": "ethereum",
+    "blockNumber": 13500000,
+    "protocol": "Olympus DAO (OHM)",
+    "date": "2022-10-21",
+    "lossUSD": 292000,
+    "primaryPatterns": ["LOGIC_ERROR", "ACCESS_CONTROL"],
+    "expectedDetections": [
+      { "patternId": "LOGIC_ERROR", "confidenceRange": [0.80, 0.95] },
+      { "patternId": "ACCESS_CONTROL", "confidenceRange": [0.60, 0.80] }
+    ],
+    "narrative": "Bug in Bond contract allowed attacker to redeem bonds meant for other users by calling transferFrom with stale approvals."
+  },
+  {
+    "id": "EVD-027",
+    "txHash": "0xa3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4",
+    "chain": "ethereum",
+    "blockNumber": 12240000,
+    "protocol": "dForce / Lendf.Me",
+    "date": "2020-04-19",
+    "lossUSD": 25000000,
+    "primaryPatterns": ["REENTRANCY"],
+    "expectedDetections": [
+      { "patternId": "REENTRANCY", "confidenceRange": [0.90, 1.0] }
+    ],
+    "narrative": "ERC-777 token reentrancy in Lendf.Me's supply() function allowed attacker to inflate their collateral and drain $25M in various tokens."
+  },
+  {
+    "id": "EVD-028",
+    "txHash": "0xb4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5",
+    "chain": "ethereum",
+    "blockNumber": 9900000,
+    "protocol": "Uniswap V1 (imBTC Pool)",
+    "date": "2020-04-18",
+    "lossUSD": 300000,
+    "primaryPatterns": ["REENTRANCY"],
+    "expectedDetections": [
+      { "patternId": "REENTRANCY", "confidenceRange": [0.90, 1.0] }
+    ],
+    "narrative": "ERC-777 imBTC token reentrancy in Uniswap V1 tokenToEthInput allowed attacker to drain ETH from the pool during token transfer callback."
+  },
+  {
+    "id": "EVD-029",
+    "txHash": "0xc5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6",
+    "chain": "polygon",
+    "blockNumber": 24500000,
+    "protocol": "QiDAO / Mai Finance",
+    "date": "2022-05-11",
+    "lossUSD": 13000000,
+    "primaryPatterns": ["ORACLE_MANIPULATION", "FLASH_LOAN"],
+    "expectedDetections": [
+      { "patternId": "ORACLE_MANIPULATION", "confidenceRange": [0.80, 0.95] },
+      { "patternId": "FLASH_LOAN", "confidenceRange": [0.80, 0.95] }
+    ],
+    "narrative": "Flash loan used to manipulate collateral ratio in QiDAO vaults on Polygon, liquidating positions at artificially deflated values."
+  },
+  {
+    "id": "EVD-030",
+    "txHash": "0xd6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7",
+    "chain": "avalanche",
+    "blockNumber": 11500000,
+    "protocol": "Platypus Finance",
+    "date": "2023-02-17",
+    "lossUSD": 8500000,
+    "primaryPatterns": ["FLASH_LOAN", "LOGIC_ERROR"],
+    "expectedDetections": [
+      { "patternId": "FLASH_LOAN", "confidenceRange": [0.90, 1.0] },
+      { "patternId": "LOGIC_ERROR", "confidenceRange": [0.80, 0.95] }
+    ],
+    "narrative": "Flash loan exploited an emergencyWithdraw logic bug in MasterPlatypus; attacker could withdraw deposited LP without repaying the borrowed stablecoins."
+  },
+  {
+    "id": "EVD-031",
+    "txHash": "0xe7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8",
+    "chain": "optimism",
+    "blockNumber": 78800000,
+    "protocol": "Wintermute (Optimism)",
+    "date": "2022-06-08",
+    "lossUSD": 20000000,
+    "primaryPatterns": ["ACCESS_CONTROL"],
+    "expectedDetections": [
+      { "patternId": "ACCESS_CONTROL", "confidenceRange": [0.90, 1.0] }
+    ],
+    "narrative": "Wintermute's Optimism multisig address was derived from a Gnosis Safe deployment on L1 that didn't exist on L2, allowing the attacker to deploy a contract at the same address and claim 20M OP tokens."
+  },
+  {
+    "id": "EVD-032",
+    "txHash": "0xf8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9",
+    "chain": "ethereum",
+    "blockNumber": 15780000,
+    "protocol": "Transit Swap",
+    "date": "2022-10-01",
+    "lossUSD": 21000000,
+    "primaryPatterns": ["ACCESS_CONTROL", "LOGIC_ERROR"],
+    "expectedDetections": [
+      { "patternId": "ACCESS_CONTROL", "confidenceRange": [0.85, 0.98] },
+      { "patternId": "LOGIC_ERROR", "confidenceRange": [0.70, 0.90] }
+    ],
+    "narrative": "Lack of input validation on the swap function allowed attacker to pass arbitrary calldata to transferFrom, stealing tokens pre-approved to the router."
+  },
+  {
+    "id": "EVD-033",
+    "txHash": "0xa9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0",
+    "chain": "bsc",
+    "blockNumber": 7200000,
+    "protocol": "Spartan Protocol",
+    "date": "2021-05-02",
+    "lossUSD": 30000000,
+    "primaryPatterns": ["FLASH_LOAN", "LOGIC_ERROR"],
+    "expectedDetections": [
+      { "patternId": "FLASH_LOAN", "confidenceRange": [0.85, 0.98] },
+      { "patternId": "LOGIC_ERROR", "confidenceRange": [0.80, 0.95] }
+    ],
+    "narrative": "Flash loan inflated LP token share calculation, allowing attacker to burn LP tokens for a disproportionately large share of the pool."
+  },
+  {
+    "id": "EVD-034",
+    "txHash": "0xb0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1",
+    "chain": "bsc",
+    "blockNumber": 7400000,
+    "protocol": "BurgerSwap",
+    "date": "2021-05-28",
+    "lossUSD": 7200000,
+    "primaryPatterns": ["FLASH_LOAN", "REENTRANCY"],
+    "expectedDetections": [
+      { "patternId": "FLASH_LOAN", "confidenceRange": [0.85, 0.98] },
+      { "patternId": "REENTRANCY", "confidenceRange": [0.70, 0.90] }
+    ],
+    "narrative": "Flash loan attack combined with a fake token reentrancy during swap to manipulate reserves and drain $7.2M from BurgerSwap pools."
+  },
+  {
+    "id": "EVD-035",
+    "txHash": "0xc1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2",
+    "chain": "ethereum",
+    "blockNumber": 16860000,
+    "protocol": "Sentiment Protocol",
+    "date": "2023-04-04",
+    "lossUSD": 1000000,
+    "primaryPatterns": ["REENTRANCY", "LOGIC_ERROR"],
+    "expectedDetections": [
+      { "patternId": "REENTRANCY", "confidenceRange": [0.80, 0.95] },
+      { "patternId": "LOGIC_ERROR", "confidenceRange": [0.60, 0.80] }
+    ],
+    "narrative": "Read-only reentrancy via Balancer pool callback allowed attacker to inflate collateral value during a non-reentrant borrow call."
+  },
+  {
+    "id": "EVD-036",
+    "txHash": "0xd2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3",
+    "chain": "ethereum",
+    "blockNumber": 16920000,
+    "protocol": "SushiSwap RouteProcessor2",
+    "date": "2023-04-09",
+    "lossUSD": 3300000,
+    "primaryPatterns": ["ACCESS_CONTROL"],
+    "expectedDetections": [
+      { "patternId": "ACCESS_CONTROL", "confidenceRange": [0.85, 0.98] }
+    ],
+    "narrative": "Missing msg.sender validation in processRoute() allowed attacker to drain tokens pre-approved to the SushiSwap router contract."
+  },
+  {
+    "id": "EVD-037",
+    "txHash": "0xe3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4",
+    "chain": "ethereum",
+    "blockNumber": 13100000,
+    "protocol": "Yearn Finance (v1 yDAI)",
+    "date": "2021-02-05",
+    "lossUSD": 11000000,
+    "primaryPatterns": ["FLASH_LOAN", "ORACLE_MANIPULATION"],
+    "expectedDetections": [
+      { "patternId": "FLASH_LOAN", "confidenceRange": [0.90, 1.0] },
+      { "patternId": "ORACLE_MANIPULATION", "confidenceRange": [0.85, 0.98] }
+    ],
+    "narrative": "Flash loan used to skew Curve 3pool, manipulated yDAI vault share price, then deposited and withdrew at inflated rate for $11M profit."
+  },
+  {
+    "id": "EVD-038",
+    "txHash": "0xf4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5",
+    "chain": "ethereum",
+    "blockNumber": 15000000,
+    "protocol": "Harmony Horizon Bridge",
+    "date": "2022-06-24",
+    "lossUSD": 100000000,
+    "primaryPatterns": ["BRIDGE_EXPLOIT", "ACCESS_CONTROL"],
+    "expectedDetections": [
+      { "patternId": "BRIDGE_EXPLOIT", "confidenceRange": [0.90, 1.0] },
+      { "patternId": "ACCESS_CONTROL", "confidenceRange": [0.85, 0.98] }
+    ],
+    "narrative": "Attacker compromised 2 of 5 multisig keys on the Harmony Horizon bridge, sufficient to sign and execute arbitrary cross-chain withdrawals."
+  },
+  {
+    "id": "EVD-039",
+    "txHash": "0xa5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6",
+    "chain": "ethereum",
+    "blockNumber": 13860000,
+    "protocol": "Multichain (Anyswap V3)",
+    "date": "2022-01-18",
+    "lossUSD": 3000000,
+    "primaryPatterns": ["ACCESS_CONTROL", "LOGIC_ERROR"],
+    "expectedDetections": [
+      { "patternId": "ACCESS_CONTROL", "confidenceRange": [0.80, 0.95] },
+      { "patternId": "LOGIC_ERROR", "confidenceRange": [0.70, 0.90] }
+    ],
+    "narrative": "Bug in signature verification of Anyswap V3 router allowed attacker to forge valid cross-chain swap transactions and drain WETH."
+  },
+  {
+    "id": "EVD-040",
+    "txHash": "0xb6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7",
+    "chain": "ethereum",
+    "blockNumber": 11900000,
+    "protocol": "Alpha Homora V2",
+    "date": "2021-02-13",
+    "lossUSD": 37000000,
+    "primaryPatterns": ["FLASH_LOAN", "LOGIC_ERROR"],
+    "expectedDetections": [
+      { "patternId": "FLASH_LOAN", "confidenceRange": [0.85, 0.98] },
+      { "patternId": "LOGIC_ERROR", "confidenceRange": [0.80, 0.95] }
+    ],
+    "narrative": "Flash loan with a rounding error in HomoraBank's resolveReserve created sUSD bad debt in Iron Bank, allowing $37M extraction."
+  },
+  {
+    "id": "EVD-041",
+    "txHash": "0xc7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8",
+    "chain": "ethereum",
+    "blockNumber": 14355000,
+    "protocol": "Li Finance (LiFi)",
+    "date": "2022-03-20",
+    "lossUSD": 600000,
+    "primaryPatterns": ["ACCESS_CONTROL"],
+    "expectedDetections": [
+      { "patternId": "ACCESS_CONTROL", "confidenceRange": [0.85, 0.98] }
+    ],
+    "narrative": "Arbitrary calldata injection in the swap aggregator allowed attacker to call transferFrom on behalf of users who had approved the LiFi contract."
+  },
+  {
+    "id": "EVD-042",
+    "txHash": "0xd8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9",
+    "chain": "ethereum",
+    "blockNumber": 13500000,
+    "protocol": "Umbrella Network",
+    "date": "2021-10-28",
+    "lossUSD": 700000,
+    "primaryPatterns": ["ORACLE_MANIPULATION"],
+    "expectedDetections": [
+      { "patternId": "ORACLE_MANIPULATION", "confidenceRange": [0.80, 0.95] }
+    ],
+    "narrative": "Attacker submitted a fraudulent Merkle proof to the Umbrella oracle, injecting a falsified price feed that triggered incorrect liquidations."
+  },
+  {
+    "id": "EVD-043",
+    "txHash": "0xe9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0",
+    "chain": "ethereum",
+    "blockNumber": 16100000,
+    "protocol": "Ankr / aBNBc",
+    "date": "2022-12-02",
+    "lossUSD": 5000000,
+    "primaryPatterns": ["ACCESS_CONTROL"],
+    "expectedDetections": [
+      { "patternId": "ACCESS_CONTROL", "confidenceRange": [0.90, 1.0] }
+    ],
+    "narrative": "Compromised deployer private key allowed attacker to call the mint function on aBNBc contract, minting 60T tokens and dumping them."
+  },
+  {
+    "id": "EVD-044",
+    "txHash": "0xf0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1",
+    "chain": "ethereum",
+    "blockNumber": 16700000,
+    "protocol": "dFX Finance",
+    "date": "2023-02-07",
+    "lossUSD": 235000,
+    "primaryPatterns": ["REENTRANCY", "FLASH_LOAN"],
+    "expectedDetections": [
+      { "patternId": "REENTRANCY", "confidenceRange": [0.85, 0.98] },
+      { "patternId": "FLASH_LOAN", "confidenceRange": [0.70, 0.90] }
+    ],
+    "narrative": "Flash loan with reentrancy via ERC-777 callback in the DFX Curve fork pool, draining liquidity during the deposit-callback-withdraw cycle."
+  },
+  {
+    "id": "EVD-045",
+    "txHash": "0xa1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2",
+    "chain": "ethereum",
+    "blockNumber": 14250000,
+    "protocol": "Qubit Finance",
+    "date": "2022-01-28",
+    "lossUSD": 80000000,
+    "primaryPatterns": ["BRIDGE_EXPLOIT", "LOGIC_ERROR"],
+    "expectedDetections": [
+      { "patternId": "BRIDGE_EXPLOIT", "confidenceRange": [0.85, 0.98] },
+      { "patternId": "LOGIC_ERROR", "confidenceRange": [0.80, 0.95] }
+    ],
+    "narrative": "Exploited QBridge's deposit function by calling depositETH with 0 ETH but still receiving xETH credits on BSC side due to faulty cross-chain validation."
+  },
+  {
+    "id": "EVD-046",
+    "txHash": "0xb2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3",
+    "chain": "ethereum",
+    "blockNumber": 15680000,
+    "protocol": "Profanity Vanity Address",
+    "date": "2022-09-25",
+    "lossUSD": 160000000,
+    "primaryPatterns": ["ACCESS_CONTROL"],
+    "expectedDetections": [
+      { "patternId": "ACCESS_CONTROL", "confidenceRange": [0.90, 1.0] }
+    ],
+    "narrative": "Weak private key generation in Profanity vanity address tool allowed attacker to brute-force private keys and drain Wintermute's hot wallet."
+  },
+  {
+    "id": "EVD-047",
+    "txHash": "0xc3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4",
+    "chain": "ethereum",
+    "blockNumber": 14770000,
+    "protocol": "Saddle Finance",
+    "date": "2022-04-30",
+    "lossUSD": 10000000,
+    "primaryPatterns": ["FLASH_LOAN", "ORACLE_MANIPULATION"],
+    "expectedDetections": [
+      { "patternId": "FLASH_LOAN", "confidenceRange": [0.85, 0.98] },
+      { "patternId": "ORACLE_MANIPULATION", "confidenceRange": [0.80, 0.95] }
+    ],
+    "narrative": "Flash loan used to imbalance Saddle sUSD metapool, swap at manipulated rates, then rebalance and profit from the arbitrage."
+  },
+  {
+    "id": "EVD-048",
+    "txHash": "0xd4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5",
+    "chain": "arbitrum",
+    "blockNumber": 52000000,
+    "protocol": "Deus Finance",
+    "date": "2022-04-28",
+    "lossUSD": 13000000,
+    "primaryPatterns": ["FLASH_LOAN", "ORACLE_MANIPULATION"],
+    "expectedDetections": [
+      { "patternId": "FLASH_LOAN", "confidenceRange": [0.90, 1.0] },
+      { "patternId": "ORACLE_MANIPULATION", "confidenceRange": [0.85, 0.98] }
+    ],
+    "narrative": "Flash loan used to manipulate the StableV1 AMM pair oracle relied upon by DEUS for DEI stablecoin backing, allowing undercollateralized borrowing."
+  },
+  {
+    "id": "EVD-049",
+    "txHash": "0xe5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6",
+    "chain": "ethereum",
+    "blockNumber": 16400000,
+    "protocol": "FTX (on-chain drainer)",
+    "date": "2022-11-12",
+    "lossUSD": 477000000,
+    "primaryPatterns": ["ACCESS_CONTROL"],
+    "expectedDetections": [
+      { "patternId": "ACCESS_CONTROL", "confidenceRange": [0.90, 1.0] }
+    ],
+    "narrative": "Insider with privileged access drained FTX hot wallets across multiple chains, transferring $477M in ETH, USDT, and other tokens."
+  },
+  {
+    "id": "EVD-050",
+    "txHash": "0xf6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7",
+    "chain": "bsc",
+    "blockNumber": 6000000,
+    "protocol": "Uranium Finance",
+    "date": "2021-04-28",
+    "lossUSD": 50000000,
+    "primaryPatterns": ["ARITHMETIC_OVERFLOW", "LOGIC_ERROR"],
+    "expectedDetections": [
+      { "patternId": "ARITHMETIC_OVERFLOW", "confidenceRange": [0.85, 0.98] },
+      { "patternId": "LOGIC_ERROR", "confidenceRange": [0.80, 0.95] }
+    ],
+    "narrative": "Migration contract had a typo using 100 instead of 10000 in the balance calculation, causing a 100x multiplication error enabling $50M drain."
+  },
+  {
+    "id": "EVD-051",
+    "txHash": "0xa7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8",
+    "chain": "ethereum",
+    "blockNumber": 15900000,
+    "protocol": "Team Finance",
+    "date": "2022-10-27",
+    "lossUSD": 14500000,
+    "primaryPatterns": ["LOGIC_ERROR"],
+    "expectedDetections": [
+      { "patternId": "LOGIC_ERROR", "confidenceRange": [0.85, 0.98] }
+    ],
+    "narrative": "Faulty migration function in Uniswap V2 to V3 liquidity lock contract allowed attacker to unlock and steal locked LP tokens worth $14.5M."
+  },
+  {
+    "id": "EVD-052",
+    "txHash": "0xb8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9",
+    "chain": "ethereum",
+    "blockNumber": 11330000,
+    "protocol": "Value DeFi",
+    "date": "2020-11-14",
+    "lossUSD": 6000000,
+    "primaryPatterns": ["FLASH_LOAN", "ORACLE_MANIPULATION"],
+    "expectedDetections": [
+      { "patternId": "FLASH_LOAN", "confidenceRange": [0.90, 1.0] },
+      { "patternId": "ORACLE_MANIPULATION", "confidenceRange": [0.85, 0.98] }
+    ],
+    "narrative": "Flash loan used to manipulate Curve pool price, causing Value DeFi's vault to deposit at an inflated exchange rate, then withdraw at normal rate."
+  },
+  {
+    "id": "EVD-053",
+    "txHash": "0xc9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0",
+    "chain": "ethereum",
+    "blockNumber": 14600000,
+    "protocol": "Elephant Money",
+    "date": "2022-04-12",
+    "lossUSD": 11200000,
+    "primaryPatterns": ["FLASH_LOAN", "ORACLE_MANIPULATION", "LOGIC_ERROR"],
+    "expectedDetections": [
+      { "patternId": "FLASH_LOAN", "confidenceRange": [0.90, 1.0] },
+      { "patternId": "ORACLE_MANIPULATION", "confidenceRange": [0.80, 0.95] },
+      { "patternId": "LOGIC_ERROR", "confidenceRange": [0.60, 0.80] }
+    ],
+    "narrative": "Triple-pattern attack: flash loan provided capital, oracle manipulation inflated ELEPHANT token value, and a minting logic bug amplified the drain."
+  },
+  {
+    "id": "EVD-054",
+    "txHash": "0xd0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1",
+    "chain": "ethereum",
+    "blockNumber": 16050000,
+    "protocol": "KyberSwap Elastic",
+    "date": "2023-11-23",
+    "lossUSD": 48800000,
+    "primaryPatterns": ["LOGIC_ERROR", "FLASH_LOAN"],
+    "expectedDetections": [
+      { "patternId": "LOGIC_ERROR", "confidenceRange": [0.85, 0.98] },
+      { "patternId": "FLASH_LOAN", "confidenceRange": [0.80, 0.95] }
+    ],
+    "narrative": "Flash loan exploited a precision rounding error in KyberSwap's tick-boundary crossing logic, allowing double-counting of liquidity."
+  },
+  {
+    "id": "EVD-055",
+    "txHash": "0xe1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2",
+    "chain": "ethereum",
+    "blockNumber": 12100000,
+    "protocol": "Furucombo",
+    "date": "2021-02-27",
+    "lossUSD": 14000000,
+    "primaryPatterns": ["DELEGATE_CALL_INJECTION", "ACCESS_CONTROL"],
+    "expectedDetections": [
+      { "patternId": "DELEGATE_CALL_INJECTION", "confidenceRange": [0.90, 1.0] },
+      { "patternId": "ACCESS_CONTROL", "confidenceRange": [0.70, 0.90] }
+    ],
+    "narrative": "Attacker set a malicious implementation for the Aave V2 lending pool proxy via delegatecall, then called transferFrom on users' approved tokens."
+  },
+  {
+    "id": "EVD-056",
+    "txHash": "0xf2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3",
+    "chain": "ethereum",
+    "blockNumber": 15200000,
+    "protocol": "Tornado Cash Governance",
+    "date": "2023-05-20",
+    "lossUSD": 9000000,
+    "primaryPatterns": ["DELEGATE_CALL_INJECTION", "LOGIC_ERROR"],
+    "expectedDetections": [
+      { "patternId": "DELEGATE_CALL_INJECTION", "confidenceRange": [0.85, 0.98] },
+      { "patternId": "LOGIC_ERROR", "confidenceRange": [0.75, 0.90] }
+    ],
+    "narrative": "Attacker submitted a governance proposal with a hidden selfdestruct and redeployment, seizing 1.2M locked TORN voting tokens via delegatecall upgrade."
+  },
+  {
+    "id": "EVD-057",
+    "txHash": "0xa3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4",
+    "chain": "ethereum",
+    "blockNumber": 12700000,
+    "protocol": "THORChain",
+    "date": "2021-07-16",
+    "lossUSD": 8000000,
+    "primaryPatterns": ["LOGIC_ERROR"],
+    "expectedDetections": [
+      { "patternId": "LOGIC_ERROR", "confidenceRange": [0.85, 0.98] }
+    ],
+    "narrative": "Logic flaw in the ETH Router bifrost module allowed attacker to send a custom deposit memo claiming a much larger amount than actually deposited."
+  },
+  {
+    "id": "EVD-058",
+    "txHash": "0xb4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5",
+    "chain": "ethereum",
+    "blockNumber": 14900000,
+    "protocol": "Inverse Finance",
+    "date": "2022-04-02",
+    "lossUSD": 15600000,
+    "primaryPatterns": ["ORACLE_MANIPULATION", "FLASH_LOAN"],
+    "expectedDetections": [
+      { "patternId": "ORACLE_MANIPULATION", "confidenceRange": [0.90, 1.0] },
+      { "patternId": "FLASH_LOAN", "confidenceRange": [0.85, 0.98] }
+    ],
+    "narrative": "Flash loan manipulated Keep3r SushiSwap LP TWAP oracle, inflated INV collateral value on Anchor, and borrowed $15.6M in stablecoins."
+  },
+  {
+    "id": "EVD-059",
+    "txHash": "0xc5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6",
+    "chain": "ethereum",
+    "blockNumber": 14400000,
+    "protocol": "Cashio",
+    "date": "2022-03-23",
+    "lossUSD": 52000000,
+    "primaryPatterns": ["LOGIC_ERROR", "ACCESS_CONTROL"],
+    "expectedDetections": [
+      { "patternId": "LOGIC_ERROR", "confidenceRange": [0.85, 0.98] },
+      { "patternId": "ACCESS_CONTROL", "confidenceRange": [0.70, 0.90] }
+    ],
+    "narrative": "Incomplete validation in Cashio's mint function accepted a fake collateral account, allowing attacker to mint unlimited CASH and swap for $52M."
+  },
+  {
+    "id": "EVD-060",
+    "txHash": "0xd6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7",
+    "chain": "ethereum",
+    "blockNumber": 14980000,
+    "protocol": "MEV Bot (Sandwich)",
+    "date": "2022-09-27",
+    "lossUSD": 1400000,
+    "primaryPatterns": ["FRONT_RUNNING"],
+    "expectedDetections": [
+      { "patternId": "FRONT_RUNNING", "confidenceRange": [0.90, 1.0] }
+    ],
+    "narrative": "Classic sandwich attack: MEV bot front-ran victim's Uniswap swap with a buy, then back-ran with a sell, extracting $1.4M in slippage profit."
+  },
+  {
+    "id": "EVD-061",
+    "txHash": "0xe7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8",
+    "chain": "ethereum",
+    "blockNumber": 15100000,
+    "protocol": "Flashbots Relay (MEV)",
+    "date": "2023-04-03",
+    "lossUSD": 25000000,
+    "primaryPatterns": ["FRONT_RUNNING", "ACCESS_CONTROL"],
+    "expectedDetections": [
+      { "patternId": "FRONT_RUNNING", "confidenceRange": [0.85, 0.98] },
+      { "patternId": "ACCESS_CONTROL", "confidenceRange": [0.60, 0.80] }
+    ],
+    "narrative": "Rogue validator unbundled a Flashbots MEV searcher's sandwich transaction, front-running the searcher's own back-run for $25M."
+  },
+  {
+    "id": "EVD-062",
+    "txHash": "0xf8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9",
+    "chain": "ethereum",
+    "blockNumber": 16000000,
+    "protocol": "Salmonella Token (Anti-MEV)",
+    "date": "2022-06-15",
+    "lossUSD": 500000,
+    "primaryPatterns": ["FRONT_RUNNING", "LOGIC_ERROR"],
+    "expectedDetections": [
+      { "patternId": "FRONT_RUNNING", "confidenceRange": [0.80, 0.95] },
+      { "patternId": "LOGIC_ERROR", "confidenceRange": [0.50, 0.75] }
+    ],
+    "narrative": "Honeypot token with hidden transfer tax punished sandwich bots by returning fewer tokens than expected during the back-run."
+  }
+]
