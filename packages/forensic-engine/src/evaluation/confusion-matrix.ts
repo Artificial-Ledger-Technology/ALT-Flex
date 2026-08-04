@@ -17,9 +17,7 @@ import {
   type SamplePredictions,
   ALL_PATTERN_IDS,
 } from './evaluator-types.js';
-import {
-  type EvaluationEntry,
-} from '../__tests__/fixtures/evaluation-dataset/evaluation-dataset.schema.js';
+import { type EvaluationEntry } from '../__tests__/fixtures/evaluation-dataset/evaluation-dataset.schema.js';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // Confusion Matrix Builder
@@ -57,8 +55,8 @@ export function buildConfusionMatrix(
 
   // Build label-to-index lookup
   const labelIndex = new Map<ExploitPatternId, number>();
-  for (let i = 0; i < labels.length; i++) {
-    labelIndex.set(labels[i], i);
+  for (const [i, label] of labels.entries()) {
+    labelIndex.set(label, i);
   }
 
   for (const entry of dataset) {
@@ -76,10 +74,12 @@ export function buildConfusionMatrix(
     for (const truthPattern of entry.primaryPatterns) {
       const row = labelIndex.get(truthPattern);
       if (row === undefined) continue;
+      const matrixRow = matrix[row];
+      if (matrixRow === undefined) continue;
 
       if (predictedPatterns.has(truthPattern)) {
         // Correct prediction: increment diagonal
-        matrix[row][row]++;
+        matrixRow[row] = (matrixRow[row] ?? 0) + 1;
       }
 
       // Record off-diagonal: predicted but not this truth
@@ -87,7 +87,7 @@ export function buildConfusionMatrix(
         if (predPattern !== truthPattern) {
           const col = labelIndex.get(predPattern);
           if (col !== undefined) {
-            matrix[row][col]++;
+            matrixRow[col] = (matrixRow[col] ?? 0) + 1;
           }
         }
       }
@@ -123,10 +123,9 @@ export function formatConfusionMatrixMarkdown(cm: ConfusionMatrix): string {
   }
   md += '\n';
 
-  for (let i = 0; i < cm.matrix.length; i++) {
+  for (const [i, row] of cm.matrix.entries()) {
     md += `| **${shortLabels[i]}** |`;
-    for (let j = 0; j < cm.matrix[i].length; j++) {
-      const val = cm.matrix[i][j];
+    for (const [j, val] of row.entries()) {
       // Bold diagonal entries
       if (i === j && val > 0) {
         md += ` **${val}** |`;
