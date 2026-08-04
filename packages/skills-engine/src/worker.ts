@@ -22,13 +22,17 @@ import pg from 'pg';
 import {
   createQueueConnection,
   createLogger,
+  describeError,
   QUEUE_NAMES,
   type SkillsIndexJobData,
   type SkillsIndexJobResult,
   type SafetyScanJobData,
   type SafetyScanJobResult,
 } from '@aegis/core';
-import { createSkillsIndexQueue, registerSkillsIndexCron } from './infrastructure/skills-index-queue.js';
+import {
+  createSkillsIndexQueue,
+  registerSkillsIndexCron,
+} from './infrastructure/skills-index-queue.js';
 import { createSafetyScanQueue } from './infrastructure/safety-scan-queue.js';
 import { createSkillsIndexProcessor } from './infrastructure/skills-index-processor.js';
 import { createSafetyScanProcessor } from './infrastructure/safety-scan-processor.js';
@@ -94,12 +98,13 @@ async function start(): Promise<void> {
     logger.error('❌ SkillsIndex job failed', {
       jobId: job?.id,
       jobName: job?.name,
-      error: error.message,
+      error: describeError(error),
+      stack: error.stack,
     });
   });
 
   skillsWorker.on('error', (error) => {
-    logger.error('⚠️ SkillsIndex worker error', { error: error.message });
+    logger.error('⚠️ SkillsIndex worker error', { error: describeError(error) });
   });
 
   // ── Safety Scan Worker ──────────────────────────────────────────────────
@@ -113,24 +118,25 @@ async function start(): Promise<void> {
   );
 
   safetyScanWorker.on('completed', (job) => {
-    logger.info(
-      '✅ SafetyScan job completed',
-      { jobId: job.id, skillId: job.data.skillId },
-    );
+    logger.info('✅ SafetyScan job completed', { jobId: job.id, skillId: job.data.skillId });
   });
 
   safetyScanWorker.on('failed', (job, error) => {
-    logger.error(
-      '❌ SafetyScan job failed',
-      { jobId: job?.id, skillId: job?.data.skillId, error: error.message },
-    );
+    logger.error('❌ SafetyScan job failed', {
+      jobId: job?.id,
+      skillId: job?.data.skillId,
+      error: describeError(error),
+      stack: error.stack,
+    });
   });
 
   safetyScanWorker.on('error', (error) => {
-    logger.error('⚠️ SafetyScan worker error', { error: error.message });
+    logger.error('⚠️ SafetyScan worker error', { error: describeError(error) });
   });
 
-  logger.info(`🔗 Skills Worker listening on queues: ${QUEUE_NAMES.SKILLS_INDEX}, ${QUEUE_NAMES.SAFETY_SCAN}`);
+  logger.info(
+    `🔗 Skills Worker listening on queues: ${QUEUE_NAMES.SKILLS_INDEX}, ${QUEUE_NAMES.SAFETY_SCAN}`,
+  );
 
   // ── Graceful Shutdown ─────────────────────────────────────────────────
   const shutdown = async (signal: string): Promise<void> => {
@@ -153,7 +159,6 @@ async function start(): Promise<void> {
 }
 
 void start().catch((error) => {
-  const msg = error instanceof Error ? error.message : String(error);
-  logger.error('💀 Skills Worker failed to start', { error: msg });
+  logger.error('💀 Skills Worker failed to start', { error: describeError(error) });
   process.exit(1);
 });

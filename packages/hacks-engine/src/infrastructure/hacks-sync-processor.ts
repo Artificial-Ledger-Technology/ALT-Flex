@@ -15,12 +15,13 @@
 
 import type { Job } from 'bullmq';
 import type { Pool } from 'pg';
-import type {
-  LoggerPort,
-  HacksSyncJobData,
-  HacksSyncJobResult,
-  JobProgress,
-  SyncProgressStage,
+import {
+  describeError,
+  type LoggerPort,
+  type HacksSyncJobData,
+  type HacksSyncJobResult,
+  type JobProgress,
+  type SyncProgressStage,
 } from '@aegis/core';
 
 import type { SyncHacksUseCase } from '../application/sync-hacks.use-case.js';
@@ -189,7 +190,7 @@ export function createHacksSyncProcessor(
       return result;
     } catch (error: unknown) {
       const durationMs = Date.now() - startMs;
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage = describeError(error);
 
       await updateSyncLog(pool, syncLogId, {
         status: 'failed',
