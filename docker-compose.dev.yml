@@ -168,6 +168,20 @@ services:
     networks:
       - aegis-network
 
+  # ── Forensic Engine — EVM Analysis Toolchain (Build-Only) ───────────────
+  # Library package (src/index.ts) with no worker entrypoint, so it is built
+  # and verified but never started. Excluded from `up` via the build profile.
+  #   docker compose -f docker-compose.dev.yml --profile build build forensic-engine
+  #   docker compose -f docker-compose.dev.yml --profile build run --rm forensic-engine forge --version
+  forensic-engine:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.forensic-engine
+      target: runner
+    image: aegis/forensic-engine:dev
+    container_name: aegis-forensic-engine-dev
+    profiles: ['build']
+
 # ── Named Volumes ──────────────────────────────────────────────────────────
 volumes:
   pgdata_dev:
