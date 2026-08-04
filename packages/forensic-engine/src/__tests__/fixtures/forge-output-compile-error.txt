@@ -1,0 +1,33 @@
+[⠒] Compiling...
+[⠆] Compiling 3 files with 0.8.20
+[⠰] Solc 0.8.20 finished in 412.77ms
+Error:
+Compiler run failed:
+Error (7920): Identifier not found or not unique.
+  --> src/test/2023-03/Euler_exp.t.sol:71:9:
+   |
+71 |         eDAI.donateToReserve(0, 100_000_000 * 1e18);
+   |         ^^^^^^^^^^^^^^^^^^^^
+
+TypeError (9582): Member "donateToReserve" not found or not visible after argument-dependent lookup in contract IEulerToken.
+  --> src/test/2023-03/Euler_exp.t.sol:71:9:
+   |
+71 |         eDAI.donateToReserve(0, 100_000_000 * 1e18);
+   |         ^^^^^^^^^^^^^^^^^^^^
+
+TypeError (6160): Wrong argument count for function call: 4 arguments given but expected 5.
+  --> src/test/2023-03/Euler_exp.t.sol:75:9:
+   |
+75 |         liquidation.liquidate(address(this), address(DAI), address(eDAI), 0);
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Error (2333): Identifier already declared.
+  --> src/test/2023-03/Euler_exp.t.sol:44:5:
+   |
+44 |     IERC20 DAI = IERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F);
+   |     ^^^^^^^^^^
+Note: The previous declaration is here:
+  --> src/test/2023-03/Euler_exp.t.sol:41:5:
+   |
+41 |     IERC20 DAI = IERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F);
+   |     ^^^^^^^^^^
