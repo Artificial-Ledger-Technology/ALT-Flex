@@ -88,6 +88,13 @@ services:
       NODE_ENV: production
       POSTGRES_HOST: postgres
       REDIS_HOST: redis
+      # Composed here rather than inherited from .env. The application reads
+      # DATABASE_URL in preference to the POSTGRES_* parts, so a host-oriented
+      # value in .env (localhost) would win over POSTGRES_HOST above and point
+      # the service at itself. Compose `environment:` beats `env_file:`, so
+      # building the URL from the same component variables the postgres service
+      # uses keeps one source of truth inside the network.
+      DATABASE_URL: postgresql://${POSTGRES_USER:-aegis}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-aegis_prod}
     depends_on:
       postgres:
         condition: service_healthy
@@ -172,6 +179,8 @@ services:
       NODE_ENV: production
       POSTGRES_HOST: postgres
       REDIS_HOST: redis
+      # See api-gateway — .env's host-oriented DATABASE_URL must not win here.
+      DATABASE_URL: postgresql://${POSTGRES_USER:-aegis}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-aegis_prod}
     depends_on:
       postgres:
         condition: service_healthy
@@ -204,6 +213,8 @@ services:
       NODE_ENV: production
       POSTGRES_HOST: postgres
       REDIS_HOST: redis
+      # See api-gateway — .env's host-oriented DATABASE_URL must not win here.
+      DATABASE_URL: postgresql://${POSTGRES_USER:-aegis}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-aegis_prod}
     depends_on:
       postgres:
         condition: service_healthy
