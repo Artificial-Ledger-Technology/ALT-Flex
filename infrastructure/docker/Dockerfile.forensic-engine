@@ -1,0 +1,91 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# AltFlex AEGIS v3.0 — Forensic Engine Dockerfile
+# Multi-stage build for EVM forensic analysis library (Engine γ)
+# Service: @aegis/forensic-engine · No HTTP port · Includes Foundry `forge`
+# ═══════════════════════════════════════════════════════════════════════════════
+# Base deviation: Debian bookworm-slim, NOT alpine like the other services.
+# Foundry ships glibc-linked binaries; `foundryup` fails on musl (alpine).
+# `gcompat` is fragile and is deliberately not used. See PR for P6-PROD-001.
+#
+# Entrypoint: this package exports a library (src/index.ts) and has no worker
+# entrypoint, unlike hacks-engine/skills-engine. The image is therefore built
+# and verified but is not started as a long-running compose service.
+# Security: Non-root user, pinned base image, no devDeps in production
+# Trivy: Scan this image in CI with `trivy image aegis/forensic-engine:latest`
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# ── Stage 0: Foundry Toolchain Source ────────────────────────────────────────
+# forge 1.5.1-stable. Pinned by digest, not :latest, so builds are reproducible.
+# This image is glibc/Debian-based (verified: forge links libc.so.6), which is
+# why its binary drops cleanly into the bookworm-slim runtime below.
+FROM ghcr.io/foundry-rs/foundry:stable@sha256:043752653d5be351c71709091b3db97c4421c907eb40ea294195e7f532aadf46 AS foundry
+
+# ── Stage 1: Dependencies ────────────────────────────────────────────────────
+FROM node:20.11-bookworm-slim AS deps
+
+RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
+
+WORKDIR /app
+
+# Copy workspace configuration
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json turbo.json tsconfig.base.json ./
+
+# Copy workspace package.json files needed for this engine
+COPY packages/core/package.json ./packages/core/
+COPY packages/forensic-engine/package.json ./packages/forensic-engine/
+# Include other packages so pnpm workspace graph resolves correctly
+COPY packages/hacks-engine/package.json ./packages/hacks-engine/
+COPY packages/skills-engine/package.json ./packages/skills-engine/
+COPY apps/api-gateway/package.json ./apps/api-gateway/
+COPY apps/web/package.json ./apps/web/
+
+# Enable hoisting so that all dependencies are in the root node_modules for production COPY
+RUN echo "shamefully-hoist=true" > .npmrc
+
+# Install ALL dependencies (dev + prod needed for build stage)
+RUN pnpm install --frozen-lockfile
+
+# ── Stage 2: Builder ─────────────────────────────────────────────────────────
+FROM deps AS builder
+
+WORKDIR /app
+
+# Copy source for core + forensic-engine only
+COPY packages/core/src ./packages/core/src
+COPY packages/core/tsconfig.json ./packages/core/
+COPY packages/forensic-engine/src ./packages/forensic-engine/src
+COPY packages/forensic-engine/tsconfig.json ./packages/forensic-engine/
+
+# Build using Turborepo — respects topological order: @aegis/core → @aegis/forensic-engine
+RUN pnpm turbo run build --filter=@aegis/forensic-engine...
+
+# Prune dev dependencies for production
+RUN CI=true pnpm prune --prod --ignore-scripts
+
+# ── Stage 3: Production Runner ───────────────────────────────────────────────
+FROM node:20.11-bookworm-slim AS runner
+
+# Security: Run as non-root (Debian useradd, not alpine adduser)
+RUN groupadd --system --gid 1001 aegis && \
+    useradd --system --uid 1001 --gid aegis --create-home aegis
+
+# Foundry `forge` — copied from the official image rather than via foundryup
+COPY --from=foundry /usr/local/bin/forge /usr/local/bin/forge
+
+WORKDIR /app
+
+# Copy production artifacts only
+COPY --from=builder --chown=aegis:aegis /app/node_modules ./node_modules
+COPY --from=builder --chown=aegis:aegis /app/packages/core/dist ./packages/core/dist
+COPY --from=builder --chown=aegis:aegis /app/packages/core/package.json ./packages/core/
+COPY --from=builder --chown=aegis:aegis /app/packages/forensic-engine/dist ./packages/forensic-engine/dist
+COPY --from=builder --chown=aegis:aegis /app/packages/forensic-engine/package.json ./packages/forensic-engine/
+COPY --from=builder --chown=aegis:aegis /app/package.json ./
+
+ENV NODE_ENV=production
+
+USER aegis
+
+# No worker entrypoint exists for this package (library-only export surface).
+# `forge --version` is the image's verification contract until one is added.
+CMD ["forge", "--version"]
