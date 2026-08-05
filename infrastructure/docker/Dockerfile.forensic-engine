@@ -1,16 +1,27 @@
 # ═══════════════════════════════════════════════════════════════════════════════
-# AltFlex AEGIS v3.0 — Hacks Worker Dockerfile
-# Multi-stage build for BullMQ ETL pipeline worker (Engine α)
-# Service: @aegis/hacks-engine · No HTTP port (background worker)
+# AltFlex AEGIS v3.0 — Forensic Engine Dockerfile
+# Multi-stage build for EVM forensic analysis library (Engine γ)
+# Service: @aegis/forensic-engine · No HTTP port · Includes Foundry `forge`
 # ═══════════════════════════════════════════════════════════════════════════════
-# Purpose: DefiLlama + DeFiHackLabs ETL, incident sync, analytics pipeline
-# Queue: BullMQ via Redis 7 — processes hacks-sync jobs
+# Base deviation: Debian bookworm-slim, NOT alpine like the other services.
+# Foundry ships glibc-linked binaries; `foundryup` fails on musl (alpine).
+# `gcompat` is fragile and is deliberately not used. See PR for P6-PROD-001.
+#
+# Entrypoint: this package exports a library (src/index.ts) and has no worker
+# entrypoint, unlike hacks-engine/skills-engine. The image is therefore built
+# and verified but is not started as a long-running compose service.
 # Security: Non-root user, pinned base image, no devDeps in production
-# Trivy: Scan this image in CI with `trivy image aegis/hacks-worker:latest`
+# Trivy: Scan this image in CI with `trivy image aegis/forensic-engine:latest`
 # ═══════════════════════════════════════════════════════════════════════════════
 
+# ── Stage 0: Foundry Toolchain Source ────────────────────────────────────────
+# forge 1.5.1-stable. Pinned by digest, not :latest, so builds are reproducible.
+# This image is glibc/Debian-based (verified: forge links libc.so.6), which is
+# why its binary drops cleanly into the bookworm-slim runtime below.
+FROM ghcr.io/foundry-rs/foundry:stable@sha256:043752653d5be351c71709091b3db97c4421c907eb40ea294195e7f532aadf46 AS foundry
+
 # ── Stage 1: Dependencies ────────────────────────────────────────────────────
-FROM node:22.23-alpine AS deps
+FROM node:22.23-bookworm-slim AS deps
 
 RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
 
@@ -19,12 +30,12 @@ WORKDIR /app
 # Copy workspace configuration
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json turbo.json tsconfig.base.json ./
 
-# Copy workspace package.json files needed for this worker
+# Copy workspace package.json files needed for this engine
 COPY packages/core/package.json ./packages/core/
-COPY packages/hacks-engine/package.json ./packages/hacks-engine/
-# Include other packages so pnpm workspace graph resolves correctly
-COPY packages/skills-engine/package.json ./packages/skills-engine/
 COPY packages/forensic-engine/package.json ./packages/forensic-engine/
+# Include other packages so pnpm workspace graph resolves correctly
+COPY packages/hacks-engine/package.json ./packages/hacks-engine/
+COPY packages/skills-engine/package.json ./packages/skills-engine/
 COPY apps/api-gateway/package.json ./apps/api-gateway/
 COPY apps/web/package.json ./apps/web/
 
@@ -39,41 +50,44 @@ FROM deps AS builder
 
 WORKDIR /app
 
-# Copy source for core + hacks-engine only
+# Copy source for core + forensic-engine only
 COPY packages/core/src ./packages/core/src
 COPY packages/core/tsconfig.json ./packages/core/
-COPY packages/hacks-engine/src ./packages/hacks-engine/src
-COPY packages/hacks-engine/tsconfig.json ./packages/hacks-engine/
+COPY packages/forensic-engine/src ./packages/forensic-engine/src
+COPY packages/forensic-engine/tsconfig.json ./packages/forensic-engine/
 
-# Build using Turborepo — respects topological order: @aegis/core → @aegis/hacks-engine
-RUN pnpm turbo run build --filter=@aegis/hacks-engine...
+# Build using Turborepo — respects topological order: @aegis/core → @aegis/forensic-engine
+RUN pnpm turbo run build --filter=@aegis/forensic-engine...
 
-# Produce a pruned, self-contained dependency tree for THIS service only.
+# Produce a pruned, self-contained dependency tree for THIS package only.
 #
 # Replaces the previous `pnpm prune --prod` + copy of the hoisted root
 # node_modules. Because shamefully-hoist flattens every workspace package's
 # dependencies into the root, that pattern dragged the web app's Next.js,
-# React and sharp into this worker image — roughly 3-5x the necessary size.
+# React and sharp into this image — roughly 3-5x the necessary size.
 #
 # `--legacy` is required: from pnpm 10 `pnpm deploy` refuses a non-injected
 # workspace with ERR_PNPM_DEPLOY_NONINJECTED_WORKSPACE. The alternative,
 # inject-workspace-packages=true, would be a workspace-wide config change.
 #
 # Must run AFTER the build so the compiled dist/ is included in the output.
-RUN pnpm deploy --legacy --filter=@aegis/hacks-engine --prod /app/deploy
+RUN pnpm deploy --legacy --filter=@aegis/forensic-engine --prod /app/deploy
 
 # ── Stage 3: Production Runner ───────────────────────────────────────────────
-FROM node:22.23-alpine AS runner
+FROM node:22.23-bookworm-slim AS runner
 
-# Security: Run as non-root
-RUN addgroup --system --gid 1001 aegis && \
-    adduser --system --uid 1001 --ingroup aegis aegis
+# Security: Run as non-root (Debian useradd, not alpine adduser)
+RUN groupadd --system --gid 1001 aegis && \
+    useradd --system --uid 1001 --gid aegis --create-home aegis
+
+# Foundry `forge` — copied from the official image rather than via foundryup
+COPY --from=foundry /usr/local/bin/forge /usr/local/bin/forge
 
 WORKDIR /app
 
-# Copy only the pruned deployment tree. The @aegis/* workspace packages are
-# materialised inside deploy/node_modules complete with their built dist/, so
-# the per-package copies this replaced are no longer needed.
+# Copy only the pruned deployment tree. @aegis/core is materialised inside
+# deploy/node_modules complete with its built dist/, so the per-package copies
+# this replaced are no longer needed.
 COPY --from=builder --chown=aegis:aegis /app/deploy/node_modules ./node_modules
 COPY --from=builder --chown=aegis:aegis /app/deploy/dist ./dist
 COPY --from=builder --chown=aegis:aegis /app/deploy/package.json ./package.json
@@ -82,6 +96,6 @@ ENV NODE_ENV=production
 
 USER aegis
 
-# Background worker — no HTTP port exposed
-# Relies on Docker restart policy + process exit codes for health
-CMD ["node", "dist/worker.js"]
+# No worker entrypoint exists for this package (library-only export surface).
+# `forge --version` is the image's verification contract until one is added.
+CMD ["forge", "--version"]

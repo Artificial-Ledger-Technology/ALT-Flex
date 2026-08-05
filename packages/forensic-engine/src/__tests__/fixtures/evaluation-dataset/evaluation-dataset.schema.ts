@@ -10,7 +10,7 @@
  * @task P5-EVM-011
  */
 
-import { type ExploitPatternId } from '../../domain/pattern-types.js';
+import { type ExploitPatternId } from '../../../domain/pattern-types.js';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // Dataset Entry Types

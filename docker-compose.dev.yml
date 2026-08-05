@@ -75,6 +75,12 @@ services:
       NODE_ENV: development
       POSTGRES_HOST: postgres
       REDIS_HOST: redis
+      # Overrides .env, where DATABASE_URL points at localhost for host-based
+      # development. Compose `environment:` beats `env_file:`, and the
+      # application prefers DATABASE_URL over the POSTGRES_* parts, so without
+      # this the service would try to reach Postgres inside its own container.
+      # Literal credentials, not ${POSTGRES_*}, because the postgres service
+      # above hardcodes them too — the two must not drift apart.
       DATABASE_URL: postgresql://aegis:changeme@postgres:5432/aegis_dev
     depends_on:
       postgres:
@@ -167,6 +173,20 @@ services:
         condition: service_healthy
     networks:
       - aegis-network
+
+  # ── Forensic Engine — EVM Analysis Toolchain (Build-Only) ───────────────
+  # Library package (src/index.ts) with no worker entrypoint, so it is built
+  # and verified but never started. Excluded from `up` via the build profile.
+  #   docker compose -f docker-compose.dev.yml --profile build build forensic-engine
+  #   docker compose -f docker-compose.dev.yml --profile build run --rm forensic-engine forge --version
+  forensic-engine:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.forensic-engine
+      target: runner
+    image: aegis/forensic-engine:dev
+    container_name: aegis-forensic-engine-dev
+    profiles: ['build']
 
 # ── Named Volumes ──────────────────────────────────────────────────────────
 volumes:

@@ -22,3 +22,6 @@ export type { LoggerPort } from './logger-port.js';
 // ── Logger Factory (Implementation) ──────────────────────────────────────────
 export { createLogger } from './logger.js';
 export type { LoggerOptions, LogLevel } from './logger.js';
+
+// ── Error Formatting ─────────────────────────────────────────────────────────
+export { describeError } from './describe-error.js';

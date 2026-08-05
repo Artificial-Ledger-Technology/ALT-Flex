@@ -23,6 +23,7 @@ import pg from 'pg';
 import {
   createQueueConnection,
   createLogger,
+  describeError,
   QUEUE_NAMES,
   type HacksSyncJobData,
   type HacksSyncJobResult,
@@ -117,7 +118,8 @@ async function start(): Promise<void> {
     logger.error('❌ Job failed', {
       jobId: job?.id,
       jobName: job?.name,
-      error: error.message,
+      error: describeError(error),
+      stack: error.stack,
     });
   });
 
@@ -126,7 +128,7 @@ async function start(): Promise<void> {
   });
 
   worker.on('error', (error) => {
-    logger.error('⚠️ Worker error', { error: error.message });
+    logger.error('⚠️ Worker error', { error: describeError(error) });
   });
 
   logger.info(`🔗 Hacks Worker listening on queue: ${QUEUE_NAMES.HACKS_SYNC}`);
@@ -149,7 +151,6 @@ async function start(): Promise<void> {
 }
 
 void start().catch((error: unknown) => {
-  const msg = error instanceof Error ? error.message : String(error);
-  logger.error('💀 Hacks Worker failed to start', { error: msg });
+  logger.error('💀 Hacks Worker failed to start', { error: describeError(error) });
   process.exit(1);
 });
