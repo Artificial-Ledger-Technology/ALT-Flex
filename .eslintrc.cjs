@@ -3,10 +3,14 @@ module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
   parserOptions: {
+    // tsconfig.base.json is a base to extend, not a project: it declares no
+    // `include`, so listing it here swept every file in the repository into a
+    // program with no `jsx` and no path aliases (#198). Each package config
+    // covers its own sources; tsconfig.eslint.json covers the remainder.
     project: [
-      './tsconfig.base.json',
       './packages/*/tsconfig.json',
       './apps/*/tsconfig.json',
+      './tsconfig.eslint.json',
     ],
     tsconfigRootDir: __dirname,
   },
