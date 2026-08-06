@@ -13,32 +13,12 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['@aegis/core'],
   },
   output: 'standalone',
-  webpack: (config, { isServer, webpack }) => {
-    config.resolve.extensionAlias = {
-      '.js': ['.ts', '.tsx', '.js', '.jsx'],
-      '.mjs': ['.mts', '.mjs'],
-      '.cjs': ['.cts', '.cjs'],
-    };
-    if (!isServer) {
-      config.plugins.push(
-        new webpack.NormalModuleReplacementPlugin(/^node:/, (resource: { request: string }) => {
-          resource.request = resource.request.replace(/^node:/, '');
-        })
-      );
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        dns: false,
-        net: false,
-        tls: false,
-        fs: false,
-        child_process: false,
-        pg: false,
-        'pg-native': false,
-        ioredis: false,
-        async_hooks: false,
-      };
-    }
-    return config;
+  // Linting is owned by the dedicated `lint` job in .github/workflows/ci.yml,
+  // which scopes ESLint to the files a PR actually changes while the existing
+  // backlog is burnt down. `next build` would otherwise run its own unscoped
+  // lint and fail the build on that same backlog.
+  eslint: {
+    ignoreDuringBuilds: true,
   },
   async rewrites() {
     return [

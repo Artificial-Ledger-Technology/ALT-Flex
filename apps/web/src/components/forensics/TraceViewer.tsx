@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { TransactionTraceResult, CallTreeNode } from '@aegis/forensic-engine';
 import { Search, ChevronDown, ChevronRight } from 'lucide-react';
@@ -20,7 +22,7 @@ export const TraceViewer: React.FC<TraceViewerProps> = ({ traceResult }) => {
   };
 
   const toggleExpandAll = () => {
-    setExpandAll(prev => !prev);
+    setExpandAll((prev) => !prev);
   };
 
   const handleSelectNode = (node: CallTreeNode) => {
@@ -37,15 +39,27 @@ export const TraceViewer: React.FC<TraceViewerProps> = ({ traceResult }) => {
       <div className={styles.header}>
         <div className={styles.title}>
           Transaction Trace
-          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginLeft: 12 }}>
+          <span
+            style={{
+              fontSize: 'var(--font-size-xs)',
+              color: 'var(--text-tertiary)',
+              marginLeft: 12,
+            }}
+          >
             {traceResult.txHash.slice(0, 8)}...{traceResult.txHash.slice(-6)}
           </span>
         </div>
         <div className={styles.actions}>
           <div style={{ position: 'relative' }}>
-            <Search 
-              size={14} 
-              style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-tertiary)' }} 
+            <Search
+              size={14}
+              style={{
+                position: 'absolute',
+                left: 10,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                color: 'var(--text-tertiary)',
+              }}
             />
             <input
               type="text"
@@ -56,7 +70,11 @@ export const TraceViewer: React.FC<TraceViewerProps> = ({ traceResult }) => {
               style={{ paddingLeft: 32 }}
             />
           </div>
-          <button className={styles.btn} onClick={toggleExpandAll} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <button
+            className={styles.btn}
+            onClick={toggleExpandAll}
+            style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+          >
             {expandAll ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
             {expandAll ? 'Collapse All' : 'Expand All'}
           </button>
@@ -67,7 +85,7 @@ export const TraceViewer: React.FC<TraceViewerProps> = ({ traceResult }) => {
         {/* Main Panel (Flame Chart + Tree) */}
         <div className={styles.mainPanel}>
           <GasFlameChart rootNode={traceResult.callTree} />
-          <CallTreeList 
+          <CallTreeList
             rootNode={traceResult.callTree}
             searchQuery={searchQuery}
             expandAll={expandAll}
@@ -77,12 +95,7 @@ export const TraceViewer: React.FC<TraceViewerProps> = ({ traceResult }) => {
         </div>
 
         {/* Side Detail Panel */}
-        {selectedNode && (
-          <TraceDetailPanel 
-            node={selectedNode} 
-            onClose={handleCloseDetail} 
-          />
-        )}
+        {selectedNode && <TraceDetailPanel node={selectedNode} onClose={handleCloseDetail} />}
       </div>
     </div>
   );
