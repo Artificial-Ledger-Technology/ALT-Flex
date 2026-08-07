@@ -10,19 +10,38 @@ vi.mock('@aegis/skills-engine', () => {
         getSafetyStats: vi.fn().mockResolvedValue({
           totalScans: 100,
           averageScore: 85.5,
-          labelDistribution: { safe: 80, suspicious: 15, malicious: 5, unanalyzed: 0 }
+          labelDistribution: { safe: 80, suspicious: 15, malicious: 5, unanalyzed: 0 },
         }),
-        getRuleHitStats: vi.fn().mockResolvedValue([
-          { ruleId: 'rule1', name: 'Rule 1', category: 'Category 1', hitCount: 10, lastTriggered: null, falsePositiveRate: 0 }
-        ]),
-        getScanTimeline: vi.fn().mockResolvedValue([
-          { date: new Date().toISOString(), safe: 5, suspicious: 1, malicious: 0, total: 6 }
-        ]),
-        getTopFindings: vi.fn().mockResolvedValue([
-          { ruleId: 'rule1', ruleName: 'Rule 1', category: 'Category 1', severity: 'high', triggerCount: 10 }
-        ])
+        getRuleHitStats: vi
+          .fn()
+          .mockResolvedValue([
+            {
+              ruleId: 'rule1',
+              name: 'Rule 1',
+              category: 'Category 1',
+              hitCount: 10,
+              lastTriggered: null,
+              falsePositiveRate: 0,
+            },
+          ]),
+        getScanTimeline: vi
+          .fn()
+          .mockResolvedValue([
+            { date: new Date().toISOString(), safe: 5, suspicious: 1, malicious: 0, total: 6 },
+          ]),
+        getTopFindings: vi
+          .fn()
+          .mockResolvedValue([
+            {
+              ruleId: 'rule1',
+              ruleName: 'Rule 1',
+              category: 'Category 1',
+              severity: 'high',
+              triggerCount: 10,
+            },
+          ]),
       };
-    })
+    }),
   };
 });
 
@@ -43,23 +62,35 @@ describe('Safety Routes Integration Tests (P3-SCAN-011)', () => {
     vi.restoreAllMocks();
   });
 
+  // Every safety endpoint is protected, so the unauthorized case is asserted
+  // against all of them — not just /stats, which was the only one covered when
+  // the missing preHandler went unnoticed (#201).
+  const PROTECTED_ROUTES = [
+    '/api/v1/safety/stats',
+    '/api/v1/safety/rules',
+    '/api/v1/safety/timeline',
+    '/api/v1/safety/findings/top',
+  ];
+
   it('[SAFETY-000] rejects unauthorized access to safety endpoints', async () => {
-    const res = await server.inject({
-      method: 'GET',
-      url: '/api/v1/safety/stats',
-    });
-    expect(res.statusCode).toBe(401);
+    for (const url of PROTECTED_ROUTES) {
+      const res = await server.inject({
+        method: 'GET',
+        url,
+      });
+      expect(res.statusCode, `expected 401 for ${url}`).toBe(401);
+    }
   });
 
   it('[SAFETY-001] GET /api/v1/safety/stats returns valid schema with auth', async () => {
     const res = await server.inject({
       method: 'GET',
       url: '/api/v1/safety/stats',
-      headers: { 'x-api-key': 'test-api-key-123' }
+      headers: { 'x-api-key': 'test-api-key-123' },
     });
 
     expect(res.statusCode).toBe(200);
-    const body = res.json();
+    const body = res.json<{ totalScans: number }>();
     expect(body.totalScans).toBe(100);
   });
 
@@ -67,11 +98,11 @@ describe('Safety Routes Integration Tests (P3-SCAN-011)', () => {
     const res = await server.inject({
       method: 'GET',
       url: '/api/v1/safety/rules',
-      headers: { 'x-api-key': 'test-api-key-123' }
+      headers: { 'x-api-key': 'test-api-key-123' },
     });
 
     expect(res.statusCode).toBe(200);
-    const body = res.json();
+    const body = res.json<{ data: unknown[] }>();
     expect(body.data).toBeInstanceOf(Array);
   });
 
@@ -79,11 +110,11 @@ describe('Safety Routes Integration Tests (P3-SCAN-011)', () => {
     const res = await server.inject({
       method: 'GET',
       url: '/api/v1/safety/timeline?interval=day',
-      headers: { 'x-api-key': 'test-api-key-123' }
+      headers: { 'x-api-key': 'test-api-key-123' },
     });
 
     expect(res.statusCode).toBe(200);
-    const body = res.json();
+    const body = res.json<{ data: unknown[] }>();
     expect(body.data).toBeInstanceOf(Array);
   });
 
@@ -91,11 +122,11 @@ describe('Safety Routes Integration Tests (P3-SCAN-011)', () => {
     const res = await server.inject({
       method: 'GET',
       url: '/api/v1/safety/findings/top?limit=5',
-      headers: { 'x-api-key': 'test-api-key-123' }
+      headers: { 'x-api-key': 'test-api-key-123' },
     });
 
     expect(res.statusCode).toBe(200);
-    const body = res.json();
+    const body = res.json<{ data: unknown[] }>();
     expect(body.data).toBeInstanceOf(Array);
   });
 });
