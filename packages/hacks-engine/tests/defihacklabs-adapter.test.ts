@@ -15,7 +15,7 @@
 
 import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import axios from 'axios';
-import { Chain, AttackVector, HackIncidentSchema, type LoggerPort } from '@aegis/core';
+import { Chain, HackIncidentSchema, type LoggerPort } from '@aegis/core';
 import { DeFiHackLabsAdapter } from '../src/adapters/defihacklabs-adapter.js';
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -100,7 +100,7 @@ describe('DeFiHackLabsAdapter', () => {
     });
 
     const result = await adapter.fetchAllHacks();
-    
+
     // Zod validation should pass and generate ID
     const parsed = HackIncidentSchema.safeParse(result[0]);
     expect(parsed.success).toBe(true);
@@ -123,7 +123,7 @@ describe('DeFiHackLabsAdapter', () => {
     expect(result).toEqual([]);
     // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(mockLogger.info).toHaveBeenCalledWith(
-      'DeFiHackLabs README not modified since last sync'
+      'DeFiHackLabs README not modified since last sync',
     );
   });
 
@@ -160,15 +160,15 @@ describe('DeFiHackLabsAdapter', () => {
     // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(mockLogger.warn).toHaveBeenCalledWith(
       'GitHub API rate limit running low',
-      expect.objectContaining({ remaining: 50 })
+      expect.objectContaining({ remaining: 50 }),
     );
   });
 
   it('retries on 403 Rate Limit Exceeded', async () => {
     const rateLimitError = {
-      response: { 
-        status: 403, 
-        headers: { 'retry-after': '0' } 
+      response: {
+        status: 403,
+        headers: { 'retry-after': '0' },
       },
       isAxiosError: true,
     };
@@ -230,7 +230,7 @@ describe('DeFiHackLabsAdapter', () => {
 |   | 2023-03-14 | $1M | [Link](src/test/Empty.sol) |
     `;
     const base64 = Buffer.from(markdown).toString('base64');
-    
+
     mockGet.mockResolvedValueOnce({
       data: { content: base64 },
       headers: {},

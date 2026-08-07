@@ -41,7 +41,7 @@ function makeAegisError(opts: {
       code: opts.code,
       message: opts.message,
       timestamp: new Date().toISOString(),
-      ...(opts.details != null ? { details: opts.details } : {}),
+      ...(opts.details !== null && opts.details !== undefined ? { details: opts.details } : {}),
     }),
   };
 }
@@ -286,15 +286,41 @@ describe('Global Error Handler', () => {
 
   it('makeAegisError factory produces valid isAegisError-compatible objects', () => {
     const errors = [
-      makeAegisError({ statusCode: 400, error: 'VALIDATION_ERROR', code: 'AEGIS-400', message: 'test' }),
+      makeAegisError({
+        statusCode: 400,
+        error: 'VALIDATION_ERROR',
+        code: 'AEGIS-400',
+        message: 'test',
+      }),
       makeAegisError({ statusCode: 404, error: 'NOT_FOUND', code: 'AEGIS-404', message: 'test' }),
-      makeAegisError({ statusCode: 401, error: 'UNAUTHORIZED', code: 'AEGIS-401', message: 'test' }),
+      makeAegisError({
+        statusCode: 401,
+        error: 'UNAUTHORIZED',
+        code: 'AEGIS-401',
+        message: 'test',
+      }),
       makeAegisError({ statusCode: 403, error: 'FORBIDDEN', code: 'AEGIS-403', message: 'test' }),
       makeAegisError({ statusCode: 409, error: 'CONFLICT', code: 'AEGIS-409', message: 'test' }),
-      makeAegisError({ statusCode: 429, error: 'RATE_LIMIT_EXCEEDED', code: 'AEGIS-429', message: 'test' }),
-      makeAegisError({ statusCode: 500, error: 'INTERNAL_ERROR', code: 'AEGIS-500', message: 'test', isOperational: false }),
+      makeAegisError({
+        statusCode: 429,
+        error: 'RATE_LIMIT_EXCEEDED',
+        code: 'AEGIS-429',
+        message: 'test',
+      }),
+      makeAegisError({
+        statusCode: 500,
+        error: 'INTERNAL_ERROR',
+        code: 'AEGIS-500',
+        message: 'test',
+        isOperational: false,
+      }),
       makeAegisError({ statusCode: 400, error: 'BAD_REQUEST', code: 'AEGIS-400', message: 'test' }),
-      makeAegisError({ statusCode: 502, error: 'SERVICE_UNAVAILABLE', code: 'AEGIS-502', message: 'test' }),
+      makeAegisError({
+        statusCode: 502,
+        error: 'SERVICE_UNAVAILABLE',
+        code: 'AEGIS-502',
+        message: 'test',
+      }),
     ];
 
     for (const err of errors) {

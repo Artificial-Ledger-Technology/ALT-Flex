@@ -54,7 +54,7 @@ describe('DevSecOps — CI Gate Compliance', () => {
   // [OPS-001] migrate exits 0 on success
   // ═════════════════════════════════════════════════════════════════════════
 
-  it('[OPS-001] migrate exits 0 on successful migration', async () => {
+  it('[OPS-001] migrate exits 0 on successful migration', () => {
     if (!pgAvailable) return;
 
     const result = runMigrate();
@@ -79,7 +79,7 @@ describe('DevSecOps — CI Gate Compliance', () => {
   // [OPS-003] seed exits 0 on success
   // ═════════════════════════════════════════════════════════════════════════
 
-  it('[OPS-003] seed exits 0 on successful execution', async () => {
+  it('[OPS-003] seed exits 0 on successful execution', () => {
     if (!pgAvailable) return;
 
     // Ensure migrations are applied
@@ -108,9 +108,7 @@ describe('DevSecOps — CI Gate Compliance', () => {
   // ═════════════════════════════════════════════════════════════════════════
 
   it('[OPS-005] root package.json defines migrate, migrate:down, and seed scripts', () => {
-    const rootPkg = JSON.parse(
-      fs.readFileSync(path.join(MONOREPO_ROOT, 'package.json'), 'utf-8'),
-    );
+    const rootPkg = JSON.parse(fs.readFileSync(path.join(MONOREPO_ROOT, 'package.json'), 'utf-8'));
 
     // All three scripts must be defined
     expect(rootPkg.scripts).toHaveProperty('migrate');
