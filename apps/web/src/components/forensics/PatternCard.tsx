@@ -1,8 +1,8 @@
 import React from 'react';
 import { ShieldAlert, AlertTriangle, AlertCircle, Info, ChevronRight } from 'lucide-react';
-import { type PatternMatch } from '@aegis/core'; // Assuming it's exported from core, or we can use local types.
-// Wait, the types are in forensic-engine, but this is apps/web. Since the web package probably consumes types via core, let's just use generic any or inline types if it fails, or define the interface here to be safe.
-// Let's define the interface locally to ensure it builds correctly, as the UI doesn't strictly depend on the backend's exact type shape for rendering.
+// The interface is defined locally: the UI does not depend on the backend's
+// exact type shape for rendering, and `PatternMatch` lives in forensic-engine,
+// not in @aegis/core.
 
 export interface UIPatternMatch {
   patternId: string;
@@ -26,7 +26,7 @@ export function PatternCard({ pattern }: PatternCardProps): React.ReactNode {
   let colorClass = 'bg-blue-500';
   let Icon = Info;
   let textClass = 'text-blue-700 dark:text-blue-400';
-  
+
   if (pattern.confidence >= 0.8) {
     colorClass = 'bg-red-500';
     Icon = ShieldAlert;
@@ -48,28 +48,28 @@ export function PatternCard({ pattern }: PatternCardProps): React.ReactNode {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className={\`p-2 rounded-lg bg-opacity-10 \${colorClass.replace('bg-', 'bg-').replace('500', '100')} dark:bg-opacity-20\`}>
-            <Icon className={\`w-6 h-6 \${textClass}\`} />
+          <div
+            className={`p-2 rounded-lg bg-opacity-10 ${colorClass.replace('bg-', 'bg-').replace('500', '100')} dark:bg-opacity-20`}
+          >
+            <Icon className={`w-6 h-6 ${textClass}`} />
           </div>
           <div>
             <h3 className="text-lg font-bold text-slate-900 dark:text-white">
               {pattern.patternName}
             </h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400">
-              {pattern.description}
-            </p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">{pattern.description}</p>
           </div>
         </div>
-        
+
         {/* Confidence Score */}
         <div className="flex flex-col items-end gap-1">
           <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
             {confidencePercent}% Confidence
           </span>
           <div className="w-32 h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-            <div 
-              className={\`h-full \${colorClass} transition-all duration-500\`} 
-              style={{ width: \`\${confidencePercent}%\` }}
+            <div
+              className={`h-full ${colorClass} transition-all duration-500`}
+              style={{ width: `${confidencePercent}%` }}
             />
           </div>
         </div>
@@ -87,10 +87,15 @@ export function PatternCard({ pattern }: PatternCardProps): React.ReactNode {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {pattern.evidence.callNodeIds.length > 0 && (
           <div className="flex flex-col gap-2">
-            <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300">Call Trace Evidence</h4>
+            <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+              Call Trace Evidence
+            </h4>
             <ul className="space-y-1">
-              {pattern.evidence.callNodeIds.map(nodeId => (
-                <li key={nodeId} className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+              {pattern.evidence.callNodeIds.map((nodeId) => (
+                <li
+                  key={nodeId}
+                  className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400"
+                >
                   <ChevronRight className="w-4 h-4 text-slate-400" />
                   <span className="font-mono bg-slate-100 dark:bg-slate-900 px-1.5 py-0.5 rounded text-xs">
                     {nodeId}
@@ -103,10 +108,15 @@ export function PatternCard({ pattern }: PatternCardProps): React.ReactNode {
 
         {pattern.evidence.storageSlots.length > 0 && (
           <div className="flex flex-col gap-2">
-            <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300">Storage Manipulations</h4>
+            <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+              Storage Manipulations
+            </h4>
             <ul className="space-y-1">
-              {pattern.evidence.storageSlots.map(slot => (
-                <li key={slot} className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+              {pattern.evidence.storageSlots.map((slot) => (
+                <li
+                  key={slot}
+                  className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400"
+                >
                   <ChevronRight className="w-4 h-4 text-slate-400" />
                   <span className="font-mono bg-slate-100 dark:bg-slate-900 px-1.5 py-0.5 rounded text-xs truncate max-w-[200px]">
                     {slot}
