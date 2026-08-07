@@ -13,7 +13,7 @@ export async function safetyRoutes(server: FastifyInstance): Promise<void> {
   server.get(
     '/stats',
     {
-
+      preHandler: [requireApiKey],
       schema: {
         description: 'Get high-level safety scanning statistics',
         tags: ['Safety Analytics'],
@@ -32,7 +32,7 @@ export async function safetyRoutes(server: FastifyInstance): Promise<void> {
   server.get(
     '/rules',
     {
-
+      preHandler: [requireApiKey],
       schema: {
         description: 'Get performance statistics for individual safety rules',
         tags: ['Safety Analytics'],
@@ -51,7 +51,7 @@ export async function safetyRoutes(server: FastifyInstance): Promise<void> {
   server.get(
     '/timeline',
     {
-
+      preHandler: [requireApiKey],
       schema: {
         description: 'Get time-series data of safety scan results',
         tags: ['Safety Analytics'],
@@ -70,10 +70,7 @@ export async function safetyRoutes(server: FastifyInstance): Promise<void> {
         },
       },
     },
-    async (
-      request: FastifyRequest<{ Querystring: SafetyTimelineQueryParams }>,
-      reply: FastifyReply,
-    ) => {
+    async (request: FastifyRequest<{ Querystring: SafetyTimelineQueryParams }>, reply) => {
       const { interval, startDate, endDate } = request.query;
       const timeline = await scanRepo.getScanTimeline(interval, startDate, endDate);
       return reply.status(200).send({ data: timeline });
@@ -83,7 +80,7 @@ export async function safetyRoutes(server: FastifyInstance): Promise<void> {
   server.get(
     '/findings/top',
     {
-
+      preHandler: [requireApiKey],
       schema: {
         description: 'Get the most frequently triggered safety rules',
         tags: ['Safety Analytics'],
@@ -100,7 +97,7 @@ export async function safetyRoutes(server: FastifyInstance): Promise<void> {
         },
       },
     },
-    async (request: FastifyRequest<{ Querystring: { limit?: number } }>, reply: FastifyReply) => {
+    async (request: FastifyRequest<{ Querystring: { limit?: number } }>, reply) => {
       const { limit } = request.query;
       const top = await scanRepo.getTopFindings(limit ?? 10);
       return reply.status(200).send({ data: top });
