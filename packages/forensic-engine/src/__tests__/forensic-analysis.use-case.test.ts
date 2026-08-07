@@ -1,13 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ForensicAnalysisUseCase } from '../application/forensic-analysis.use-case.js';
 import { Chain } from '@aegis/core';
-import type { FoundryService, SimulationRequest, SimulationResult } from '../adapters/foundry/index.js';
+import type {
+  FoundryService,
+  SimulationRequest,
+  SimulationResult,
+} from '../adapters/foundry/index.js';
 import type { TransactionTraceAnalyzer } from '../adapters/tracing/index.js';
 import type { StorageDiffAnalyzer, StorageSlotDiscoverer } from '../adapters/storage/index.js';
 import type { ExploitPatternRecognizer } from '../adapters/patterns/index.js';
 import type { IForensicReportRepositoryPort } from '../domain/ports/forensic-report-repository.port.js';
 import type { TransactionTraceResult, CallTreeNode } from '../domain/trace-types.js';
-import type { PatternDetectionResult } from '../domain/pattern-types.js';
 
 describe('ForensicAnalysisUseCase', () => {
   let foundryService: ReturnType<typeof vi.mocked<FoundryService>>;
@@ -79,13 +82,28 @@ describe('ForensicAnalysisUseCase', () => {
     events: [],
     gasBreakdown: {},
     valueFlow: [],
-    summary: { totalCalls: 1, maxDepth: 0, uniqueContracts: 1, totalValueTransferred: 0n, hasReentrancy: false, hasDelegateCalls: false, valueTransfers: 0, reentrancyMatches: [], delegateCallMatches: [], categorizedCalls: [] } as any,
+    summary: {
+      totalCalls: 1,
+      maxDepth: 0,
+      uniqueContracts: 1,
+      totalValueTransferred: 0n,
+      hasReentrancy: false,
+      hasDelegateCalls: false,
+      valueTransfers: 0,
+      reentrancyMatches: [],
+      delegateCallMatches: [],
+      categorizedCalls: [],
+    } as any,
   };
 
   describe('analyzeTrace', () => {
     it('1. should execute full pipeline and persist report', async () => {
       traceAnalyzer.analyze.mockResolvedValue(mockTraceResult);
-      patternRecognizer.analyze.mockReturnValue({ patterns: [], primaryPattern: undefined, overallConfidence: undefined });
+      patternRecognizer.analyze.mockReturnValue({
+        patterns: [],
+        primaryPattern: undefined,
+        overallConfidence: undefined,
+      });
 
       const report = await useCase.analyzeTrace(mockHackId, mockChain, mockTxHash);
 
@@ -99,17 +117,30 @@ describe('ForensicAnalysisUseCase', () => {
     it('2. should discover slots if events are present in trace', async () => {
       const traceWithEvents = { ...mockTraceResult, events: [{ name: 'Transfer' } as any] };
       traceAnalyzer.analyze.mockResolvedValue(traceWithEvents);
-      patternRecognizer.analyze.mockReturnValue({ patterns: [], primaryPattern: undefined, overallConfidence: undefined });
-      slotDiscoverer.discoverFromEvents.mockReturnValue([{ slot: '0x1', contractAddress: '0xtarget' }]);
+      patternRecognizer.analyze.mockReturnValue({
+        patterns: [],
+        primaryPattern: undefined,
+        overallConfidence: undefined,
+      });
+      slotDiscoverer.discoverFromEvents.mockReturnValue([
+        { slot: '0x1', contractAddress: '0xtarget' },
+      ]);
 
       await useCase.analyzeTrace(mockHackId, mockChain, mockTxHash);
 
-      expect(slotDiscoverer.discoverFromEvents).toHaveBeenCalledWith(traceWithEvents.events, '0xtarget');
+      expect(slotDiscoverer.discoverFromEvents).toHaveBeenCalledWith(
+        traceWithEvents.events,
+        '0xtarget',
+      );
     });
 
     it('3. should default to UNKNOWN pattern if none detected', async () => {
       traceAnalyzer.analyze.mockResolvedValue(mockTraceResult);
-      patternRecognizer.analyze.mockReturnValue({ patterns: [], primaryPattern: undefined, overallConfidence: undefined });
+      patternRecognizer.analyze.mockReturnValue({
+        patterns: [],
+        primaryPattern: undefined,
+        overallConfidence: undefined,
+      });
 
       const report = await useCase.analyzeTrace(mockHackId, mockChain, mockTxHash);
 
@@ -135,13 +166,19 @@ describe('ForensicAnalysisUseCase', () => {
     it('5. should throw if trace analysis fails', async () => {
       traceAnalyzer.analyze.mockRejectedValue(new Error('RPC Error'));
 
-      await expect(useCase.analyzeTrace(mockHackId, mockChain, mockTxHash)).rejects.toThrow('RPC Error');
+      await expect(useCase.analyzeTrace(mockHackId, mockChain, mockTxHash)).rejects.toThrow(
+        'RPC Error',
+      );
       expect(reportRepository.save).not.toHaveBeenCalled();
     });
 
     it('6. should call updateProgress correctly', async () => {
       traceAnalyzer.analyze.mockResolvedValue(mockTraceResult);
-      patternRecognizer.analyze.mockReturnValue({ patterns: [], primaryPattern: undefined, overallConfidence: undefined });
+      patternRecognizer.analyze.mockReturnValue({
+        patterns: [],
+        primaryPattern: undefined,
+        overallConfidence: undefined,
+      });
       const updateProgress = vi.fn();
 
       await useCase.analyzeTrace(mockHackId, mockChain, mockTxHash, updateProgress);
@@ -156,7 +193,11 @@ describe('ForensicAnalysisUseCase', () => {
   });
 
   describe('analyzeSimulation', () => {
-    const mockRequest: SimulationRequest = { pocFilePath: 'path/to/poc.sol', forkBlockNumber: 123, forkUrl: 'http' };
+    const mockRequest: SimulationRequest = {
+      pocFilePath: 'path/to/poc.sol',
+      forkBlockNumber: 123,
+      forkUrl: 'http',
+    };
     const mockSimResult: SimulationResult = {
       success: true,
       gasUsed: 5000n,

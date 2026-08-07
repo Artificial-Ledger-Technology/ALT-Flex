@@ -1,11 +1,17 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import type { ISkillDataPort, ICachePort, LoggerPort, AISkillFile, SafetyScanJobData, SafetyScanJobResult } from '@aegis/core';
+import type {
+  ISkillDataPort,
+  ICachePort,
+  LoggerPort,
+  AISkillFile,
+  SafetyScanJobData,
+  SafetyScanJobResult,
+} from '@aegis/core';
 import type { Queue } from 'bullmq';
 
-import { IndexSkillsUseCase, type SkillNormalizerPort } from '../src/application/use-cases/index-skills-use-case.js';
+import { IndexSkillsUseCase } from '../src/application/use-cases/index-skills-use-case.js';
 import type { GitHubSkillsAdapter } from '../src/adapters/github-skills-adapter.js';
 import type { SkillSource } from '../src/adapters/github-skills-adapter.config.js';
-import type { GitTreeEntry } from '../src/adapters/github-skills-adapter.js'; // Note: Might need to adjust import if not exported
 
 // Mock the enqueueSafetyScan to prevent actual queue operations in tests
 vi.mock('../src/infrastructure/safety-scan-queue.js', () => ({
@@ -48,11 +54,9 @@ describe('IndexSkillsUseCase', () => {
   // ── Tests ──────────────────────────────────────────────────────────────────
 
   it('1. Orchestrates successful index flow for new files', async () => {
-    mockAdapter.discoverSkillFiles.mockResolvedValue([
-      { path: 'test.md', sha: 'sha1' } as any,
-    ]);
+    mockAdapter.discoverSkillFiles.mockResolvedValue([{ path: 'test.md', sha: 'sha1' } as any]);
     mockAdapter.downloadFileContent.mockResolvedValue('raw-content');
-    
+
     const mockSkill = { id: 'skill-1', contentHash: 'hash-1' } as AISkillFile;
     mockNormalizer.normalizeGitHubSkillFiles.mockReturnValue({
       valid: [mockSkill],
@@ -62,12 +66,14 @@ describe('IndexSkillsUseCase', () => {
 
     const result = await useCase.execute();
 
-    expect(result).toEqual(expect.objectContaining({
-      added: 1,
-      updated: 0,
-      skipped: 0,
-      errored: 0,
-    }));
+    expect(result).toEqual(
+      expect.objectContaining({
+        added: 1,
+        updated: 0,
+        skipped: 0,
+        errored: 0,
+      }),
+    );
 
     expect(mockSkillRepo.saveBatch).toHaveBeenCalledWith([mockSkill]);
     expect(enqueueSafetyScan).toHaveBeenCalledWith(mockQueue, 'skill-1', 'hash-1');
@@ -75,11 +81,9 @@ describe('IndexSkillsUseCase', () => {
   });
 
   it('2. Skips files with unchanged contentHash (deduplication)', async () => {
-    mockAdapter.discoverSkillFiles.mockResolvedValue([
-      { path: 'test.md', sha: 'sha1' } as any,
-    ]);
+    mockAdapter.discoverSkillFiles.mockResolvedValue([{ path: 'test.md', sha: 'sha1' } as any]);
     mockAdapter.downloadFileContent.mockResolvedValue('raw-content');
-    
+
     const mockSkill = { id: 'skill-1', contentHash: 'hash-1' } as AISkillFile;
     mockNormalizer.normalizeGitHubSkillFiles.mockReturnValue({
       valid: [mockSkill],
@@ -100,11 +104,9 @@ describe('IndexSkillsUseCase', () => {
   });
 
   it('3. Upserts and enqueues scans for changed files (different hash)', async () => {
-    mockAdapter.discoverSkillFiles.mockResolvedValue([
-      { path: 'test.md', sha: 'sha1' } as any,
-    ]);
+    mockAdapter.discoverSkillFiles.mockResolvedValue([{ path: 'test.md', sha: 'sha1' } as any]);
     mockAdapter.downloadFileContent.mockResolvedValue('raw-content');
-    
+
     const mockSkill = { id: 'skill-1', contentHash: 'hash-new' } as AISkillFile;
     mockNormalizer.normalizeGitHubSkillFiles.mockReturnValue({
       valid: [mockSkill],
@@ -113,7 +115,10 @@ describe('IndexSkillsUseCase', () => {
     });
 
     // Mock DB returning old skill
-    mockSkillRepo.findById.mockResolvedValue({ id: 'skill-1', contentHash: 'hash-old' } as AISkillFile);
+    mockSkillRepo.findById.mockResolvedValue({
+      id: 'skill-1',
+      contentHash: 'hash-old',
+    } as AISkillFile);
 
     const result = await useCase.execute();
 
@@ -127,11 +132,11 @@ describe('IndexSkillsUseCase', () => {
       { path: 'good.md', sha: 'sha1' } as any,
       { path: 'bad.md', sha: 'sha2' } as any, // Download fails
     ]);
-    
-    mockAdapter.downloadFileContent.mockImplementation((owner, repo, path) => 
-      path === 'good.md' ? Promise.resolve('raw-content') : Promise.resolve(null)
+
+    mockAdapter.downloadFileContent.mockImplementation((owner, repo, path) =>
+      path === 'good.md' ? Promise.resolve('raw-content') : Promise.resolve(null),
     );
-    
+
     mockNormalizer.normalizeGitHubSkillFiles.mockReturnValue({
       valid: [],
       invalidCount: 1, // Another file fails validation
@@ -152,7 +157,7 @@ describe('IndexSkillsUseCase', () => {
     expect(result.errored).toBe(0);
     expect(mockLogger.error).toHaveBeenCalledWith(
       expect.stringContaining('Failed to process source'),
-      expect.any(Object)
+      expect.any(Object),
     );
   });
 
@@ -183,7 +188,7 @@ describe('IndexSkillsUseCase', () => {
   it('8. Queue enqueue failure does not crash pipeline', async () => {
     mockAdapter.discoverSkillFiles.mockResolvedValue([{ path: 'test.md', sha: 'sha1' } as any]);
     mockAdapter.downloadFileContent.mockResolvedValue('raw-content');
-    
+
     const mockSkill = { id: 'skill-1', contentHash: 'hash-1' } as AISkillFile;
     mockNormalizer.normalizeGitHubSkillFiles.mockReturnValue({
       valid: [mockSkill],
@@ -198,14 +203,14 @@ describe('IndexSkillsUseCase', () => {
     expect(result.added).toBe(1);
     expect(mockLogger.error).toHaveBeenCalledWith(
       expect.stringContaining('Failed to enqueue safety scan'),
-      expect.any(Object)
+      expect.any(Object),
     );
   });
 
   it('9. Handles DB saveBatch failure gracefully per source', async () => {
     mockAdapter.discoverSkillFiles.mockResolvedValue([{ path: 'test.md', sha: 'sha1' } as any]);
     mockAdapter.downloadFileContent.mockResolvedValue('raw-content');
-    
+
     const mockSkill = { id: 'skill-1', contentHash: 'hash-1' } as AISkillFile;
     mockNormalizer.normalizeGitHubSkillFiles.mockReturnValue({
       valid: [mockSkill],
@@ -220,7 +225,7 @@ describe('IndexSkillsUseCase', () => {
     expect(result.added).toBe(0);
     expect(mockLogger.error).toHaveBeenCalledWith(
       expect.stringContaining('Failed to process source'),
-      expect.any(Object)
+      expect.any(Object),
     );
   });
 
@@ -233,7 +238,7 @@ describe('IndexSkillsUseCase', () => {
     expect(result.durationMs).toBeGreaterThanOrEqual(0);
     expect(mockLogger.warn).toHaveBeenCalledWith(
       expect.stringContaining('Cache invalidation failed'),
-      expect.any(Object)
+      expect.any(Object),
     );
   });
 });
@@ -257,7 +262,9 @@ function createMockSkillRepo() {
 
 function createMockNormalizer() {
   return {
-    normalizeGitHubSkillFiles: vi.fn().mockReturnValue({ valid: [], invalidCount: 0, duplicateCount: 0 }),
+    normalizeGitHubSkillFiles: vi
+      .fn()
+      .mockReturnValue({ valid: [], invalidCount: 0, duplicateCount: 0 }),
   };
 }
 

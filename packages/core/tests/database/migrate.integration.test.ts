@@ -27,7 +27,6 @@ import {
   EXPECTED_TABLES,
   EXPECTED_MIGRATION_COUNT,
   TRACKING_TABLE,
-  TEST_DATABASE_URL,
 } from './helpers/db-test-utils.js';
 import type pg from 'pg';
 
@@ -44,7 +43,7 @@ describe('Migration Runner — Lifecycle', () => {
     if (!pgAvailable) {
       console.warn(
         '⚠️  PostgreSQL not available — skipping live integration tests.\n' +
-        '   Start PostgreSQL: docker compose -f docker-compose.dev.yml up postgres -d',
+          '   Start PostgreSQL: docker compose -f docker-compose.dev.yml up postgres -d',
       );
       return;
     }

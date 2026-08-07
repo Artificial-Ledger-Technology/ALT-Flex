@@ -1,8 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
-import Fastify from 'fastify';
+import Fastify, { type FastifyInstance } from 'fastify';
 import { forensicsRoutes } from '../../src/routes/forensics.routes.js';
-import type { FastifyInstance } from 'fastify';
-import { createForensicsQueue } from '@aegis/forensic-engine';
 
 // Mock dependencies
 vi.mock('ioredis', () => {
@@ -36,7 +34,10 @@ vi.mock('@aegis/forensic-engine', () => {
     PostgresForensicReportRepository: vi.fn().mockImplementation(() => ({
       findById: vi.fn().mockImplementation((id: string) => {
         if (id === '6a13d778-9e51-40e1-a083-0599589d9703') {
-          return Promise.resolve({ id: '6a13d778-9e51-40e1-a083-0599589d9703', hackIncidentId: 'test' });
+          return Promise.resolve({
+            id: '6a13d778-9e51-40e1-a083-0599589d9703',
+            hackIncidentId: 'test',
+          });
         }
         return Promise.resolve(null);
       }),
