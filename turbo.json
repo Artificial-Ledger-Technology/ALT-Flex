@@ -12,7 +12,8 @@
     },
     "lint": {},
     "test": {
-      "dependsOn": ["build"]
+      "dependsOn": ["build"],
+      "env": ["POSTGRES_PASSWORD", "JWT_SECRET"]
     },
     "typecheck": {
       "dependsOn": ["^build"]

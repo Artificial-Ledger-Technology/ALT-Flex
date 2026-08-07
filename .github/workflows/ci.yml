@@ -63,6 +63,11 @@ jobs:
             exit 0
           fi
           git fetch --no-tags --prune origin "$BASE_REF"
+          # `mapfile` reads from a process substitution, whose exit status
+          # `set -e` does not observe — a failing git diff would leave `files`
+          # empty and this step would pass having linted nothing. Resolve the
+          # ref explicitly first so a bad base fails loudly instead.
+          git rev-parse --verify "origin/$BASE_REF^{commit}" >/dev/null
           mapfile -t files < <(git diff --name-only --diff-filter=ACMR \
             "origin/$BASE_REF...HEAD" -- '*.ts' '*.tsx' ':(exclude)*.d.ts')
           if [ ${#files[@]} -eq 0 ]; then
@@ -97,8 +102,18 @@ jobs:
   # ── Test ────────────────────────────────────────────────────────────────────
   # turbo's `test` task dependsOn `build`, so this job compiles every package
   # (including `next build`) before running vitest. Build breakage therefore
-  # fails here too. Database and cache integration tests self-skip when Postgres
-  # is unreachable, so no service containers are required.
+  # fails here too.
+  #
+  # No Postgres or Redis service containers. The *.integration.test.ts files
+  # guard on isPostgresAvailable() and self-skip, but the devsecops and pentest
+  # families do not — they deliberately point at a dead port to assert the
+  # connection-failure path, so a service container would not help them and in
+  # some cases would break them. That those tests then race vitest's 5000ms
+  # default timeout on runner hardware is #210. The absence of a real database
+  # in CI is a genuine coverage gap, tracked separately as #183.
+  #
+  # `--continue` so one failing package reports alongside the others rather
+  # than aborting the run — the same reason the three jobs are not chained.
   test:
     name: test
     runs-on: ubuntu-latest
@@ -128,8 +143,15 @@ jobs:
       # GatewayEnvSchema with no default. Without them `validateEnv` calls
       # process.exit(1) at import time and four api-gateway suites never
       # collect (#205). These values are throwaway CI fixtures, not secrets —
-      # JWT_SECRET only has to clear the schema's 32-character minimum.
-      - run: pnpm run test
+      # JWT_SECRET only has to clear the schema's 32-character minimum, and
+      # POSTGRES_PASSWORD is URL-safe because getDatabaseUrl() interpolates it
+      # into a connection string.
+      #
+      # Setting them here is not sufficient on its own: turbo runs tasks in
+      # strict env mode, so both are also declared on the `test` task in
+      # turbo.json. Without that declaration turbo strips them and this block
+      # is inert — which is exactly what happened before it was added.
+      - run: pnpm turbo test --continue
         env:
           POSTGRES_PASSWORD: ci-test-password
           JWT_SECRET: ci-test-jwt-secret-at-least-32-chars-long
