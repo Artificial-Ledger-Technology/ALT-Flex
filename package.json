@@ -21,7 +21,9 @@
     "prepare": "husky",
     "migrate": "tsx packages/core/src/database/migrate.ts",
     "migrate:down": "tsx packages/core/src/database/migrate.ts --rollback",
-    "seed": "tsx packages/core/src/database/seed.ts"
+    "seed": "tsx packages/core/src/database/seed.ts",
+    "db:migrate": "tsx packages/core/src/database/migrate.ts",
+    "db:seed": "tsx packages/core/src/database/seed.ts"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
