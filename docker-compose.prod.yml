@@ -248,12 +248,81 @@ services:
     container_name: aegis-forensic-engine-prod
     profiles: ['build']
 
+  # ── Prometheus — Metrics Scraping & Storage (Production) ────────────────
+  # P6-PROD-005: Scrapes /metrics from backend services.
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: aegis-prometheus-prod
+    restart: unless-stopped
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./infrastructure/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      api-gateway:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 128M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '5'
+    networks:
+      - aegis-network
+
+  # ── Grafana — Observability Dashboards (Production) ─────────────────────
+  # P6-PROD-006: Visualizes Prometheus metrics via pre-provisioned dashboards.
+  grafana:
+    image: grafana/grafana:latest
+    container_name: aegis-grafana-prod
+    restart: unless-stopped
+    ports:
+      - '3001:3000'
+    volumes:
+      - ./infrastructure/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./infrastructure/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/dashboards:/var/lib/grafana/dashboards:ro
+      - grafanadata_prod:/var/lib/grafana
+    environment:
+      # Production uses default auth (admin/admin), can be changed via env vars
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/system-overview.json
+    depends_on:
+      - prometheus
+    healthcheck:
+      test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://127.0.0.1:3000/api/health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 128M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '5'
+    networks:
+      - aegis-network
+
 # ── Named Volumes ──────────────────────────────────────────────────────────
 volumes:
   pgdata_prod:
     name: aegis-pgdata-prod
   redisdata_prod:
     name: aegis-redisdata-prod
+  grafanadata_prod:
+    name: aegis-grafanadata-prod
 
 # ── Networks ───────────────────────────────────────────────────────────────
 networks:

@@ -1,0 +1,22 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# AltFlex AEGIS v3.0 — Grafana Datasource Provisioning
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# Auto-provisions Prometheus as the default data source on Grafana startup.
+# Grafana reads this file from /etc/grafana/provisioning/datasources/
+#
+# @task P6-PROD-006
+# ═══════════════════════════════════════════════════════════════════════════════
+
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: false
+    jsonData:
+      timeInterval: '15s'
+      httpMethod: POST
