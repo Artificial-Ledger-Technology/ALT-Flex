@@ -23,7 +23,7 @@ _The definitive open-source exploit analytics system for the decentralized front
 
 > _"In a trustless world, intelligence is the ultimate defense."_
 
-**AltFlex** is a full-stack Web3 exploit intelligence platform that aggregates every recorded DeFi hack in history (1,000+ incidents, $20B+ in tracked losses), indexes AI audit skill files for safety classification, and simulates historical attacks using Foundry — all within a single hexagonal TypeScript monorepo.
+**AltFlex** is a full-stack Web3 exploit intelligence platform that aggregates every recorded DeFi hack in history (1,000+ incidents, $20B+ in tracked losses) and simulates historical attacks using Foundry — all within a single hexagonal TypeScript monorepo.
 
 </div>
 
@@ -65,24 +65,20 @@ The platform is organized around three tightly integrated modules:
 
 Ingests every recorded DeFi hack from DefiLlama and DeFiHackLabs (1,000+ incidents, $20B+ tracked losses), normalizes them into a typed relational schema, and surfaces them through an analytical dashboard with rich filtering, charting, and on-chain replay capability.
 
-### 🧠 AI Safety Intelligence (Skills Explorer)
-
-Indexes AI audit skill files from public GitHub repositories, parses their AST structure, and runs a safety pipeline classifying each file as `Safe | Suspicious | Malicious` — governing the integrity of AI-assisted smart contract auditing across platforms like Claude, Cursor, Gemini, and Copilot.
-
 ### 🔬 Forensic Simulation Engine
 
 Wraps the Foundry CLI and multi-chain EVM RPC providers to simulate historical exploits, extract transaction traces, decode storage mutations, and map root-cause attack patterns programmatically with 10 pattern detectors.
 
 ### Module Capability Matrix
 
-| Dimension          | Exploit Analytics                           | AI Safety Intelligence                   | Forensic Simulation                               |
-| ------------------ | ------------------------------------------- | ---------------------------------------- | ------------------------------------------------- |
-| **Purpose**        | DeFi exploit aggregation & analytics        | AI skill file indexing & safety scanning | Foundry-based exploit simulation & trace analysis |
-| **Data Source**    | DefiLlama API, DeFiHackLabs                 | GitHub AI skill repositories             | EVM RPC providers, Foundry CLI                    |
-| **Primary Entity** | `HackIncident`                              | `AISkillFile` + `SafetyScanResult`       | `ExploitPOC`                                      |
-| **Key Port**       | `IHackDataPort`                             | `ISkillDataPort` + `ISafetyScannerPort`  | `IChainDataPort` + `ISimulationPort`              |
-| **Output**         | Analytical dashboard + attack vector charts | Searchable catalog + safety badges       | Trace visualization + call trees                  |
-| **Thesis**         | Thesis 2 — Pattern Classification           | Thesis 1 — Malicious Intent Detection    | Thesis 2 — Forensic Simulation                    |
+| Dimension          | Exploit Analytics                           | Forensic Simulation                               |
+| ------------------ | ------------------------------------------- | ------------------------------------------------- |
+| **Purpose**        | DeFi exploit aggregation & analytics        | Foundry-based exploit simulation & trace analysis |
+| **Data Source**    | DefiLlama API, DeFiHackLabs                 | EVM RPC providers, Foundry CLI                    |
+| **Primary Entity** | `HackIncident`                              | `ExploitPOC`                                      |
+| **Key Port**       | `IHackDataPort`                             | `IChainDataPort` + `ISimulationPort`              |
+| **Output**         | Analytical dashboard + attack vector charts | Trace visualization + call trees                  |
+| **Thesis**         | Thesis 1 — Exploit Analytics                | Thesis 2 — Forensic Simulation                    |
 
 ---
 
@@ -175,39 +171,7 @@ Wraps the Foundry CLI and multi-chain EVM RPC providers to simulate historical e
 
 <br>
 
-### AI Skills Explorer
 
-<!-- 📸 SCREENSHOT: AI Skills Explorer -->
-<!-- Uncomment when screenshot is available:
-![AI Skills Explorer](assets/screenshots/skills-explorer.png)
--->
-
-<div align="center">
-  <kbd>
-    <br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📸 AI Skills Explorer — searchable catalog with safety badges&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <br><br>
-  </kbd>
-</div>
-
-<br>
-
-### Safety Scanner Dashboard
-
-<!-- 📸 SCREENSHOT: Safety Scanner Dashboard -->
-<!-- Uncomment when screenshot is available:
-![Safety Scanner Dashboard](assets/screenshots/safety-dashboard.png)
--->
-
-<div align="center">
-  <kbd>
-    <br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📸 Safety Scanner Dashboard — safety label distribution, scan results, severity charts&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <br><br>
-  </kbd>
-</div>
-
-<br>
 
 ### Landing Page
 
@@ -246,14 +210,6 @@ Wraps the Foundry CLI and multi-chain EVM RPC providers to simulate historical e
 - **Multi-Chain RPC** — Ethereum, BSC, Polygon, Arbitrum, Optimism, Avalanche, Base with automatic failover
 - **Virtualized Rendering** — 1,000+ trace nodes at 60fps via `@tanstack/react-virtual`
 
-### 🧠 AI Safety Intelligence
-
-- **AI Skill File Indexing** — Scrapes public GitHub repositories for AI audit skill files
-- **AST Safety Scanner** — Parses YAML/Markdown/MCP skill files for prompt injection, file-system abuse, and code exfiltration
-- **Safety Classification** — Labels every skill as `Safe | Suspicious | Malicious | Unanalyzed`
-- **Multi-Platform Coverage** — Claude, Cursor, Gemini, Copilot, Windsurf, MCP, and generic skill formats
-- **Community Metrics** — Copy count, star count, and view tracking per skill
-
 ### ⚡ Platform & Developer Experience
 
 - **100% TypeScript** — Full-stack type safety across all layers, zero Python in production
@@ -286,11 +242,6 @@ graph TB
         HA_ADP["DefiLlama Client<br/>DeFiHackLabs Scraper<br/>PostgreSQL Repository"]
     end
 
-    subgraph "🧠 AI Safety Intelligence"
-        SI_APP["IndexSkillsUseCase<br/>ScanSkillSafetyUseCase<br/>SearchSkillsUseCase"]
-        SI_ADP["GitHub Scraper<br/>YAML/MD/MCP Parsers<br/>PostgreSQL Repository"]
-    end
-
     subgraph "🔬 Forensic Simulation"
         FS_APP["SimulateExploitUseCase<br/>TraceTransactionUseCase<br/>ForensicAnalysisUseCase"]
         FS_ADP["Foundry CLI Wrapper<br/>Multi-chain RPC Providers<br/>Pattern Recognizer"]
@@ -308,10 +259,9 @@ graph TB
     end
 
     WEB -->|HTTP| GW
-    GW --> HA_APP & SI_APP & FS_APP
-    HA_APP & SI_APP & FS_APP --> CORE
+    GW --> HA_APP & FS_APP
+    HA_APP & FS_APP --> CORE
     HA_ADP --> PG & RD
-    SI_ADP --> PG
     FS_ADP --> CHAIN & FOUNDRY
 ```
 
@@ -363,13 +313,12 @@ ALT-Flex/                               ← Git root / pnpm workspace root
 │   ├── core/                           ← 🧬 @aegis/core — Shared Domain Kernel
 │   │   └── src/
 │   │       ├── domain/
-│   │       │   ├── entities/           ← HackIncident, AISkillFile, ExploitPOC, SafetyScanResult
-│   │       │   ├── value-objects/      ← AttackVector, Chain, SafetyLabel
-│   │       │   └── ports/              ← IHackDataPort, ISkillDataPort,
-│   │       │                             IChainDataPort, ISafetyScannerPort, ICachePort
+│   │       │   ├── entities/           ← HackIncident, ExploitPOC
+│   │       │   ├── value-objects/      ← AttackVector, Chain
+│   │       │   └── ports/              ← IHackDataPort, IChainDataPort, ICachePort
 │   │       ├── database/
 │   │       │   ├── migrate.ts          ← Migration runner
-│   │       │   ├── seed.ts             ← Seed runner (55 hacks, 12 skills, 10 scans)
+│   │       │   ├── seed.ts             ← Seed runner (55 hacks)
 │   │       │   ├── migrations/         ← 6 SQL migration files
 │   │       │   └── seeds/              ← TypeScript seed data
 │   │       └── shared/
@@ -389,18 +338,6 @@ ALT-Flex/                               ← Git root / pnpm workspace root
 │   │       └── infrastructure/
 │   │           ├── migrations/
 │   │           └── seed/
-│   │
-│   ├── skills-engine/                  ← 🧠 @aegis/skills-engine — AI Safety Intelligence
-│   │   └── src/
-│   │       ├── adapters/
-│   │       │   ├── github/             ← GitHub repo scraper
-│   │       │   ├── parsers/            ← YAML / Markdown / MCP parsers
-│   │       │   └── postgres/
-│   │       ├── application/            ← IndexSkills · ScanSkillSafety · SearchSkills
-│   │       ├── domain/safety/          ← Safety rule definitions
-│   │       └── infrastructure/
-│   │           ├── migrations/
-│   │           └── safety-rules/       ← AST / regex safety rule configs
 │   │
 │   └── forensic-engine/                ← 🔬 @aegis/forensic-engine — Forensic Simulation
 │       └── src/
@@ -424,15 +361,11 @@ ALT-Flex/                               ← Git root / pnpm workspace root
 │   │       │   ├── (marketing)/        ← Landing page, about
 │   │       │   └── (dashboard)/
 │   │       │       ├── hacks/          ← Hacks Dashboard views
-│   │       │       ├── skills/         ← AI Skills Explorer views
-│   │       │       ├── forensics/      ← Forensic trace views
-│   │       │       └── safety/         ← Safety scanner views
+│   │       │       └── forensics/      ← Forensic trace views
 │   │       ├── components/
 │   │       │   ├── ui/                 ← Base UI primitives
 │   │       │   ├── hacks/              ← HackTable, StatsCards, FilterSidebar, Charts
-│   │       │   ├── skills/             ← SkillCard, SkillDetailModal, SkillsGrid
 │   │       │   ├── forensics/          ← TraceViewer, StorageDiffInspector, PatternReport
-│   │       │   ├── safety/             ← SafetyCharts, SafetyTables, SafetyStatsCards
 │   │       │   └── layout/             ← Header, Sidebar, Footer
 │   │       ├── lib/                    ← API client, utilities
 │   │       ├── hooks/                  ← Custom React hooks
@@ -442,7 +375,6 @@ ALT-Flex/                               ← Git root / pnpm workspace root
 │       └── src/
 │           ├── routes/
 │           │   ├── hacks.routes.ts     ← /api/v1/hacks/*
-│           │   ├── skills.routes.ts    ← /api/v1/skills/*
 │           │   ├── forensics.routes.ts ← /api/v1/forensics/*
 │           │   └── health.routes.ts    ← /api/v1/health
 │           ├── middleware/             ← auth · rateLimit · validation · apiKey
@@ -507,30 +439,6 @@ The primary aggregate — every recorded DeFi exploit normalized into a structur
 | `dataSource`       | `'defillama' \| 'defihacklabs' \| 'manual' \| 'rekt-news'` | ETL origin                                     |
 | `lastSyncedAt`     | `Date`                                                     | Last ETL sync timestamp                        |
 
-### AISkillFile
-
-Domain entity for indexed AI audit skill files — used in safety intelligence analysis.
-
-| Field              | Type                                                                                | Description                                   |
-| ------------------ | ----------------------------------------------------------------------------------- | --------------------------------------------- |
-| `id`               | `string` (UUID v4)                                                                  | Unique identifier                             |
-| `name`             | `string`                                                                            | Skill display name                            |
-| `description`      | `string`                                                                            | Short description of skill purpose            |
-| `category`         | `SkillCategory`                                                                     | e.g. "vulnerability-detection", "code-review" |
-| `sourceRepo`       | `string`                                                                            | GitHub `owner/repo` format                    |
-| `filePath`         | `string`                                                                            | File path within the repository               |
-| `platform`         | `'claude' \| 'cursor' \| 'mcp' \| 'copilot' \| 'gemini' \| 'windsurf' \| 'generic'` | Target AI platform                            |
-| `language`         | `'solidity' \| 'vyper' \| 'rust' \| 'move' \| 'cairo' \| 'multi'`                   | Smart contract language                       |
-| `content`          | `string`                                                                            | Raw file content                              |
-| `format`           | `'yaml' \| 'markdown' \| 'json' \| 'toml' \| 'text'`                                | Source file format                            |
-| `contentHash`      | `string` (SHA-256)                                                                  | Content hash for deduplication                |
-| `contentSizeBytes` | `number`                                                                            | Content size in bytes                         |
-| `safetyLabel`      | `SafetyLabel`                                                                       | Safety scanner classification                 |
-| `author`           | `string`                                                                            | Skill author or team                          |
-| `copyCount`        | `number`                                                                            | Community copy metric                         |
-| `starCount`        | `number`                                                                            | Community star metric                         |
-| `viewCount`        | `number`                                                                            | Community view metric                         |
-
 ### Value Objects
 
 **`AttackVector`** — `FlashLoan` · `Reentrancy` · `OracleManipulation` · `AccessControl` ·
@@ -539,8 +447,6 @@ Domain entity for indexed AI audit skill files — used in safety intelligence a
 
 **`Chain`** — `Ethereum` · `BSC` · `Polygon` · `Arbitrum` · `Optimism` · `Avalanche` ·
 `Base` · `Solana` · `Cosmos` · `Near` · `Aptos` · `Sui` · `MultiChain`
-
-**`SafetyLabel`** — `Safe` · `Suspicious` · `Malicious` · `Unanalyzed`
 
 ### Hexagonal Port Interfaces
 
@@ -572,13 +478,6 @@ interface IChainDataPort {
   getBalance(address: string, blockNumber?: number): Promise<string>;
 }
 
-// @aegis/core — AI skill safety scanning
-interface ISafetyScannerPort {
-  scan(request: ScanRequest): Promise<ScanResponse>;
-  configure(config: ScannerConfig): Promise<void>;
-  getRules(): Promise<ScannerRuleConfig[]>;
-  getVersion(): string;
-}
 ```
 
 ---
@@ -707,22 +606,6 @@ http://localhost:4000/api/v1
 | `GET`  | `/hacks/chains`         | Chain breakdown with counts                            |
 | `GET`  | `/hacks/search`         | Full-text protocol name search                         |
 | `POST` | `/hacks/sync`           | Trigger ETL sync (admin only)                          |
-
-#### AI Safety Intelligence — Skills Explorer
-
-| Method | Path                  | Description                                     |
-| ------ | --------------------- | ----------------------------------------------- |
-| `GET`  | `/skills`             | Paginated list with filter support              |
-| `GET`  | `/skills/:id`         | Single skill file detail (includes raw content) |
-| `GET`  | `/skills/:id/content` | Raw skill file content for copy                 |
-| `GET`  | `/skills/stats`       | Aggregate statistics (by platform, by safety)   |
-| `GET`  | `/skills/platforms`   | Platform breakdown with counts                  |
-| `GET`  | `/skills/languages`   | Language breakdown with counts                  |
-| `GET`  | `/skills/:id/safety`  | Safety scan results for a specific skill        |
-| `POST` | `/skills/:id/copy`    | Increment copy count                            |
-| `POST` | `/skills/:id/star`    | Increment star count                            |
-| `POST` | `/skills/scan`        | Trigger safety scan for a skill (admin)         |
-| `POST` | `/skills/sync`        | Trigger GitHub scraper sync (admin)             |
 
 #### Forensic Simulation Engine
 
@@ -909,8 +792,7 @@ If you prefer to run the Node.js services locally on your host machine (using Do
 | **Phase 0 — Init**           | Week 1–2   | ✅ **Done** | Monorepo scaffold · pnpm workspace · Turbo config · Domain blueprints · Docker Compose · Dev tooling |
 | **Phase 1 — Architecture**   | Week 3–4   | ✅ **Done** | `ARCHITECTURE.md` · API contracts · DB migrations · Seed data · Integration tests                    |
 | **Phase 2 — ETL Pipeline**   | Week 5–8   | ✅ **Done** | DefiLlama sync worker · DeFiHackLabs scraper · BullMQ queues · PostgreSQL pipeline                   |
-| **Phase 3 — Safety Scanner** | Week 9–16  | ✅ **Done** | AST parser · Heuristic safety rules · Safety label classifier **(Thesis 1 core)**                    |
-| **Phase 4 — Frontend**       | Week 17–22 | ✅ **Done** | Hacks Dashboard · AI Skills Explorer · Forensic trace viewer · Design system                         |
+| **Phase 4 — Frontend**       | Week 17–22 | ✅ **Done** | Hacks Dashboard · Forensic trace viewer · Design system                                              |
 | **Phase 5 — EVM Forensics**  | Week 23–32 | ✅ **Done** | Foundry POC integration · Trace visualization · Root-cause mapping **(Thesis 2 core)**               |
 | **Phase 6 — Production**     | Week 33–40 | ⏳ Planned  | Terraform · CI/CD · Production deployment · Performance evaluation                                   |
 
@@ -921,7 +803,6 @@ If you prefer to run the Node.js services locally on your host machine (using Do
 | P1-ARCH-001 | Hexagonal Architecture Documentation      | ✅ Complete | #44 | Sr. Blockchain Architect |
 | P1-ARCH-002 | README Hero Overhaul                      | ✅ Complete | #45 | Sr. Technical Writer     |
 | P1-ARCH-003 | Hacks Dashboard API Contracts             | ✅ Complete | #46 | Sr. API Design Engineer  |
-| P1-ARCH-004 | AI Skills Explorer API Contracts          | ✅ Complete | #47 | Sr. API Design Engineer  |
 | P1-ARCH-005 | Forensic Engine API Contracts             | ✅ Complete | #48 | Sr. API Design Engineer  |
 | P1-ARCH-006 | System & Gateway Endpoints                | ✅ Complete | #48 | Sr. Software Engineer    |
 | P1-ARCH-007 | PostgreSQL Migrations & Seed Infra        | ✅ Complete | #49 | Sr. Data Architect       |
@@ -950,11 +831,11 @@ If you prefer to run the Node.js services locally on your host machine (using Do
 
 ## Academic Alignment
 
-| Phase         | Thesis              | Title & Contribution                                                                                                                                                                                                      |
-| ------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Phase 0–2     | Methods of Research | Architecture docs · ETL design · DeFi exploit taxonomy literature review                                                                                                                                                  |
-| **Phase 3**   | **Thesis 1**        | _"Automated Detection of Malicious Intent in AI Audit Skill Files for Web3 Security"_ — AST parser + heuristic rules detecting prompt injection, file-system abuse, and code exfiltration in YAML/Markdown AI skill files |
-| **Phase 5–6** | **Thesis 2**        | _"Programmatic Exploit Simulation and Forensic Trace Analysis Using Foundry for Historical DeFi Incidents"_ — Automated Foundry POC execution, transaction trace visualization, root-cause attack vector mapping          |
+| Phase         | Thesis              | Title & Contribution                                                                       |
+| ------------- | ------------------- | ------------------------------------------------------------------------------------------ |
+| Phase 0–2     | Methods of Research | Architecture docs · ETL design · DeFi exploit taxonomy literature review                   |
+| **Phase 3**   | **Thesis 1**        | _"AltFlex: A Real-Time Multi-Chain Web3 Exploit Intelligence Platform"_                    |
+| **Phase 5–6** | **Thesis 2**        | _"AltFlex: A Real-Time Multi-Chain Web3 Exploit Intelligence Platform"_                    |
 
 ---
 
@@ -970,16 +851,12 @@ permitted.
 @aegis/hacks-engine
   └── @aegis/core
 
-@aegis/skills-engine
-  └── @aegis/core
-
 @aegis/forensic-engine
   └── @aegis/core
 
 @aegis/api-gateway
   ├── @aegis/core
   ├── @aegis/hacks-engine
-  ├── @aegis/skills-engine
   └── @aegis/forensic-engine
 
 @aegis/web
@@ -1051,14 +928,14 @@ git push origin feature/P1-ARCH-001-hex-diagrams
 
 ## Team
 
-| Name                               | GitHub                                           | Role                                                                                              |
-| ---------------------------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
-| **Jay Arre Talosig**               | [@flexycode](https://github.com/flexycode)       | Blockchain Architect · Blockchain Protocol Engineer · Product Manager (Web3)                      |
-| **Rinoah Venedict Dela Rama**      | [@Noah-dev2217](https://github.com/Noah-dev2217) | Blockchain Developer · Smart Contract Engineer · Community Manager / Developer Relations (DevRel) |
-| **Nicko Nehcterg Dalida**          | [@nicknicndin](https://github.com/nicknicndin)   | Blockchain Developer · DeFi Researcher · Smart Contract Auditor · Security Auditor                |
-| **Jannah Cleine Glodo**            | [@jncln](https://github.com/jncln)               | Blockchain Engineer · Frontend/Web3 Developer · UI / UX Designer · Machine Learning Engineer      |
-| **Anthonee Buno**                  | [@Leirk04](https://github.com/Leirk04)           | Blockchain Engineer · Full Stack Web3 Developer · Data / Analytics Engineer                       |
-| **Brian Carlo De Vera** _(Collab)_ | [@scarfer14](https://github.com/scarfer14)       | QA Engineer · Cybersecurity Engineer · Network Engineer                                           |
+| Avatar | Name | GitHub | Role |
+| :---: | ---- | ------ | ---- |
+| <img src="https://github.com/flexycode.png?size=40" width="40" style="border-radius: 50%;"/> | **Jay Arre Talosig** | [@flexycode](https://github.com/flexycode) | Blockchain Architect · Blockchain Protocol Engineer · Product Manager (Web3) |
+| <img src="https://github.com/Noah-dev2217.png?size=40" width="40" style="border-radius: 50%;"/> | **Rinoah Venedict Dela Rama** | [@Noah-dev2217](https://github.com/Noah-dev2217) | Blockchain Developer · Smart Contract Engineer · Community Manager / Developer Relations (DevRel) |
+| <img src="https://github.com/nicknicndin.png?size=40" width="40" style="border-radius: 50%;"/> | **Nicko Nehcterg Dalida** | [@nicknicndin](https://github.com/nicknicndin) | Blockchain Developer · DeFi Researcher · Smart Contract Auditor · Security Auditor |
+| <img src="https://github.com/jncln.png?size=40" width="40" style="border-radius: 50%;"/> | **Jannah Cleine Glodo** | [@jncln](https://github.com/jncln) | Blockchain Engineer · Frontend/Web3 Developer · UI / UX Designer · Machine Learning Engineer |
+| <img src="https://github.com/Leirk04.png?size=40" width="40" style="border-radius: 50%;"/> | **Anthonee Buno** | [@Leirk04](https://github.com/Leirk04) | Blockchain Engineer · Full Stack Web3 Developer · Data / Analytics Engineer |
+| <img src="https://github.com/scarfer14.png?size=40" width="40" style="border-radius: 50%;"/> | **Brian Carlo De Vera** _(Collab)_ | [@scarfer14](https://github.com/scarfer14) | QA Engineer · Cybersecurity Engineer · Network Engineer |
 
 ---
 
@@ -1105,14 +982,14 @@ git push origin feature/P1-ARCH-001-hex-diagrams
 
 #### API Contract Definitions (P1-ARCH-003 → P1-ARCH-006)
 
-- Implemented Zod schemas for Hacks Dashboard, AI Skills Explorer, and Forensic Engine APIs
+- Implemented Zod schemas for Hacks Dashboard and Forensic Engine APIs
 - Created Fastify route stubs with full request/response validation
 - Added system endpoints: `/health/detailed`, `/meta`, `/rate-limit/status`
 - Registered all routes in API Gateway with modular plugin architecture
 
 #### Database Infrastructure (P1-ARCH-007)
 
-- Created 6 sequential PostgreSQL migration files (extensions, hack_incidents, ai_skill_files, safety_scan_results, etl_sync_log, schema_migrations)
+- Created 4 sequential PostgreSQL migration files (extensions, hack_incidents, etl_sync_log, schema_migrations)
 - Built TypeScript migration runner with idempotent execution and rollback support
 - Comprehensive index strategy: B-tree, GIN (JSONB/trigram), partial, and composite indexes
 
@@ -1124,11 +1001,6 @@ git push origin feature/P1-ARCH-001-hex-diagrams
   - **12 DeFiHackLabs Foundry POC** cross-references with valid test paths
   - Top 10 largest hacks included (Ronin $624M, Poly Network $611M, BNB Bridge $586M, etc.)
   - Date range spanning 2016–2024
-- Created **12 AI skill files** with realistic content and full SafetyLabel coverage
-  - 5 safe, 3 suspicious, 2 malicious, 2 unanalyzed
-  - Multi-platform: Claude, Cursor, Gemini, Copilot, Generic
-  - Multi-language: Solidity, Rust, Vyper, Multi
-- Created **10 safety scan results** with realistic findings and severity classifications
 - Built production-grade seed runner with idempotent UPSERT and `--clean` mode
 
 ---
@@ -1144,14 +1016,14 @@ git push origin feature/P1-ARCH-001-hex-diagrams
 #### Monorepo & Tooling (P0-INIT-001 → 010)
 
 - Initialized pnpm workspace with Turborepo v2 task orchestration
-- Scaffolded 6-package workspace: `core`, `hacks-engine`, `skills-engine`,
+- Scaffolded 5-package workspace: `core`, `hacks-engine`,
   `forensic-engine`, `web`, `api-gateway`
 - Configured TypeScript 5.4 strict mode with shared `tsconfig.base.json`
 - Installed and configured ESLint, Prettier, Husky, lint-staged
-- Defined domain model blueprints: `HackIncident`, `AISkillFile`, `ExploitPOC`
-- Defined value objects: `AttackVector`, `Chain`, `SafetyLabel`
-- Defined hexagonal ports: `IHackDataPort`, `ISkillDataPort`, `IChainDataPort`,
-  `ISafetyScannerPort`, `ICachePort`
+- Defined domain model blueprints: `HackIncident`, `ExploitPOC`
+- Defined value objects: `AttackVector`, `Chain`
+- Defined hexagonal ports: `IHackDataPort`, `IChainDataPort`,
+  `ICachePort`
 - Configured Docker Compose with PostgreSQL 16 + Redis 7 with health checks
 - Established branch strategy and PR conventions
 - Published Architecture Decision Records (ADR-001 → ADR-005)
@@ -1218,7 +1090,7 @@ SOFTWARE.
 
 Built with precision by the **AltFlex Engineering Team**
 
-_College of Computer Studies — 2026_
+_National University 2026 - 2027_
 
 [🛡️ AltFlex](https://github.com/Artificial-Ledger-Technology/ALT-Flex) ·
 [📋 Kanban Board](https://github.com/Artificial-Ledger-Technology/ALT-Flex/projects) ·
