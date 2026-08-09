@@ -51,7 +51,7 @@ export const CallTreeList: React.FC<CallTreeListProps> = ({
       const query = searchQuery.toLowerCase();
       
       const searchAndExpand = (n: CallTreeNode): boolean => {
-        let isMatch = 
+        const isMatch = 
           n.to.toLowerCase().includes(query) || 
           n.from.toLowerCase().includes(query) ||
           (n.decodedCall?.name.toLowerCase().includes(query) ?? false);
@@ -92,7 +92,7 @@ export const CallTreeList: React.FC<CallTreeListProps> = ({
 
     const traverse = (node: CallTreeNode, isLastChildList: boolean[]) => {
       // Filter logic
-      const isMatch = !query || 
+      const _isMatch = !query || 
         node.to.toLowerCase().includes(query) || 
         node.from.toLowerCase().includes(query) ||
         (node.decodedCall?.name.toLowerCase().includes(query) ?? false);

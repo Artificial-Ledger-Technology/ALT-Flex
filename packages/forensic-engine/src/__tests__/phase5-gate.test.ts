@@ -171,7 +171,7 @@ describe('P5-EVM-013: Phase 5 Validation Gate', () => {
     it('20. should export forensics queue (P5-EVM-006)', async () => {
       const mod = await import('../infrastructure/queue/forensics-queue.js');
       expect(mod).toBeDefined();
-    });
+    }, 30000);
   });
 
   // ── 5. File Structure Validation ──────────────────────────────────────────

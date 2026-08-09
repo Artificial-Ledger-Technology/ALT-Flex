@@ -70,8 +70,11 @@ export async function safetyRoutes(server: FastifyInstance): Promise<void> {
         },
       },
     },
-    async (request: FastifyRequest<{ Querystring: SafetyTimelineQueryParams }>, reply) => {
-      const { interval, startDate, endDate } = request.query;
+    async (
+      request: FastifyRequest,
+      reply: FastifyReply,
+    ) => {
+      const { interval, startDate, endDate } = request.query as SafetyTimelineQueryParams;
       const timeline = await scanRepo.getScanTimeline(interval, startDate, endDate);
       return reply.status(200).send({ data: timeline });
     },
@@ -97,8 +100,8 @@ export async function safetyRoutes(server: FastifyInstance): Promise<void> {
         },
       },
     },
-    async (request: FastifyRequest<{ Querystring: { limit?: number } }>, reply) => {
-      const { limit } = request.query;
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      const { limit } = request.query as { limit?: number };
       const top = await scanRepo.getTopFindings(limit ?? 10);
       return reply.status(200).send({ data: top });
     },

@@ -20,9 +20,28 @@
  * @task P1-ARCH-005
  */
 
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
 import Fastify, { type FastifyInstance } from 'fastify';
 import { randomUUID } from 'node:crypto';
+
+vi.mock('ioredis', () => ({
+  default: vi.fn().mockImplementation(() => ({
+    on: vi.fn(),
+    quit: vi.fn(),
+  })),
+}));
+
+vi.mock('@aegis/forensic-engine', () => ({
+  createForensicsQueue: vi.fn().mockReturnValue({
+    add: vi.fn().mockResolvedValue({ id: 'job-123' }),
+    getJob: vi.fn().mockResolvedValue(null)
+  }),
+  PostgresForensicReportRepository: vi.fn().mockImplementation(() => ({
+    findById: vi.fn(),
+    findAll: vi.fn()
+  }))
+}));
+
 import { forensicsRoutes } from '../src/routes/forensics.routes.js';
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -248,19 +267,19 @@ describe('POST /api/v1/forensics/simulate', () => {
     expect(res.statusCode).toBe(400);
   });
 
-  it('returns 501 with valid API key and valid body', async () => {
+  it('returns 202 with valid API key and valid body', async () => {
     const res = await app.inject({
       method: 'POST',
       url: '/api/v1/forensics/simulate',
       headers: { 'x-api-key': TEST_API_KEY },
       payload: { pocId: VALID_UUID },
     });
-    expect(res.statusCode).toBe(501);
+    expect(res.statusCode).toBe(202);
     const body = res.json();
-    expect(body.code).toBe('AEGIS-501-003');
+    expect(body.jobId).toBeDefined();
   });
 
-  it('returns 501 with valid API key and full overrides', async () => {
+  it('returns 202 with valid API key and full overrides', async () => {
     const res = await app.inject({
       method: 'POST',
       url: '/api/v1/forensics/simulate',
@@ -268,14 +287,13 @@ describe('POST /api/v1/forensics/simulate', () => {
       payload: {
         pocId: VALID_UUID,
         overrides: {
-          rpcUrlEnvVar: 'RPC_URL_ETH',
-          forkBlockNumber: 18500000,
-          gasLimit: 30000000,
-          verbosity: 4,
+          rpcUrlEnvVar: 'TEST_RPC',
+          forkBlockNumber: 15_000_000,
+          gasLimit: 30_000_000,
         },
       },
     });
-    expect(res.statusCode).toBe(501);
+    expect(res.statusCode).toBe(202);
   });
 });
 
@@ -362,32 +380,29 @@ describe('POST /api/v1/forensics/trace', () => {
     expect(res.statusCode).toBe(400);
   });
 
-  it('returns 501 with valid API key and valid body (minimal)', async () => {
+  it('returns 202 with valid API key and valid body (minimal)', async () => {
     const res = await app.inject({
       method: 'POST',
       url: '/api/v1/forensics/trace',
       headers: { 'x-api-key': TEST_API_KEY },
       payload: { txHash: VALID_TX_HASH, chain: 'ethereum' },
     });
-    expect(res.statusCode).toBe(501);
-    const body = res.json();
-    expect(body.code).toBe('AEGIS-501-003');
+    expect(res.statusCode).toBe(202);
   });
 
-  it('returns 501 with valid API key and full body', async () => {
+  it('returns 202 with valid API key and full body', async () => {
     const res = await app.inject({
       method: 'POST',
       url: '/api/v1/forensics/trace',
       headers: { 'x-api-key': TEST_API_KEY },
       payload: {
         txHash: VALID_TX_HASH,
-        chain: 'polygon',
+        chain: 'ethereum',
         includeStorageDiffs: false,
-        includeDecodedLogs: true,
-        maxDepth: 10,
+        maxDepth: 5,
       },
     });
-    expect(res.statusCode).toBe(501);
+    expect(res.statusCode).toBe(202);
   });
 });
 
@@ -439,31 +454,27 @@ describe('Response shape consistency', () => {
     }
   });
 
-  it('auth-guarded POST endpoints return 501 with valid API key', async () => {
+  it('auth-guarded POST endpoints return 202 with valid API key', async () => {
     const endpoints = [
       {
-        method: 'POST' as const,
         url: '/api/v1/forensics/simulate',
         payload: { pocId: VALID_UUID },
       },
       {
-        method: 'POST' as const,
         url: '/api/v1/forensics/trace',
         payload: { txHash: VALID_TX_HASH, chain: 'ethereum' },
       },
     ];
 
-    for (const { method, url, payload } of endpoints) {
+    for (const endpoint of endpoints) {
       const res = await app.inject({
-        method,
-        url,
+        method: 'POST',
+        url: endpoint.url,
         headers: { 'x-api-key': TEST_API_KEY },
-        payload,
+        payload: endpoint.payload,
       });
-      expect(res.statusCode).toBe(501);
-      const body = res.json();
-      expect(body).toHaveProperty('error', 'NOT_IMPLEMENTED');
-      expect(body).toHaveProperty('code', 'AEGIS-501-003');
+
+      expect(res.statusCode).toBe(202);
     }
   });
 

@@ -58,6 +58,11 @@ export {
   SemanticFindingSchema,
   ScanVerdictSchema,
   FindingSchema,
+  CodeBlockSchema,
+  ParsedContentSchema,
+  SafetyRuleSchema,
+  RulePatternTypeSchema,
+  RulePatternSchema,
 } from './domain/value-objects/index.js';
 
 export type {
@@ -69,6 +74,9 @@ export type {
   SemanticFinding,
   ScanVerdict,
   Finding,
+  CodeBlock,
+  ParsedContent,
+  RulePattern,
 } from './domain/value-objects/index.js';
 
 // ── API Contract Schemas ────────────────────────────────────────────────────
@@ -90,3 +98,31 @@ export * from './logging/index.js';
 // BullMQ queue connection factory and shared job type definitions.
 // Both hacks-engine and skills-engine import queue types from here.
 export * from './shared/queue/index.js';
+export { QUEUE_NAMES, createQueueConnection } from './shared/queue/index.js';
+export type {
+  QueueName,
+  HacksSyncJobData,
+  HacksSyncJobResult,
+  SkillsIndexJobData,
+  SkillsIndexJobResult,
+  SafetyScanJobData,
+  SafetyScanJobResult,
+  SyncProgressStage,
+  JobProgress,
+  QueueStatus,
+  QueueConnectionConfig,
+} from './shared/queue/index.js';
+
+// Re-export specific schemas to guarantee they are in the barrel
+export {
+  SafetyStatsResponseSchema,
+  SafetyRuleStatSchema,
+  SafetyTimelineDataPointSchema,
+  TopFindingSchema,
+} from './shared/schemas/index.js';
+export type {
+  SafetyStatsResponse,
+  SafetyRuleStat,
+  SafetyTimelineDataPoint,
+  TopFinding,
+} from './shared/schemas/index.js';

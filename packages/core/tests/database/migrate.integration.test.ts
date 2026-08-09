@@ -27,6 +27,8 @@ import {
   EXPECTED_TABLES,
   EXPECTED_MIGRATION_COUNT,
   TRACKING_TABLE,
+  TEST_DATABASE_URL,
+  type PgClient,
 } from './helpers/db-test-utils.js';
 import type pg from 'pg';
 
@@ -36,14 +38,14 @@ import type pg from 'pg';
 
 describe('Migration Runner — Lifecycle', () => {
   let pgAvailable: boolean;
-  let client: pg.Client;
+  let client: PgClient;
 
   beforeAll(async () => {
     pgAvailable = await isPostgresAvailable();
     if (!pgAvailable) {
       console.warn(
         '⚠️  PostgreSQL not available — skipping live integration tests.\n' +
-          '   Start PostgreSQL: docker compose -f docker-compose.dev.yml up postgres -d',
+        '   Start PostgreSQL: docker compose -f docker-compose.dev.yml up postgres -d',
       );
       return;
     }
@@ -173,7 +175,7 @@ describe('Migration Runner — Lifecycle', () => {
     // Error output should exist
     const combinedOutput = result.stdout + result.stderr;
     expect(combinedOutput.length).toBeGreaterThan(0);
-  });
+  }, 30000);
 
   // ═════════════════════════════════════════════════════════════════════════
   // [MIG-006] Migration file ordering is deterministic

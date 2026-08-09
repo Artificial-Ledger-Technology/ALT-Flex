@@ -298,7 +298,7 @@ export async function skillsRoutes(server: FastifyInstance): Promise<void> {
         targetSkills = [...res.data];
       } else if (skillIds && skillIds.length > 0) {
         const skills = await Promise.all(skillIds.map(id => skillRepo.findById(id)));
-        targetSkills = skills.filter(s => s !== null);
+        targetSkills = skills.filter((s: any) => s !== null);
       } else if (skillId) {
         const s = await skillRepo.findById(skillId);
         if (s) targetSkills.push(s);

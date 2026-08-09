@@ -1,4 +1,4 @@
-import { TransactionTraceResult, CallTreeNode, GasBreakdown, ValueFlowEntry, TraceSummary, DecodedEvent, CallType } from '@aegis/forensic-engine';
+import { TransactionTraceResult, CallTreeNode, CallType } from '@aegis/forensic-engine';
 
 const createMockNode = (
   id: string,
