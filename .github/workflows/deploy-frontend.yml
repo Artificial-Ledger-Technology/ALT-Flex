@@ -1,9 +1,9 @@
-name: Deploy Frontend (Vercel)
+name: Deploy Frontend (Netlify)
 
-# Vercel handles production deployments automatically via its GitHub integration.
+# Netlify handles production deployments automatically via its GitHub integration.
 # This workflow serves as a CI gate: it validates the frontend build independently
 # on every PR that touches web-related paths, giving reviewers confidence before
-# Vercel's own deploy hooks fire on merge.
+# Netlify's own deploy hooks fire on merge.
 
 on:
   pull_request:
@@ -11,7 +11,7 @@ on:
     paths:
       - 'apps/web/**'
       - 'packages/core/**'
-      - 'vercel.json'
+      - 'netlify.toml'
       - '.github/workflows/deploy-frontend.yml'
 
 permissions:
