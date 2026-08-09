@@ -126,3 +126,7 @@ export type {
   SafetyTimelineDataPoint,
   TopFinding,
 } from './shared/schemas/index.js';
+
+// ── Observability — Prometheus Metrics ──────────────────────────────────────
+export { createMetricsRegistry } from './metrics/index.js';
+export type { AegisMetrics } from './metrics/index.js';

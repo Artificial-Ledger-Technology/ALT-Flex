@@ -1,0 +1,24 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# AltFlex AEGIS v3.0 — Prometheus Scrape Configuration
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# Scrapes metrics from AEGIS backend services running in Docker Compose.
+# Access Prometheus UI at http://localhost:9090
+#
+# @task P6-PROD-005
+# ═══════════════════════════════════════════════════════════════════════════════
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  # ── API Gateway ────────────────────────────────────────────────────────────
+  - job_name: 'aegis-api-gateway'
+    static_configs:
+      - targets: ['api-gateway:4000']
+        labels:
+          service: 'api-gateway'
+          environment: 'development'
+    metrics_path: '/metrics'
+    scrape_interval: 10s

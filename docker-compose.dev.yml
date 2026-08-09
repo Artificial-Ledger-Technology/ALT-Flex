@@ -188,6 +188,21 @@ services:
     container_name: aegis-forensic-engine-dev
     profiles: ['build']
 
+  # ── Prometheus — Metrics Scraping & Storage ─────────────────────────────
+  # P6-PROD-005: Scrapes /metrics from backend services.
+  # Access the Prometheus UI at http://localhost:9090
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: aegis-prometheus-dev
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./infrastructure/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      - api-gateway
+    networks:
+      - aegis-network
+
 # ── Named Volumes ──────────────────────────────────────────────────────────
 volumes:
   pgdata_dev:

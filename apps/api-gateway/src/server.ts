@@ -39,6 +39,9 @@ import { skillsRoutes } from './routes/skills.routes.js';
 import { adminRoutes } from './routes/admin.routes.js';
 import { safetyRoutes } from './routes/safety.routes.js';
 
+// ── Observability ────────────────────────────────────────────────────────────
+import { metricsPlugin } from './plugins/metrics.plugin.js';
+
 // ── Configuration ────────────────────────────────────────────────────────────
 const PORT = parseInt(process.env['API_PORT'] ?? '4000', 10);
 const HOST = process.env['API_HOST'] ?? '0.0.0.0';
@@ -82,6 +85,9 @@ async function registerPlugins(): Promise<void> {
 
   // 4. Swagger/OpenAPI
   await registerSwagger(server);
+
+  // 5. Prometheus Metrics (P6-PROD-005)
+  await server.register(metricsPlugin);
 }
 
 // ── Routes ───────────────────────────────────────────────────────────────────
