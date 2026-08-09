@@ -21,6 +21,7 @@
  */
 
 import Fastify from 'fastify';
+import { createPinoLogger } from '@aegis/core';
 import cors from '@fastify/cors';
 import rateLimit from '@fastify/rate-limit';
 
@@ -48,17 +49,9 @@ const HOST = process.env['API_HOST'] ?? '0.0.0.0';
 const LOG_LEVEL = process.env['LOG_LEVEL'] ?? 'info';
 
 // ── Server Instance ──────────────────────────────────────────────────────────
-const isDev = process.env['NODE_ENV'] === 'development';
-
-const loggerConfig = isDev
-  ? {
-      level: LOG_LEVEL,
-      transport: { target: 'pino-pretty', options: { colorize: true } },
-    }
-  : { level: LOG_LEVEL };
-
 const server = Fastify({
-  logger: loggerConfig,
+  logger: createPinoLogger({ name: 'api-gateway' }) as any,
+  disableRequestLogging: true,
   // requestIdLogLabel: label used by Pino to log the request ID as 'correlationId'
   // requestIdHeader intentionally omitted — the correlation ID middleware owns the
   // full x-correlation-id lifecycle including validation and sanitization.
@@ -88,6 +81,18 @@ async function registerPlugins(): Promise<void> {
 
   // 5. Prometheus Metrics (P6-PROD-005)
   await server.register(metricsPlugin);
+
+  // 6. Custom Request Logging (P6-PROD-007)
+  server.addHook('onResponse', (request, reply, done) => {
+    request.log.info({
+      reqId: request.id,
+      method: request.method,
+      url: request.routeOptions.url ?? request.url,
+      statusCode: reply.statusCode,
+      responseTime: Math.round((reply as any).getResponseTime?.() ?? 0),
+    }, 'Request completed');
+    done();
+  });
 }
 
 // ── Routes ───────────────────────────────────────────────────────────────────

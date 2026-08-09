@@ -149,15 +149,26 @@ function wrapPinoLogger(pinoLogger: pino.Logger): LoggerPort {
  * ```typescript
  * const logger = createLogger({ name: 'hacks-engine' });
  * logger.info('ETL sync started', { source: 'defillama' });
- * // → {"level":30,"time":...,"name":"hacks-engine","correlationId":"abc-123","msg":"ETL sync started","source":"defillama"}
+ * // → {"level":"info","timestamp":...,"serviceName":"hacks-engine","correlationId":"abc-123","msg":"ETL sync started","source":"defillama"}
  * ```
  */
-export function createLogger(options?: LoggerOptions): LoggerPort {
+export function createPinoLogger(options?: LoggerOptions): pino.Logger {
   const level = options?.level ?? process.env['LOG_LEVEL'] ?? 'info';
+  const env = process.env['NODE_ENV'] ?? 'development';
+  const serviceName = options?.name ?? 'altflex-service';
+  const isDev = env === 'development';
 
-  const pinoLogger = pino({
+  return pino({
     level,
-    ...(options?.name !== undefined && options?.name !== '' ? { name: options.name } : {}),
+    name: serviceName,
+    base: {
+      env,
+      serviceName,
+    },
+    timestamp: () => `,"timestamp":"${new Date().toISOString()}"`,
+    formatters: {
+      level: (label) => ({ level: label }),
+    },
     // Inject correlationId from AsyncLocalStorage on every log entry
     mixin() {
       return { correlationId: getCorrelationId() };
@@ -167,7 +178,23 @@ export function createLogger(options?: LoggerOptions): LoggerPort {
       paths: REDACT_PATHS,
       censor: '[REDACTED]',
     },
+    ...(isDev
+      ? {
+          transport: {
+            target: 'pino-pretty',
+            options: { colorize: true, translateTime: 'SYS:standard' },
+          },
+        }
+      : {}),
   });
+}
 
-  return wrapPinoLogger(pinoLogger);
+/**
+ * Create a structured logger implementing LoggerPort.
+ *
+ * @param options - Logger configuration
+ * @returns LoggerPort-compliant logger instance
+ */
+export function createLogger(options?: LoggerOptions): LoggerPort {
+  return wrapPinoLogger(createPinoLogger(options));
 }
