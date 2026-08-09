@@ -1,0 +1,14 @@
+[build]
+  command = "pnpm --filter @aegis/web run build"
+  publish = "apps/web/.next"
+  ignore = "npx turbo-ignore @aegis/web"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

@@ -1,0 +1,78 @@
+name: Deploy Frontend (Netlify)
+
+# Netlify handles production deployments automatically via its GitHub integration.
+# This workflow serves as a CI gate: it validates the frontend build independently
+# on every PR that touches web-related paths, giving reviewers confidence before
+# Netlify's own deploy hooks fire on merge.
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'apps/web/**'
+      - 'packages/core/**'
+      - 'netlify.toml'
+      - '.github/workflows/deploy-frontend.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-frontend-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-frontend-build:
+    name: Validate Next.js Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Cache Turbo
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-frontend-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-frontend-
+
+      - name: Cache Next.js Build
+        uses: actions/cache@v4
+        with:
+          path: apps/web/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('apps/web/**/*.ts', 'apps/web/**/*.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
+
+      - name: Build Frontend
+        run: pnpm --filter @aegis/web run build
+        env:
+          NEXT_PUBLIC_API_URL: https://api.altflex.io
+          NEXT_PUBLIC_APP_NAME: AltFlex AEGIS
+          NEXT_PUBLIC_APP_VERSION: 3.0.0
+          NEXT_PUBLIC_ENABLE_ANALYTICS: true
+
+      - name: Verify Build Output
+        run: |
+          if [ -d "apps/web/.next" ]; then
+            echo "✅ Next.js build output verified."
+            ls -la apps/web/.next/
+          else
+            echo "❌ Build output directory not found!"
+            exit 1
+          fi
