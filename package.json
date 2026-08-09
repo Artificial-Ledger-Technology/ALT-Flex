@@ -50,6 +50,13 @@
   "pnpm": {
     "overrides": {
       "ws": "^8.17.1"
+    },
+    "packageExtensions": {
+      "postcss@*": {
+        "dependencies": {
+          "picocolors": "^1.1.1"
+        }
+      }
     }
   },
   "dependencies": {

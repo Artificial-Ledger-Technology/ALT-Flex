@@ -7,6 +7,8 @@ settings:
 overrides:
   ws: ^8.17.1
 
+packageExtensionsChecksum: sha256-u6q9ZjsahNCkWR2/rbxAIJXtZLmyEQSGyfswWeKL0Ak=
+
 importers:
 
   .:
@@ -142,6 +144,9 @@ importers:
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.0.8(react@19.0.8))(react@19.0.8)
+      picocolors:
+        specifier: ^1.1.1
+        version: 1.1.1
       react:
         specifier: ~19.0.8
         version: 19.0.8
