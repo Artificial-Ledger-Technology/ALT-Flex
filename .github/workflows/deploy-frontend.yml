@@ -60,7 +60,7 @@ jobs:
             ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
 
       - name: Build Frontend
-        run: pnpm --filter @aegis/web run build
+        run: pnpm turbo run build --filter=@aegis/web
         env:
           NEXT_PUBLIC_API_URL: https://api.altflex.io
           NEXT_PUBLIC_APP_NAME: AltFlex AEGIS
