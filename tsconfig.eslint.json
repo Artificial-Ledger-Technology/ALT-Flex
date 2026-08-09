@@ -1,0 +1,27 @@
+{
+  // Type-aware ESLint needs every linted file to belong to a TypeScript program.
+  // The per-package build configs deliberately exclude tests, vitest configs and
+  // the database scripts, so this config covers exactly that remainder.
+  //
+  // It must NOT sweep the whole repository. tsconfig.base.json declares no
+  // `include`, so pointing ESLint at it pulled in apps/web under a program with
+  // no `jsx` and no `@/*` paths, degrading well-typed values to the TypeScript
+  // error type and producing phantom no-unsafe-* errors (#198).
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": [
+    "apps/*/tests/**/*.ts",
+    "apps/*/vitest.config.ts",
+    "packages/*/tests/**/*.ts",
+    "packages/*/src/**/*.test.ts",
+    "packages/*/src/**/*.spec.ts",
+    "packages/*/src/**/__tests__/**/*.ts",
+    "packages/*/vitest.config.ts",
+    "packages/*/scripts/**/*.ts",
+    "packages/core/src/database/migrate.ts",
+    "packages/core/src/database/seed.ts"
+  ],
+  "exclude": ["node_modules", "dist", "apps/web"]
+}

@@ -69,12 +69,26 @@ export class RedisCacheAdapter implements ICachePort {
   private readonly logWarnings: boolean;
 
   constructor(config: RedisCacheConfig = {}) {
-    this.client = new Redis({
+    // Connection defaults mirror createQueueConnection in @aegis/core. Without
+    // them ioredis falls back to 127.0.0.1, which breaks any deployment where
+    // Redis is not on the same host (e.g. Docker Compose).
+    const password = process.env['REDIS_PASSWORD'] ?? '';
+    const redisOptions: RedisOptions = {
+      host: process.env['REDIS_HOST'] ?? 'localhost',
+      port: parseInt(process.env['REDIS_PORT'] ?? '6379', 10),
+      db: parseInt(process.env['REDIS_DB'] ?? '0', 10),
       maxRetriesPerRequest: 3,
       retryStrategy: (times: number): number => Math.min(times * 200, 3000),
       lazyConnect: true,
       ...config.redisOptions,
-    });
+    };
+
+    // Only set password when non-empty (satisfies exactOptionalPropertyTypes)
+    if (password.length > 0 && redisOptions.password === undefined) {
+      redisOptions.password = password;
+    }
+
+    this.client = new Redis(redisOptions);
     this.prefix = config.keyPrefix ?? 'aegis:';
     this.defaultTtl = config.defaultTtlSeconds ?? 300;
     this.serializer = config.serializer ?? jsonSerializer;

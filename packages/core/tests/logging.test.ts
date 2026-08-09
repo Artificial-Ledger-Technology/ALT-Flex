@@ -11,6 +11,7 @@ import {
   runWithCorrelation,
   createCorrelationId,
   createLogger,
+  describeError,
 } from '../src/logging/index.js';
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -121,5 +122,45 @@ describe('createLogger', () => {
     const child = logger.child({ service: 'a' });
     const grandchild = child.child({ module: 'b' });
     expect(() => grandchild.info('test')).not.toThrow();
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// describeError
+// ═══════════════════════════════════════════════════════════════════════════════
+
+describe('describeError', () => {
+  it('returns the message of an ordinary Error', () => {
+    expect(describeError(new Error('boom'))).toBe('boom');
+  });
+
+  it('expands an AggregateError whose own message is empty', () => {
+    // Shape thrown by Node when a dual-stack connect fails on every address —
+    // the reason a worker with an unreachable database logged error:"".
+    const aggregate = new AggregateError(
+      [
+        new Error('connect ECONNREFUSED ::1:5432'),
+        new Error('connect ECONNREFUSED 127.0.0.1:5432'),
+      ],
+      '',
+    );
+
+    expect(describeError(aggregate)).toBe(
+      'AggregateError: connect ECONNREFUSED ::1:5432; connect ECONNREFUSED 127.0.0.1:5432',
+    );
+  });
+
+  it('keeps both the message and the aggregated causes when both are present', () => {
+    const aggregate = new AggregateError([new Error('inner')], 'outer');
+    expect(describeError(aggregate)).toBe('outer: inner');
+  });
+
+  it('falls back to the class name rather than an empty string', () => {
+    expect(describeError(new Error(''))).toBe('Error');
+  });
+
+  it('stringifies non-Error throws', () => {
+    expect(describeError('plain string')).toBe('plain string');
+    expect(describeError(undefined)).toBe('undefined');
   });
 });

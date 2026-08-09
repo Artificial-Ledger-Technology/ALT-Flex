@@ -106,13 +106,20 @@ describe('ForensicJobStatusSchema', () => {
 
 describe('ForensicJobProgressSchema', () => {
   it('accepts valid progress data', () => {
-    const result = ForensicJobProgressSchema.safeParse({ percentage: 50, stage: 'Compiling contracts' });
+    const result = ForensicJobProgressSchema.safeParse({
+      percentage: 50,
+      stage: 'Compiling contracts',
+    });
     expect(result.success).toBe(true);
   });
 
   it('accepts boundary values (0 and 100)', () => {
-    expect(ForensicJobProgressSchema.safeParse({ percentage: 0, stage: 'Starting' }).success).toBe(true);
-    expect(ForensicJobProgressSchema.safeParse({ percentage: 100, stage: 'Done' }).success).toBe(true);
+    expect(ForensicJobProgressSchema.safeParse({ percentage: 0, stage: 'Starting' }).success).toBe(
+      true,
+    );
+    expect(ForensicJobProgressSchema.safeParse({ percentage: 100, stage: 'Done' }).success).toBe(
+      true,
+    );
   });
 
   it('rejects percentage below 0', () => {
@@ -383,7 +390,7 @@ describe('SimulationResultSchema', () => {
   });
 
   it('applies defaults for optional fields (stderr, traces)', () => {
-    const { stderr, traces, ...minimal } = validSimResult;
+    const { stderr: _stderr, traces: _traces, ...minimal } = validSimResult;
     const result = SimulationResultSchema.safeParse(minimal);
     expect(result.success).toBe(true);
     if (result.success) {
@@ -661,7 +668,14 @@ describe('CallTreeNodeSchema', () => {
   });
 
   it('accepts all valid call types', () => {
-    const types = ['call', 'delegatecall', 'staticcall', 'create', 'create2', 'selfdestruct'] as const;
+    const types = [
+      'call',
+      'delegatecall',
+      'staticcall',
+      'create',
+      'create2',
+      'selfdestruct',
+    ] as const;
     for (const type of types) {
       const result = CallTreeNodeSchema.safeParse({ ...validNode, type });
       expect(result.success).toBe(true);
@@ -671,9 +685,7 @@ describe('CallTreeNodeSchema', () => {
   it('accepts nested children (recursive structure)', () => {
     const result = CallTreeNodeSchema.safeParse({
       ...validNode,
-      children: [
-        { ...validNode, depth: 1, children: [{ ...validNode, depth: 2 }] },
-      ],
+      children: [{ ...validNode, depth: 1, children: [{ ...validNode, depth: 2 }] }],
     });
     expect(result.success).toBe(true);
   });
@@ -783,21 +795,25 @@ describe('TraceResultSchema', () => {
   it('accepts trace with storage diffs and decoded logs', () => {
     const result = TraceResultSchema.safeParse({
       ...validTraceResult,
-      storageDiffs: [{
-        address: '0xContract',
-        slot: '0x01',
-        previousValue: '0x00',
-        newValue: '0xff',
-      }],
-      decodedLogs: [{
-        address: '0xToken',
-        name: 'Transfer',
-        signature: 'Transfer(address,address,uint256)',
-        topics: ['0xtopic'],
-        data: '0xdata',
-        logIndex: 0,
-        decoded: null,
-      }],
+      storageDiffs: [
+        {
+          address: '0xContract',
+          slot: '0x01',
+          previousValue: '0x00',
+          newValue: '0xff',
+        },
+      ],
+      decodedLogs: [
+        {
+          address: '0xToken',
+          name: 'Transfer',
+          signature: 'Transfer(address,address,uint256)',
+          topics: ['0xtopic'],
+          data: '0xdata',
+          logIndex: 0,
+          decoded: null,
+        },
+      ],
     });
     expect(result.success).toBe(true);
   });

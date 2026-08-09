@@ -17,13 +17,14 @@
 
 import type { Queue, Job } from 'bullmq';
 import type { Pool } from 'pg';
-import type {
-  LoggerPort,
-  SkillsIndexJobData,
-  SkillsIndexJobResult,
-  SafetyScanJobData,
-  SafetyScanJobResult,
-  JobProgress,
+import {
+  describeError,
+  type LoggerPort,
+  type SkillsIndexJobData,
+  type SkillsIndexJobResult,
+  type SafetyScanJobData,
+  type SafetyScanJobResult,
+  type JobProgress,
 } from '@aegis/core';
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -65,7 +66,12 @@ async function insertSyncLog(pool: Pool, entry: SyncLogEntry): Promise<string> {
 async function updateSyncLog(
   pool: Pool,
   id: string,
-  update: Partial<Pick<SyncLogEntry, 'status' | 'recordsAdded' | 'recordsUpdated' | 'errorMessage' | 'completedAt' | 'durationMs'>>,
+  update: Partial<
+    Pick<
+      SyncLogEntry,
+      'status' | 'recordsAdded' | 'recordsUpdated' | 'errorMessage' | 'completedAt' | 'durationMs'
+    >
+  >,
 ): Promise<void> {
   const sets: string[] = [];
   const values: unknown[] = [];
@@ -99,10 +105,7 @@ async function updateSyncLog(
   if (sets.length === 0) return;
 
   values.push(id);
-  await pool.query(
-    `UPDATE etl_sync_log SET ${sets.join(', ')} WHERE id = $${idx}`,
-    values,
-  );
+  await pool.query(`UPDATE etl_sync_log SET ${sets.join(', ')} WHERE id = $${idx}`, values);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -165,9 +168,9 @@ export function createSkillsIndexProcessor(
       // ── Stage 4: Complete ─────────────────────────────────────────────
       const durationMs = Date.now() - startMs;
       const result: SkillsIndexJobResult = {
-        added: 0,       // Placeholder until IndexSkillsUseCase is wired
-        updated: 0,     // Placeholder until IndexSkillsUseCase is wired
-        skipped: 0,     // Placeholder until IndexSkillsUseCase is wired
+        added: 0, // Placeholder until IndexSkillsUseCase is wired
+        updated: 0, // Placeholder until IndexSkillsUseCase is wired
+        skipped: 0, // Placeholder until IndexSkillsUseCase is wired
         durationMs,
       };
 
@@ -181,15 +184,12 @@ export function createSkillsIndexProcessor(
 
       const progressDone: JobProgress = { stage: 'complete', percent: 100 };
       await job.updateProgress(progressDone);
-      logger.info(
-        'SkillsIndexJob completed successfully',
-        { jobId: job.id, durationMs, result },
-      );
+      logger.info('SkillsIndexJob completed successfully', { jobId: job.id, durationMs, result });
 
       return result;
     } catch (error: unknown) {
       const durationMs = Date.now() - startMs;
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage = describeError(error);
 
       await updateSyncLog(pool, syncLogId, {
         status: 'failed',
@@ -198,10 +198,7 @@ export function createSkillsIndexProcessor(
         durationMs,
       });
 
-      logger.error(
-        'SkillsIndexJob failed',
-        { jobId: job.id, error: errorMessage, durationMs },
-      );
+      logger.error('SkillsIndexJob failed', { jobId: job.id, error: errorMessage, durationMs });
 
       throw error; // Re-throw for BullMQ retry logic
     }

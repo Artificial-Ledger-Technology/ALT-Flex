@@ -30,8 +30,8 @@ import {
   runMigrate,
   runSeed,
   dropAllTables,
+  type PgClient,
 } from './helpers/db-test-utils.js';
-import type { PgClient } from './helpers/db-test-utils.js';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // Test Suite: Seed Script — Real Implementation

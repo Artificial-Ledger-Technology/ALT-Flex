@@ -1,13 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
-import { SafetyLabel } from '@aegis/core';
 
-const DATASET_DIR = join(
-  __dirname,
-  'fixtures',
-  'evaluation-dataset',
-);
+const DATASET_DIR = join(__dirname, 'fixtures', 'evaluation-dataset');
 
 interface ManifestEntry {
   id: string;
@@ -69,9 +64,7 @@ describe('Evaluation Dataset Integrity', () => {
     });
 
     it('should have ~50 safe samples', () => {
-      const safeCount = manifest.samples.filter(
-        (s) => s.groundTruthLabel === 'SAFE',
-      ).length;
+      const safeCount = manifest.samples.filter((s) => s.groundTruthLabel === 'SAFE').length;
       expect(safeCount).toBe(manifest.distribution.safe);
       expect(safeCount).toBe(50);
     });
@@ -177,27 +170,21 @@ describe('Evaluation Dataset Integrity', () => {
 
   describe('File Naming Conventions', () => {
     it('should have safe samples in the safe/ directory', () => {
-      const safeSamples = manifest.samples.filter(
-        (s) => s.groundTruthLabel === 'SAFE',
-      );
+      const safeSamples = manifest.samples.filter((s) => s.groundTruthLabel === 'SAFE');
       for (const sample of safeSamples) {
         expect(sample.filePath).toMatch(/^safe\//);
       }
     });
 
     it('should have suspicious samples in the suspicious/ directory', () => {
-      const suspiciousSamples = manifest.samples.filter(
-        (s) => s.groundTruthLabel === 'SUSPICIOUS',
-      );
+      const suspiciousSamples = manifest.samples.filter((s) => s.groundTruthLabel === 'SUSPICIOUS');
       for (const sample of suspiciousSamples) {
         expect(sample.filePath).toMatch(/^suspicious\//);
       }
     });
 
     it('should have malicious samples in the malicious/ directory', () => {
-      const maliciousSamples = manifest.samples.filter(
-        (s) => s.groundTruthLabel === 'MALICIOUS',
-      );
+      const maliciousSamples = manifest.samples.filter((s) => s.groundTruthLabel === 'MALICIOUS');
       for (const sample of maliciousSamples) {
         expect(sample.filePath).toMatch(/^malicious\//);
       }
@@ -207,40 +194,35 @@ describe('Evaluation Dataset Integrity', () => {
   describe('Malicious Coverage', () => {
     it('should cover shell injection category (5+ samples)', () => {
       const count = manifest.samples.filter(
-        (s) =>
-          s.groundTruthLabel === 'MALICIOUS' && s.category === 'shell-injection',
+        (s) => s.groundTruthLabel === 'MALICIOUS' && s.category === 'shell-injection',
       ).length;
       expect(count).toBeGreaterThanOrEqual(5);
     });
 
     it('should cover file system manipulation category (5+ samples)', () => {
       const count = manifest.samples.filter(
-        (s) =>
-          s.groundTruthLabel === 'MALICIOUS' && s.category === 'fs-manipulation',
+        (s) => s.groundTruthLabel === 'MALICIOUS' && s.category === 'fs-manipulation',
       ).length;
       expect(count).toBeGreaterThanOrEqual(5);
     });
 
     it('should cover network exfiltration category (5+ samples)', () => {
       const count = manifest.samples.filter(
-        (s) =>
-          s.groundTruthLabel === 'MALICIOUS' && s.category === 'network-exfil',
+        (s) => s.groundTruthLabel === 'MALICIOUS' && s.category === 'network-exfil',
       ).length;
       expect(count).toBeGreaterThanOrEqual(5);
     });
 
     it('should cover prompt injection category (5+ samples)', () => {
       const count = manifest.samples.filter(
-        (s) =>
-          s.groundTruthLabel === 'MALICIOUS' && s.category === 'prompt-injection',
+        (s) => s.groundTruthLabel === 'MALICIOUS' && s.category === 'prompt-injection',
       ).length;
       expect(count).toBeGreaterThanOrEqual(5);
     });
 
     it('should cover obfuscation category (5+ samples)', () => {
       const count = manifest.samples.filter(
-        (s) =>
-          s.groundTruthLabel === 'MALICIOUS' && s.category === 'obfuscation',
+        (s) => s.groundTruthLabel === 'MALICIOUS' && s.category === 'obfuscation',
       ).length;
       expect(count).toBeGreaterThanOrEqual(5);
     });

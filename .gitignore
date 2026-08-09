@@ -177,6 +177,11 @@ fix*.js
 check*.js
 *.txt
 
+# Test fixtures must stay tracked — the suite fails on a clean checkout without
+# them. Negations must come after the *.txt rule above to take effect.
+!**/__tests__/fixtures/**/*.txt
+!**/tests/fixtures/**/*.txt
+
 CODE_REVIEW_PHASE3.md
 CODE_REVIEW_PHASE4.md
 CODE_REVIEW_PHASE5.md
