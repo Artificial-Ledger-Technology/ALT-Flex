@@ -49,10 +49,12 @@ import { metricsPlugin } from './plugins/metrics.plugin.js';
 // ── Configuration ────────────────────────────────────────────────────────────
 const PORT = parseInt(process.env['API_PORT'] ?? '4000', 10);
 const HOST = process.env['API_HOST'] ?? '0.0.0.0';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const LOG_LEVEL = process.env['LOG_LEVEL'] ?? 'info';
 
 // ── Server Instance ──────────────────────────────────────────────────────────
 const server = Fastify({
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
   logger: createPinoLogger({ name: 'api-gateway' }) as any,
   disableRequestLogging: true,
   // requestIdLogLabel: label used by Pino to log the request ID as 'correlationId'
@@ -82,7 +84,7 @@ async function registerPlugins(): Promise<void> {
   // 2. CORS
   const allowedOrigins = (process.env['CORS_ORIGIN'] ?? 'http://localhost:3000')
     .split(',')
-    .map(o => o.trim())
+    .map((o) => o.trim())
     .filter(Boolean);
 
   await server.register(cors, {
@@ -107,13 +109,17 @@ async function registerPlugins(): Promise<void> {
 
   // 6. Custom Request Logging (P6-PROD-007)
   server.addHook('onResponse', (request, reply, done) => {
-    request.log.info({
-      reqId: request.id,
-      method: request.method,
-      url: request.routeOptions.url ?? request.url,
-      statusCode: reply.statusCode,
-      responseTime: Math.round((reply as any).getResponseTime?.() ?? 0),
-    }, 'Request completed');
+    request.log.info(
+      {
+        reqId: request.id,
+        method: request.method,
+        url: request.routeOptions.url ?? request.url,
+        statusCode: reply.statusCode,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+        responseTime: Math.round((reply as any).getResponseTime?.() ?? 0),
+      },
+      'Request completed',
+    );
     done();
   });
 }
