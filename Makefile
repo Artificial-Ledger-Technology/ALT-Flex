@@ -24,6 +24,8 @@ dev:
 	@echo "  Web Dashboard:   http://localhost:3000"
 	@echo "  API Gateway:     http://localhost:4000"
 	@echo "  API Health:      http://localhost:4000/api/v1/health"
+	@echo "  Grafana:         http://localhost:3001"
+	@echo "  Prometheus:      http://localhost:9090"
 	@echo "  PostgreSQL:      localhost:5432  (aegis/changeme)"
 	@echo "  Redis:           localhost:6379"
 	@echo "═══════════════════════════════════════════════════════════════"

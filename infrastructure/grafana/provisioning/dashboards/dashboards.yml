@@ -1,0 +1,24 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# AltFlex AEGIS v3.0 — Grafana Dashboard Provisioning
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# Tells Grafana to auto-load JSON dashboard files from the mounted directory.
+# Grafana reads this file from /etc/grafana/provisioning/dashboards/
+#
+# @task P6-PROD-006
+# ═══════════════════════════════════════════════════════════════════════════════
+
+apiVersion: 1
+
+providers:
+  - name: 'AEGIS Dashboards'
+    orgId: 1
+    folder: 'AEGIS'
+    folderUid: 'aegis'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards
+      foldersFromFilesStructure: false
