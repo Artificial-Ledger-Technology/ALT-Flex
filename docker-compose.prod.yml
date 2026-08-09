@@ -315,6 +315,47 @@ services:
     networks:
       - aegis-network
 
+  # ── Database Backup — Automated pg_dump Cron Service (Production) ───────
+  # P6-PROD-009: Runs daily pg_dump backups at 02:00 UTC.
+  # Uses the same postgres:16-alpine image which includes pg_dump.
+  db-backup:
+    image: postgres:16-alpine
+    container_name: aegis-db-backup-prod
+    restart: unless-stopped
+    volumes:
+      - ./infrastructure/scripts/db-backup.sh:/scripts/db-backup.sh:ro
+      - backupdata_prod:/backups
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-aegis}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-aegis_prod}
+      BACKUP_DIR: /backups
+      BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-30}
+      BACKUP_S3_BUCKET: ${BACKUP_S3_BUCKET:-}
+      BACKUP_S3_REGION: ${BACKUP_S3_REGION:-us-east-1}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # Install crond entry and run as foreground process
+    entrypoint: ['/bin/sh', '-c']
+    command:
+      - |
+        chmod +x /scripts/db-backup.sh
+        echo "0 2 * * * /scripts/db-backup.sh >> /var/log/aegis-backup.log 2>&1" | crontab -
+        echo "[$(date -Iseconds)] 🗄️  AEGIS DB Backup cron service started (daily at 02:00 UTC)"
+        crond -f -l 2
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 64M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '5'
+    networks:
+      - aegis-network
+
 # ── Named Volumes ──────────────────────────────────────────────────────────
 volumes:
   pgdata_prod:
@@ -323,6 +364,8 @@ volumes:
     name: aegis-redisdata-prod
   grafanadata_prod:
     name: aegis-grafanadata-prod
+  backupdata_prod:
+    name: aegis-backupdata-prod
 
 # ── Networks ───────────────────────────────────────────────────────────────
 networks:

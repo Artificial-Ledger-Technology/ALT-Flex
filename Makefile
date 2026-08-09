@@ -11,7 +11,7 @@
 #   make health  — Check service health endpoints
 # ═══════════════════════════════════════════════════════════════════════════════
 
-.PHONY: dev prod down down-dev down-prod clean logs logs-prod health ps build-dev build-prod
+.PHONY: dev prod down down-dev down-prod clean logs logs-prod health ps build-dev build-prod migrate seed backup restore
 
 # ── Development ────────────────────────────────────────────────────────────
 # Boots entire platform with hot-reload via mounted volumes
@@ -120,3 +120,24 @@ health:
 	@echo ""
 	@echo "═══════════════════════════════════════════════════════════════"
 	@echo ""
+
+# ── Database Operations (P6-PROD-009) ──────────────────────────────────
+migrate:
+	pnpm run migrate
+	@echo "✅ Database migrations applied"
+
+seed:
+	pnpm run seed
+	@echo "✅ Database seeded"
+
+backup:
+	@echo "🗄️  Running database backup..."
+	docker compose -f docker-compose.prod.yml exec db-backup /scripts/db-backup.sh
+
+restore:
+	@echo "🔄 Restoring database from backup..."
+	@if [ -z "$(BACKUP_FILE)" ]; then \
+		echo "❌ Usage: make restore BACKUP_FILE=/backups/aegis_YYYYMMDD_HHMMSS.dump"; \
+		exit 1; \
+	fi
+	docker compose -f docker-compose.prod.yml exec db-backup /scripts/db-restore.sh $(BACKUP_FILE)

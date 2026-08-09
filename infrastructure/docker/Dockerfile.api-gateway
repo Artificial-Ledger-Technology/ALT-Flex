@@ -82,9 +82,20 @@ COPY --from=builder --chown=aegis:aegis /app/deploy/node_modules ./node_modules
 COPY --from=builder --chown=aegis:aegis /app/deploy/dist ./dist
 COPY --from=builder --chown=aegis:aegis /app/deploy/package.json ./package.json
 
+# P6-PROD-009: Copy migration SQL files so the entrypoint can run migrations
+# at container startup. The compiled migrate.js already lives inside
+# node_modules/@aegis/core/dist/database/, but it needs the raw SQL files.
+COPY --from=builder --chown=aegis:aegis /app/packages/core/src/database/migrations ./migrations
+
+# P6-PROD-009: Copy the entrypoint script that runs migrations before API start
+COPY --chown=aegis:aegis infrastructure/scripts/docker-entrypoint.sh ./docker-entrypoint.sh
+RUN chmod +x ./docker-entrypoint.sh
+
 ENV NODE_ENV=production
 ENV API_HOST=0.0.0.0
 ENV API_PORT=4000
+# P6-PROD-009: Point the migration runner at the in-image SQL files
+ENV AEGIS_MIGRATIONS_DIR=/app/migrations
 
 EXPOSE 4000
 
@@ -93,4 +104,5 @@ USER aegis
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD ["wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:4000/api/v1/health"]
 
-CMD ["node", "dist/server.js"]
+# P6-PROD-009: Entrypoint runs migrations, then starts the server
+CMD ["./docker-entrypoint.sh"]
