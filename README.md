@@ -29,7 +29,7 @@ _The definitive open-source exploit analytics system for the decentralized front
 
 ---
 
-![AltFlex Banner](assets/images/AltFlex%20Aegis.png)
+![AltFlex Banner](assets/images/AltFlex%20Real-Time%20Multi-ChainWeb3.png)
 
 ## Table of Contents
 
@@ -234,7 +234,7 @@ graph TB
     end
 
     subgraph "🚪 API Layer"
-        GW["@aegis/api-gateway<br/>Fastify 5 · Zod Validation<br/>Rate Limiting · JWT Auth"]
+        GW["@aegis/api-gateway<br/>Fastify 5 · Metrics Exporter<br/>Rate Limiting · JWT Auth"]
     end
 
     subgraph "🛡️ Exploit Analytics"
@@ -248,7 +248,7 @@ graph TB
     end
 
     subgraph "🧬 @aegis/core — Shared Kernel"
-        CORE["Entities · Value Objects<br/>Ports · Shared Utils · Errors"]
+        CORE["Entities · Value Objects<br/>Ports · Metrics Registry · Errors"]
     end
 
     subgraph "🏗️ Infrastructure"
@@ -256,13 +256,15 @@ graph TB
         RD[("Redis 7 + BullMQ<br/>Cache + Job Queues")]
         CHAIN[("EVM RPC Nodes<br/>ETH · BSC · ARB · OP · BASE")]
         FOUNDRY["Foundry CLI<br/>forge test · cast trace"]
+        PROM[("Prometheus<br/>Metrics Scraper")]
     end
 
     WEB -->|HTTP| GW
+    PROM -.->|Scrapes| GW
     GW --> HA_APP & FS_APP
     HA_APP & FS_APP --> CORE
     HA_ADP --> PG & RD
-    FS_ADP --> CHAIN & FOUNDRY
+    FS_ADP --> CHAIN & FOUNDRY & PG
 ```
 
 **Architectural Principles:**
@@ -319,8 +321,9 @@ ALT-Flex/                               ← Git root / pnpm workspace root
 │   │       ├── database/
 │   │       │   ├── migrate.ts          ← Migration runner
 │   │       │   ├── seed.ts             ← Seed runner (55 hacks)
-│   │       │   ├── migrations/         ← 6 SQL migration files
+│   │       │   ├── migrations/         ← 4 SQL migration files
 │   │       │   └── seeds/              ← TypeScript seed data
+│   │       ├── metrics/                ← Prometheus metrics registry & collectors
 │   │       └── shared/
 │   │           ├── types/              ← Global TypeScript types
 │   │           ├── utils/              ← Pure utility functions
@@ -377,12 +380,15 @@ ALT-Flex/                               ← Git root / pnpm workspace root
 │           │   ├── hacks.routes.ts     ← /api/v1/hacks/*
 │           │   ├── forensics.routes.ts ← /api/v1/forensics/*
 │           │   └── health.routes.ts    ← /api/v1/health
+│           ├── plugins/
+│           │   └── metrics.plugin.ts   ← Fastify Prometheus metrics plugin
 │           ├── middleware/             ← auth · rateLimit · validation · apiKey
 │           ├── config/env.ts           ← Zod-validated environment config
 │           └── server.ts
 │
 ├── infrastructure/
 │   ├── docker/                         ← Dockerfiles for all services
+│   ├── prometheus/                     ← Prometheus scrape configuration
 │   ├── terraform/                      ← Cloud IaC (Phase 6)
 │   └── ci/                             ← GitHub Actions (ci.yml, deploy.yml)
 │
