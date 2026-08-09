@@ -51,5 +51,8 @@
     "overrides": {
       "ws": "^8.17.1"
     }
+  },
+  "dependencies": {
+    "picocolors": "^1.1.1"
   }
 }
