@@ -90,3 +90,13 @@ jobs:
           else
             echo "DEPLOY_WEBHOOK_URL secret not found. Skipping webhook."
           fi
+
+      - name: Verify Deployment Success
+        run: |
+          if [ -n "${{ secrets.DEPLOY_VERIFY_URL }}" ]; then
+            echo "Waiting for service to restart..."
+            sleep 15
+            curl -f "${{ secrets.DEPLOY_VERIFY_URL }}/health" || exit 1
+          else
+            echo "DEPLOY_VERIFY_URL secret not found. Skipping verification."
+          fi
