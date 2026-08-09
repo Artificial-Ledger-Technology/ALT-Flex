@@ -1,5 +1,5 @@
 [build]
-  command = "pnpm --filter @aegis/web run build"
+  command = "npx turbo run build --filter=@aegis/web"
   publish = "apps/web/.next"
   ignore = "npx turbo-ignore @aegis/web"
 
