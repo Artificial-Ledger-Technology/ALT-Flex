@@ -21,46 +21,39 @@ import { createMetricsRegistry } from '@aegis/core';
 // Plugin
 // ═══════════════════════════════════════════════════════════════════════════════
 
+// eslint-disable-next-line @typescript-eslint/require-await
 async function metricsPluginImpl(server: FastifyInstance): Promise<void> {
-  const { registry, httpRequestDuration, httpErrorsTotal } =
-    createMetricsRegistry();
+  const { registry, httpRequestDuration, httpErrorsTotal } = createMetricsRegistry();
 
   // ── Request Timer Hook ──────────────────────────────────────────────────
   // Attach a high-resolution start time to every incoming request.
-  server.addHook(
-    'onRequest',
-    async (request: FastifyRequest, _reply: FastifyReply) => {
-      (request as FastifyRequest & { _metricsStart: [number, number] })._metricsStart =
-        process.hrtime();
-    },
-  );
+  server.addHook('onRequest', async (request: FastifyRequest, _reply: FastifyReply) => {
+    (request as FastifyRequest & { _metricsStart: [number, number] })._metricsStart =
+      process.hrtime();
+  });
 
   // ── Response Observer Hook ──────────────────────────────────────────────
   // On response, compute duration and record metrics.
-  server.addHook(
-    'onResponse',
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      const start = (request as FastifyRequest & { _metricsStart?: [number, number] })
-        ._metricsStart;
-      if (!start) return;
+  server.addHook('onResponse', async (request: FastifyRequest, reply: FastifyReply) => {
+    const start = (request as FastifyRequest & { _metricsStart?: [number, number] })._metricsStart;
+    if (!start) return;
 
-      const [seconds, nanoseconds] = process.hrtime(start);
-      const duration = seconds + nanoseconds / 1e9;
+    const [seconds, nanoseconds] = process.hrtime(start);
+    const duration = seconds + nanoseconds / 1e9;
 
-      // Normalize the route URL to avoid high-cardinality label explosion.
-      // Uses the Fastify routeOptions.url (e.g., "/api/v1/hacks/:id") instead
-      // of the raw URL (e.g., "/api/v1/hacks/123").
-      const route = request.routeOptions?.url ?? request.url;
-      const method = request.method;
-      const statusCode = String(reply.statusCode);
+    // Normalize the route URL to avoid high-cardinality label explosion.
+    // Uses the Fastify routeOptions.url (e.g., "/api/v1/hacks/:id") instead
+    // of the raw URL (e.g., "/api/v1/hacks/123").
+    const route = request.routeOptions?.url ?? request.url;
+    const method = request.method;
+    const statusCode = String(reply.statusCode);
 
-      httpRequestDuration.observe({ method, route, status_code: statusCode }, duration);
+    httpRequestDuration.observe({ method, route, status_code: statusCode }, duration);
 
-      if (reply.statusCode >= 400) {
-        httpErrorsTotal.inc({ method, route, status_code: statusCode });
-      }
-    },
-  );
+    if (reply.statusCode >= 400) {
+      httpErrorsTotal.inc({ method, route, status_code: statusCode });
+    }
+  });
 
   // ── GET /metrics Endpoint ───────────────────────────────────────────────
   server.get(
@@ -75,9 +68,7 @@ async function metricsPluginImpl(server: FastifyInstance): Promise<void> {
     },
     async (_request: FastifyRequest, reply: FastifyReply) => {
       const metrics = await registry.metrics();
-      return reply
-        .header('Content-Type', registry.contentType)
-        .send(metrics);
+      return reply.header('Content-Type', registry.contentType).send(metrics);
     },
   );
 
