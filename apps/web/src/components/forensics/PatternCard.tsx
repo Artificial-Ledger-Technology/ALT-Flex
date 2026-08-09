@@ -1,8 +1,5 @@
 import React from 'react';
 import { ShieldAlert, AlertTriangle, AlertCircle, Info, ChevronRight } from 'lucide-react';
-import { type PatternMatch } from '@aegis/core'; // Assuming it's exported from core, or we can use local types.
-// Wait, the types are in forensic-engine, but this is apps/web. Since the web package probably consumes types via core, let's just use generic any or inline types if it fails, or define the interface here to be safe.
-// Let's define the interface locally to ensure it builds correctly, as the UI doesn't strictly depend on the backend's exact type shape for rendering.
 
 export interface UIPatternMatch {
   patternId: string;
@@ -48,8 +45,8 @@ export function PatternCard({ pattern }: PatternCardProps): React.ReactNode {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className={\`p-2 rounded-lg bg-opacity-10 \${colorClass.replace('bg-', 'bg-').replace('500', '100')} dark:bg-opacity-20\`}>
-            <Icon className={\`w-6 h-6 \${textClass}\`} />
+          <div className={`p-2 rounded-lg bg-opacity-10 ${colorClass.replace('bg-', 'bg-').replace('500', '100')} dark:bg-opacity-20`}>
+            <Icon className={`w-6 h-6 ${textClass}`} />
           </div>
           <div>
             <h3 className="text-lg font-bold text-slate-900 dark:text-white">
@@ -68,8 +65,8 @@ export function PatternCard({ pattern }: PatternCardProps): React.ReactNode {
           </span>
           <div className="w-32 h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
             <div 
-              className={\`h-full \${colorClass} transition-all duration-500\`} 
-              style={{ width: \`\${confidencePercent}%\` }}
+              className={`h-full ${colorClass} transition-all duration-500`} 
+              style={{ width: `${confidencePercent}%` }}
             />
           </div>
         </div>

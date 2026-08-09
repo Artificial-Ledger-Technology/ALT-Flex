@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Download, Share2, FileText, Printer } from 'lucide-react';
+import { Share2, FileText, Printer } from 'lucide-react';
 
 interface ReportActionsProps {
   reportId: string;
@@ -30,7 +30,7 @@ export function ReportActions({ reportId }: ReportActionsProps): React.ReactNode
 
   const handleShare = (): void => {
     const url = window.location.href;
-    navigator.clipboard.writeText(url).then(() => {
+    void navigator.clipboard.writeText(url).then(() => {
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
     });

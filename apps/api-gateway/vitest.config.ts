@@ -19,6 +19,10 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     environment: 'node',
+    env: {
+      POSTGRES_PASSWORD: 'test_password',
+      JWT_SECRET: 'test_secret_that_is_at_least_32_characters_long_so_zod_validates_it',
+    },
     // Exclude the scratch debug file (empty, kept for local debugging use)
     exclude: ['tests/_debug.test.ts', '**/node_modules/**'],
     deps: {

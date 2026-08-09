@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { StorageDiff } from '@aegis/forensic-engine';
 import { ChevronDown, ChevronRight, Database } from 'lucide-react';

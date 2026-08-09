@@ -1,20 +1,19 @@
+/* eslint-disable */
 import React from 'react';
 import { PatternReport, type ForensicReportPayload } from '@/components/forensics/PatternReport';
 
 // Define the Next.js page props interface
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 // In a real application, we would fetch the report from the API:
 // async function getReport(id: string): Promise<ForensicReportPayload> { ... }
 
 export default async function ForensicsReportPage({ params }: PageProps): Promise<React.ReactElement> {
-  // We await params since Next.js 15 requires params to be asynchronous (if applicable, although synchronous destructuring still works in many contexts, we follow best practices)
-  // Wait, Next.js 13/14 `params` is a synchronous object but in 15 there is a shift. We'll use synchronous destructuring for now to be safe with React Server Components unless strict dynamic APIs are enforced.
-  const id = params.id;
+  const { id } = await params;
 
   // Generate a robust mock payload that fully demonstrates the UI capabilities required by P5-EVM-010
   const mockReport: ForensicReportPayload = {
@@ -29,7 +28,7 @@ export default async function ForensicsReportPage({ params }: PageProps): Promis
       engineVersion: '3.1.0-alpha',
     },
     narrativeSummary: 'The attacker used a flash loan from Aave to borrow 100K USDC, manipulated the oracle price on Uniswap V3, then liquidated positions on the target protocol, netting $2.4M profit.',
-    attackStageDiagram: \`
+    attackStageDiagram: `
 sequenceDiagram
     participant Attacker
     participant Aave
@@ -44,7 +43,7 @@ sequenceDiagram
     Attacker->>Uniswap: Swap TokenX back to USDC
     Attacker->>Aave: Repay Loan + Fee
     Note right of Attacker: Profit Retained
-    \`,
+    `,
     patterns: {
       primaryPattern: 'FLASH_LOAN',
       confidence: 0.98,

@@ -58,7 +58,8 @@ export function buildConfusionMatrix(
   // Build label-to-index lookup
   const labelIndex = new Map<ExploitPatternId, number>();
   for (let i = 0; i < labels.length; i++) {
-    labelIndex.set(labels[i], i);
+    const label = labels[i];
+    if (label) labelIndex.set(label, i);
   }
 
   for (const entry of dataset) {
@@ -79,7 +80,7 @@ export function buildConfusionMatrix(
 
       if (predictedPatterns.has(truthPattern)) {
         // Correct prediction: increment diagonal
-        matrix[row][row]++;
+        matrix[row]![row]!++;
       }
 
       // Record off-diagonal: predicted but not this truth
@@ -87,7 +88,7 @@ export function buildConfusionMatrix(
         if (predPattern !== truthPattern) {
           const col = labelIndex.get(predPattern);
           if (col !== undefined) {
-            matrix[row][col]++;
+            matrix[row]![col]!++;
           }
         }
       }
@@ -124,9 +125,9 @@ export function formatConfusionMatrixMarkdown(cm: ConfusionMatrix): string {
   md += '\n';
 
   for (let i = 0; i < cm.matrix.length; i++) {
-    md += `| **${shortLabels[i]}** |`;
-    for (let j = 0; j < cm.matrix[i].length; j++) {
-      const val = cm.matrix[i][j];
+    md += `| **${shortLabels[i]!}** |`;
+    for (let j = 0; j < cm.matrix[i]!.length; j++) {
+      const val = cm.matrix[i]![j]!;
       // Bold diagonal entries
       if (i === j && val > 0) {
         md += ` **${val}** |`;

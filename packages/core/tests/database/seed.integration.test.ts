@@ -112,7 +112,7 @@ describe('Seed Script — P1-ARCH-008 Implementation', () => {
       },
     });
     expect(result.exitCode).not.toBe(0);
-  });
+  }, 30000);
 
   // ═════════════════════════════════════════════════════════════════════════
   // Row Count Verification

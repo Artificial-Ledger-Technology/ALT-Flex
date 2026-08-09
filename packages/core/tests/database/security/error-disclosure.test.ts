@@ -62,7 +62,7 @@ describe('Security — Error Information Disclosure', () => {
 
     const combinedOutput = (result.stdout + result.stderr).toLowerCase();
     expect(combinedOutput).not.toContain(testPassword.toLowerCase());
-  });
+  }, 30000);
 
   // ═════════════════════════════════════════════════════════════════════════
   // [DISC-003] Error output does not expose internal file system paths

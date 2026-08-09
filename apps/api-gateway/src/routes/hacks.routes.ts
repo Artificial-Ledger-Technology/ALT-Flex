@@ -36,7 +36,7 @@ import { PostgresForensicReportRepository } from '@aegis/forensic-engine';
 import { requireApiKey } from '../middleware/api-key.middleware.js';
 
 const dbUrl = process.env['DATABASE_URL'] ?? 'postgresql://aegis:changeme@localhost:5432/aegis_dev';
-const hackRepo = new PostgresHackRepository({ connectionString: dbUrl });
+const hackRepo = new PostgresHackRepository({ connectionString: dbUrl } as any);
 const reportRepo = new PostgresForensicReportRepository(dbUrl);
 
 // ═══════════════════════════════════════════════════════════════════════════════

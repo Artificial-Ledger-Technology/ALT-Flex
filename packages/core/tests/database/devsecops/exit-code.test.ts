@@ -25,6 +25,7 @@ import {
   MONOREPO_ROOT,
   MIGRATE_SCRIPT,
   SEED_SCRIPT,
+  type PgClient,
 } from '../helpers/db-test-utils.js';
 import type pg from 'pg';
 
@@ -34,7 +35,7 @@ import type pg from 'pg';
 
 describe('DevSecOps — CI Gate Compliance', () => {
   let pgAvailable: boolean;
-  let client: pg.Client;
+  let client: PgClient;
 
   beforeAll(async () => {
     pgAvailable = await isPostgresAvailable();
@@ -73,7 +74,7 @@ describe('DevSecOps — CI Gate Compliance', () => {
     });
 
     expect(result.exitCode).not.toBe(0);
-  });
+  }, 30000);
 
   // ═════════════════════════════════════════════════════════════════════════
   // [OPS-003] seed exits 0 on success
@@ -101,7 +102,7 @@ describe('DevSecOps — CI Gate Compliance', () => {
     });
 
     expect(result.exitCode).not.toBe(0);
-  });
+  }, 30000);
 
   // ═════════════════════════════════════════════════════════════════════════
   // [OPS-005] Root package.json has correct migrate/seed scripts

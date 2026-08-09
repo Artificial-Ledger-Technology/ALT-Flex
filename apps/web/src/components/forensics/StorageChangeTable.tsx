@@ -11,7 +11,7 @@ export const StorageChangeTable: React.FC<StorageChangeTableProps> = ({ changes 
   const [copiedKey, setCopiedKey] = React.useState<string | null>(null);
 
   const handleCopy = (text: string, key: string) => {
-    navigator.clipboard.writeText(text);
+    void navigator.clipboard.writeText(text);
     setCopiedKey(key);
     setTimeout(() => setCopiedKey(null), 2000);
   };

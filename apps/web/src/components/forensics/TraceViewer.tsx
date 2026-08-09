@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { TransactionTraceResult, CallTreeNode } from '@aegis/forensic-engine';
 import { Search, ChevronDown, ChevronRight } from 'lucide-react';
