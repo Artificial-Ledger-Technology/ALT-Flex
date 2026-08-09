@@ -21,7 +21,8 @@
     "packages/*/vitest.config.ts",
     "packages/*/scripts/**/*.ts",
     "packages/core/src/database/migrate.ts",
-    "packages/core/src/database/seed.ts"
+    "packages/core/src/database/seed.ts",
+    "tests/**/*.ts"
   ],
   "exclude": ["node_modules", "dist", "apps/web"]
 }

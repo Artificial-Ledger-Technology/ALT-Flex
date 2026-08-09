@@ -23,11 +23,15 @@
     "migrate:down": "tsx packages/core/src/database/migrate.ts --rollback",
     "seed": "tsx packages/core/src/database/seed.ts",
     "db:migrate": "tsx packages/core/src/database/migrate.ts",
-    "db:seed": "tsx packages/core/src/database/seed.ts"
+    "db:seed": "tsx packages/core/src/database/seed.ts",
+    "test:e2e": "playwright test --config=tests/e2e/playwright.config.ts",
+    "test:load": "docker run --rm -i grafana/k6 run - < tests/performance/k6/load-test.js"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
+    "@playwright/test": "^1.62.1",
+    "@types/node": "^20.19.43",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
     "eslint": "^8.57.1",

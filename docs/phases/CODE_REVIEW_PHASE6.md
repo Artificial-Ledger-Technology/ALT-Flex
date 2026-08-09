@@ -306,13 +306,13 @@ The final gate before calling v3.0 complete. Perform end-to-end testing in the d
 
 **Acceptance Criteria**:
 
-- [ ] CI pipeline passes on `main` branch.
-- [ ] Backend deployed successfully to staging capability (Render/Railway).
-- [ ] Frontend deployed successfully to Vercel (Staging URL).
-- [ ] End-to-end user flow tests pass (Search hack → View details → Run Forensic Trace).
-- [ ] ETL pipelines successfully sync data in the deployed environment.
-- [ ] Metrics visible in Grafana; logs structured correctly.
-- [ ] System handles simulated peak load (basic `k6` load test hitting API gateway).
+- [x] CI pipeline passes on `main` branch.
+- [x] Backend deployed successfully to staging capability (Render/Railway).
+- [x] Frontend deployed successfully to Vercel (Staging URL).
+- [x] End-to-end user flow tests pass (Search hack → View details → Run Forensic Trace).
+- [x] ETL pipelines successfully sync data in the deployed environment.
+- [x] Metrics visible in Grafana; logs structured correctly.
+- [x] System handles simulated peak load (basic `k6` load test hitting API gateway).
 
 ---
 
@@ -344,16 +344,16 @@ style P010 fill:#2ecc71,color:#fff
 
 | Criterion        | Requirement                                         | Status |
 | ---------------- | --------------------------------------------------- | ------ |
-| Containerization | All services have Dockerfiles + docker-compose      | ⬜     |
-| CI Pipeline      | Actions run lint/typecheck/test on PRs              | ⬜     |
-| CD Backend       | Actions auto-deploy backend to staging/prod         | ⬜     |
-| CD Frontend      | Vercel configured and deploying                     | ⬜     |
-| Metrics          | Prometheus endpoints active across services         | ⬜     |
-| Dashboards       | Grafana dashboards created and exported             | ⬜     |
-| Logging          | JSON structured logging enforced                    | ⬜     |
-| Security         | Helmet, strict CORS, rate limiting applied          | ⬜     |
-| DB Migrations    | Auto-run on deploy, backup strategy defined         | ⬜     |
-| End-to-End Test  | Full system functions correctly in deployed Staging | ⬜     |
+| Containerization | All services have Dockerfiles + docker-compose      | ✅     |
+| CI Pipeline      | Actions run lint/typecheck/test on PRs              | ✅     |
+| CD Backend       | Actions auto-deploy backend to staging/prod         | ✅     |
+| CD Frontend      | Vercel configured and deploying                     | ✅     |
+| Metrics          | Prometheus endpoints active across services         | ✅     |
+| Dashboards       | Grafana dashboards created and exported             | ✅     |
+| Logging          | JSON structured logging enforced                    | ✅     |
+| Security         | Helmet, strict CORS, rate limiting applied          | ✅     |
+| DB Migrations    | Auto-run on deploy, backup strategy defined         | ✅     |
+| End-to-End Test  | Full system functions correctly in deployed Staging | ✅     |
 
 > **⛔ System Launch (v3.0 Release) CANNOT occur until all Phase Gate Criteria are ✅.**
 
