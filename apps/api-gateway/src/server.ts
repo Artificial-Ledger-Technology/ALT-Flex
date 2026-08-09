@@ -24,6 +24,9 @@ import Fastify from 'fastify';
 import { createPinoLogger } from '@aegis/core';
 import cors from '@fastify/cors';
 import rateLimit from '@fastify/rate-limit';
+import helmet from '@fastify/helmet';
+import Redis from 'ioredis';
+import { getRedisUrl } from './config/env.js';
 
 // ── Cross-Cutting Middleware ─────────────────────────────────────────────────
 import { correlationIdMiddleware } from './middleware/correlation-id.middleware.js';
@@ -60,20 +63,40 @@ const server = Fastify({
 
 // ── Plugins ──────────────────────────────────────────────────────────────────
 async function registerPlugins(): Promise<void> {
+  // 0. Helmet (P6-PROD-008)
+  await server.register(helmet, {
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", 'data:', 'validator.swagger.io'],
+        connectSrc: ["'self'", ...(process.env['CORS_ORIGIN'] ?? '').split(',').filter(Boolean)],
+      },
+    },
+  });
+
   // 1. Correlation ID — must be first to ensure all downstream hooks have context
   await server.register(correlationIdMiddleware);
 
   // 2. CORS
+  const allowedOrigins = (process.env['CORS_ORIGIN'] ?? 'http://localhost:3000')
+    .split(',')
+    .map(o => o.trim())
+    .filter(Boolean);
+
   await server.register(cors, {
-    origin: process.env['CORS_ORIGIN'] ?? 'http://localhost:3000',
+    origin: allowedOrigins,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     credentials: true,
   });
 
   // 3. Rate limiting
+  const redis = new Redis(getRedisUrl(), { maxRetriesPerRequest: null });
   await server.register(rateLimit, {
     max: parseInt(process.env['API_RATE_LIMIT_MAX'] ?? '100', 10),
     timeWindow: parseInt(process.env['API_RATE_LIMIT_WINDOW_MS'] ?? '60000', 10),
+    redis,
   });
 
   // 4. Swagger/OpenAPI

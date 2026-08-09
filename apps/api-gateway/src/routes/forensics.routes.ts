@@ -237,7 +237,15 @@ export async function forensicsRoutes(server: FastifyInstance): Promise<void> {
           400: { description: 'Validation error', type: 'object', additionalProperties: true },
           401: { description: 'Missing or invalid API key', type: 'object', additionalProperties: true },
           404: { description: 'POC not found', type: 'object', additionalProperties: true },
+          429: { description: 'Rate limit exceeded', type: 'object', additionalProperties: true },
           501: { description: 'Not implemented', type: 'object', additionalProperties: true },
+        },
+      },
+      config: {
+        rateLimit: {
+          max: 5,
+          timeWindow: 60 * 60 * 1000,
+          keyGenerator: (req: any) => (req.headers['x-api-key'] as string) || req.ip,
         },
       },
     },
@@ -370,7 +378,15 @@ export async function forensicsRoutes(server: FastifyInstance): Promise<void> {
           202: { description: 'Trace job queued', type: 'object', additionalProperties: true },
           400: { description: 'Validation error', type: 'object', additionalProperties: true },
           401: { description: 'Missing or invalid API key', type: 'object', additionalProperties: true },
+          429: { description: 'Rate limit exceeded', type: 'object', additionalProperties: true },
           501: { description: 'Not implemented', type: 'object', additionalProperties: true },
+        },
+      },
+      config: {
+        rateLimit: {
+          max: 5,
+          timeWindow: 60 * 60 * 1000,
+          keyGenerator: (req: any) => (req.headers['x-api-key'] as string) || req.ip,
         },
       },
     },
