@@ -92,7 +92,11 @@ export * from './errors/index.js';
 // ── Logging Framework (P1-ARCH-010) ─────────────────────────────────────────
 // Pino-based structured logging with AsyncLocalStorage correlation IDs.
 // Domain layers depend on LoggerPort interface, not Pino directly.
-export * from './logging/index.js';
+export * from './logging/logger-port.js';
+export { createLogger, createPinoLogger } from './logging/logger.js';
+export type { LoggerOptions, LogLevel } from './logging/logger.js';
+export * from './logging/correlation-context.js';
+export { describeError } from './logging/describe-error.js';
 
 // ── Queue Infrastructure (P2-ETL-006) ───────────────────────────────────────
 // BullMQ queue connection factory and shared job type definitions.

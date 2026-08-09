@@ -111,12 +111,13 @@ async function start(): Promise<void> {
 
   // ── Worker Event Handlers ───────────────────────────────────────────────
   worker.on('completed', (job) => {
-    logger.info('✅ Job completed', { jobId: job.id, jobName: job.name });
+    logger.info('✅ Job completed', { jobId: job.id, queueName: job.queueName, jobName: job.name });
   });
 
   worker.on('failed', (job, error) => {
     logger.error('❌ Job failed', {
       jobId: job?.id,
+      queueName: job?.queueName,
       jobName: job?.name,
       error: describeError(error),
       stack: error.stack,
@@ -124,7 +125,7 @@ async function start(): Promise<void> {
   });
 
   worker.on('progress', (job, progress) => {
-    logger.debug('📊 Job progress', { jobId: job.id, progress });
+    logger.debug('📊 Job progress', { jobId: job.id, queueName: job.queueName, progress });
   });
 
   worker.on('error', (error) => {
