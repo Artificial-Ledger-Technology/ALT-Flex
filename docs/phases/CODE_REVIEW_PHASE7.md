@@ -171,6 +171,9 @@ The 28-feature vector per incident is derived from EVM execution trace replay:
 | Priority        | P0 — Critical                          |
 | Estimated Hours | 16                                     |
 | Dependencies    | Phase 5 (Foundry adapter) complete     |
+| Assigned Agent  | `senior_machine_learning_engineer`     |
+| QA Agent        | `senior_qa_engineer`                   |
+| Review Agent    | `senior_code_reviewer`                 |
 | Labels          | `ml`, `feature-engineering`, `foundry` |
 
 **Description**:
@@ -205,12 +208,15 @@ research/datasets/
 
 **Title**: Train and Validate the One-vs-Rest XGBoost Classifier
 
-| Field           | Value                       |
-| --------------- | --------------------------- |
-| Priority        | P0 — Critical               |
-| Estimated Hours | 12                          |
-| Dependencies    | P7-ML-001                   |
-| Labels          | `ml`, `xgboost`, `training` |
+| Field           | Value                              |
+| --------------- | ---------------------------------- |
+| Priority        | P0 — Critical                      |
+| Estimated Hours | 12                                 |
+| Dependencies    | P7-ML-001                          |
+| Assigned Agent  | `senior_machine_learning_engineer` |
+| QA Agent        | `senior_qa_engineer`               |
+| Review Agent    | `senior_code_reviewer`             |
+| Labels          | `ml`, `xgboost`, `training`        |
 
 **Description**:
 Train a multi-label XGBoost classifier using the One-vs-Rest strategy across the 10 exploit pattern categories. Validate using stratified k-fold cross-validation and produce per-pattern metrics.
@@ -259,6 +265,9 @@ xgb_params = {
 | Priority        | P0 — Critical                                 |
 | Estimated Hours | 10                                            |
 | Dependencies    | P7-ML-002                                     |
+| Assigned Agent  | `senior_machine_learning_engineer`            |
+| QA Agent        | `senior_qa_engineer`                          |
+| Review Agent    | `senior_code_reviewer`                        |
 | Labels          | `ml`, `onnx`, `typescript`, `forensic-engine` |
 
 **Description**:
@@ -304,6 +313,9 @@ packages/forensic-engine/src/adapters/
 | Priority        | P1 — High                                 |
 | Estimated Hours | 8                                         |
 | Dependencies    | P7-ML-001, P7-ML-003                      |
+| Assigned Agent  | `senior_machine_learning_engineer`        |
+| QA Agent        | `senior_qa_engineer`                      |
+| Review Agent    | `senior_code_reviewer`                    |
 | Labels          | `ml`, `typescript`, `feature-engineering` |
 
 **Description**:
@@ -323,12 +335,15 @@ Create a TypeScript module that extracts the same 28 features from a `Transactio
 
 **Title**: Update Pattern Evaluator to Support ML Model Predictions
 
-| Field           | Value                        |
-| --------------- | ---------------------------- |
-| Priority        | P1 — High                    |
-| Estimated Hours | 6                            |
-| Dependencies    | P7-ML-003                    |
-| Labels          | `ml`, `evaluation`, `thesis` |
+| Field           | Value                              |
+| --------------- | ---------------------------------- |
+| Priority        | P1 — High                          |
+| Estimated Hours | 6                                  |
+| Dependencies    | P7-ML-003                          |
+| Assigned Agent  | `senior_machine_learning_engineer` |
+| QA Agent        | `senior_qa_engineer`               |
+| Review Agent    | `senior_code_reviewer`             |
+| Labels          | `ml`, `evaluation`, `thesis`       |
 
 **Description**:
 Update the existing evaluation framework (`pattern-evaluator.ts`, `confusion-matrix.ts`) to also accept ML model predictions and produce comparison reports: heuristic vs. ML.
@@ -374,12 +389,15 @@ Update the existing evaluation framework (`pattern-evaluator.ts`, `confusion-mat
 
 **Title**: Expand the Labeled Dataset Beyond 62 Samples
 
-| Field           | Value                             |
-| --------------- | --------------------------------- |
-| Priority        | P1 — High                         |
-| Estimated Hours | 12                                |
-| Dependencies    | P7-ML-001                         |
-| Labels          | `ml`, `dataset`, `defi-hack-labs` |
+| Field           | Value                              |
+| --------------- | ---------------------------------- |
+| Priority        | P1 — High                          |
+| Estimated Hours | 12                                 |
+| Dependencies    | P7-ML-001                          |
+| Assigned Agent  | `senior_machine_learning_engineer` |
+| QA Agent        | `senior_qa_engineer`               |
+| Review Agent    | `senior_code_reviewer`             |
+| Labels          | `ml`, `dataset`, `defi-hack-labs`  |
 
 **Description**:
 The current evaluation dataset has 62 labeled samples — borderline for training a robust classifier. Augment the dataset by labeling additional incidents from DeFiHackLabs and the DefiLlama ETL pipeline.
@@ -402,12 +420,15 @@ The current evaluation dataset has 62 labeled samples — borderline for trainin
 
 **Title**: Generate All ML Artifacts Required for Thesis Chapters 4 & 5
 
-| Field           | Value                           |
-| --------------- | ------------------------------- |
-| Priority        | P1 — High                       |
-| Estimated Hours | 6                               |
-| Dependencies    | P7-ML-002, P7-ML-005            |
-| Labels          | `ml`, `thesis`, `documentation` |
+| Field           | Value                              |
+| --------------- | ---------------------------------- |
+| Priority        | P1 — High                          |
+| Estimated Hours | 6                                  |
+| Dependencies    | P7-ML-002, P7-ML-005               |
+| Assigned Agent  | `senior_machine_learning_engineer` |
+| QA Agent        | `senior_qa_engineer`               |
+| Review Agent    | `senior_code_reviewer`             |
+| Labels          | `ml`, `thesis`, `documentation`    |
 
 **Description**:
 Generate all figures, tables, and appendix materials that the thesis manuscript needs for the ML component.
