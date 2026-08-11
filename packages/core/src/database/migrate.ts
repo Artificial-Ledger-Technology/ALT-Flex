@@ -23,7 +23,6 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 /* eslint-disable no-console */
 
@@ -35,8 +34,7 @@ const { Client } = pg;
 // Configuration
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Use native CommonJS __dirname since this package is compiled to CommonJS
 
 const MIGRATIONS_DIR = process.env['AEGIS_MIGRATIONS_DIR'] ?? path.join(__dirname, 'migrations');
 
