@@ -36,7 +36,7 @@ else
   # Run the compiled migration runner from @aegis/core.
   # Uses the migration SQL files copied into the image at /app/migrations/.
   # The MIGRATIONS_DIR env var is set in the Dockerfile to point at /app/migrations.
-  if node /app/node_modules/@aegis/core/dist/database/migrate.js; then
+  if node node_modules/@aegis/core/dist/database/migrate.js; then
     echo ""
     echo "✅ Migrations completed successfully."
   else
@@ -53,7 +53,7 @@ if [ "${RUN_SEED}" = "true" ]; then
   echo "🌱 RUN_SEED=true — Running database seed script..."
   echo ""
 
-  if node /app/node_modules/@aegis/core/dist/database/seed.js; then
+  if node node_modules/@aegis/core/dist/database/seed.js; then
     echo ""
     echo "✅ Seeding completed successfully."
   else
