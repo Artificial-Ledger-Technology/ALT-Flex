@@ -55,7 +55,7 @@ const LOG_LEVEL = process.env['LOG_LEVEL'] ?? 'info';
 // ── Server Instance ──────────────────────────────────────────────────────────
 const server = Fastify({
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
-  logger: createPinoLogger({ name: 'api-gateway' }) as any,
+  loggerInstance: createPinoLogger({ name: 'api-gateway' }) as any,
   disableRequestLogging: true,
   // requestIdLogLabel: label used by Pino to log the request ID as 'correlationId'
   // requestIdHeader intentionally omitted — the correlation ID middleware owns the
@@ -150,6 +150,7 @@ async function registerRoutes(): Promise<void> {
 // ── Graceful Shutdown ────────────────────────────────────────────────────────
 function registerShutdownHandlers(): void {
   const shutdown = async (signal: string): Promise<void> => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     server.log.info({ signal }, 'Received shutdown signal, closing gracefully...');
     await server.close();
     process.exit(0);
@@ -172,9 +173,12 @@ async function start(): Promise<void> {
     registerShutdownHandlers();
 
     await server.listen({ port: PORT, host: HOST });
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     server.log.info(`🛡️  AEGIS API Gateway listening on http://${HOST}:${PORT}`);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     server.log.info(`📚 Swagger UI available at http://${HOST}:${PORT}/documentation`);
   } catch (err) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     server.log.error(err);
     process.exit(1);
   }
