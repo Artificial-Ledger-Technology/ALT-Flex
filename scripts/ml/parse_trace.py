@@ -10,6 +10,7 @@ FLASH_LOAN_SIGS = ["0xab9c4b5d", "0x5cffe9bg"]  # flashLoan, etc
 ORACLE_READ_SIGS = ["0x50d25bcd", "0x313ce567"]
 SWAP_SIGS = ["0x38ed1739", "0x022c0d9f"]
 ADMIN_SIGS = ["0xf2fde38b", "0x8da5cb5b"]
+APPROVAL_SIGS = ["0x095ea7b3"]
 
 def parse_foundry_trace(trace_json: Dict[str, Any], metadata: Dict[str, Any]) -> Dict[str, float]:
     """
@@ -26,6 +27,7 @@ def parse_foundry_trace(trace_json: Dict[str, Any], metadata: Dict[str, Any]) ->
     
     # Context state for tracking execution
     addresses = set()
+    storage_slots = set()
     internal_txns = 0
     max_depth = 0
     
@@ -57,6 +59,9 @@ def parse_foundry_trace(trace_json: Dict[str, Any], metadata: Dict[str, Any]) ->
             op_code = step.get("op", "")
             if op_code == "SSTORE":
                 features["sstore_count"] += 1
+                slot = step.get("key", "") or step.get("location", "")
+                if slot:
+                    storage_slots.add(slot)
             elif op_code == "SLOAD":
                 features["sload_count"] += 1
                 
@@ -80,6 +85,8 @@ def parse_foundry_trace(trace_json: Dict[str, Any], metadata: Dict[str, Any]) ->
                 features["swap_sig_count"] += 1
             elif sig in ADMIN_SIGS:
                 features["admin_sig_count"] += 1
+            elif sig in APPROVAL_SIGS:
+                features["approval_count"] += 1
                 
         calls = node.get("calls", []) or node.get("subtraces", [])
         for call in calls:
@@ -93,6 +100,13 @@ def parse_foundry_trace(trace_json: Dict[str, Any], metadata: Dict[str, Any]) ->
     features["max_call_depth"] = float(max_depth)
     features["unique_addresses_called"] = float(len(addresses))
     features["total_internal_txns"] = float(internal_txns)
+    features["storage_slots_mutated"] = float(len(storage_slots))
+    
+    # We estimate balance change magnitude using the total call value transferred
+    features["balance_change_magnitude"] = features["call_value_total"]
+    
+    if features["flash_loan_sig_count"] > 0 and features["balance_change_magnitude"] > 10.0:
+        features["has_large_borrow_repay"] = 1.0
     
     # Extract gas used
     gas_used = trace_json.get("gasUsed", "0x0")
