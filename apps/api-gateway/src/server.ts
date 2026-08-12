@@ -47,7 +47,7 @@ import { safetyRoutes } from './routes/safety.routes.js';
 import { metricsPlugin } from './plugins/metrics.plugin.js';
 
 // ── Configuration ────────────────────────────────────────────────────────────
-const PORT = parseInt(process.env['API_PORT'] ?? '4000', 10);
+const PORT = parseInt(process.env['PORT'] ?? process.env['API_PORT'] ?? '4000', 10);
 const HOST = process.env['API_HOST'] ?? '0.0.0.0';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const LOG_LEVEL = process.env['LOG_LEVEL'] ?? 'info';
