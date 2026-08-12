@@ -90,7 +90,7 @@ COPY --chown=aegis:aegis infrastructure/scripts/docker-entrypoint.sh ./docker-en
 RUN chmod +x ./docker-entrypoint.sh
 
 ENV NODE_ENV=production
-ENV API_HOST=0.0.0.0
+ENV API_HOST=::
 ENV API_PORT=4000
 # P6-PROD-009: Point the migration runner at the in-image SQL files
 ENV AEGIS_MIGRATIONS_DIR=/prodapp/migrations
