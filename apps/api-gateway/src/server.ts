@@ -48,7 +48,7 @@ import { metricsPlugin } from './plugins/metrics.plugin.js';
 
 // ── Configuration ────────────────────────────────────────────────────────────
 const PORT = parseInt(process.env['PORT'] ?? process.env['API_PORT'] ?? '4000', 10);
-const HOST = process.env['API_HOST'] ?? '0.0.0.0';
+const HOST = process.env['API_HOST'] ?? '::';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const LOG_LEVEL = process.env['LOG_LEVEL'] ?? 'info';
 
