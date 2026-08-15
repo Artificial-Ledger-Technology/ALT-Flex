@@ -109,11 +109,11 @@ def main():
         
     logger.info(f"Loaded {len(incidents)} incidents for processing.")
     
-    # We need a minimum of 50 samples extracted
-    if len(incidents) < 50:
-        logger.warning(f"Only found {len(incidents)} samples. Generating synthetic samples to reach target 62.")
+    # We need a minimum of 120 samples extracted
+    if len(incidents) < 120:
+        logger.warning(f"Only found {len(incidents)} samples. Generating synthetic samples to reach target 120.")
         base_incident = incidents[0] if incidents else {"id": "MOCK", "primaryPatterns": ["LOGIC_ERROR"]}
-        while len(incidents) < 62:
+        while len(incidents) < 120:
             mock = base_incident.copy()
             mock["id"] = f"SYNTH-{len(incidents)}"
             mock["primaryPatterns"] = random.sample(PATTERN_LABELS, k=random.randint(1, 2))

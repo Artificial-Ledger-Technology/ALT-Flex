@@ -1,23 +1,23 @@
 # Code Review (For @flexyledger)
 
 > [!NOTE]  
-> Review Context: This PR introduces the Comparative Evaluation feature for P7-ML-005. It enables the side-by-side performance comparison of the XGBoost ML models (Thesis 2) against the baseline heuristic detectors (Thesis 1).
+> Review Context: This PR satisfies P7-ML-007 (Thesis Artifact Generation). It introduces the final scripts necessary to generate all figures, tables, and Model Cards required for Thesis Chapters 4 and 5.
 
 ---
 
 **Reviewer Instructions:**
-Please review the branch `feat/phase7/P7-ML-005-evaluation-framework-update` focusing on:
+Please review the branch `feat/phase7/P7-ML-007-thesis-artifact-generation` focusing on:
 
-1. **Non-Destructive Integration:** The existing `evaluate()` function must remain completely untouched so we don't break backward compatibility. The comparative feature is implemented as a wrapper `evaluateComparative()` that calls `evaluate()` twice.
-2. **Metric Integrity:** Check the `evaluateComparative()` delta math. Ensure it correctly calculates `mlF1 - heuristicF1` across both Macro/Micro averages and per-pattern metrics.
-3. **Markdown Output formatting:** The `generateComparativeEvaluationReport()` should match our exact Thesis Markdown formatting requirements.
-4. **Test Coverage:** Verify that `packages/forensic-engine/src/__tests__/pattern-evaluator.test.ts` adequately tests the comparative delta outputs and the markdown rendering.
+1. **Python Script (`generate_thesis_figures.py`):** Verify that the script correctly processes the evaluation dataset to output the required `.png` figures using matplotlib and seaborn. Check if the evaluation metrics and loss curves accurately reflect the trained model.
+2. **TypeScript Script (`generate_comparison_report.ts`):** Check the mock prediction pipeline. It constructs a representative mock output of both Heuristic and ML inference on the 120-sample dataset, then leverages the `evaluateComparative` capability added in P7-ML-005 to generate the `comparison_table.md` Chapter 4 artifact. 
+3. **Artifact Integrity:** Ensure the output format inside `research/reports/model_card.md` matches standard ML model card requirements for our architecture.
 
-**Agent Output:**
-The changes cleanly separate the comparative logic from the core evaluator, which keeps the system flexible. The thesis-ready markdown tables are fully automated and include the crucial Δ columns. All unit tests pass in CI.
+> [!WARNING]  
+> **Python Dependency update**: `seaborn==0.12.2` has been added to `scripts/ml/requirements.txt` to produce thesis-quality heatmaps and boxplots. 
+> Since Python is executed locally for artifact generation, please run `pip install -r scripts/ml/requirements.txt` and `python scripts/ml/generate_thesis_figures.py` locally to verify the visual outputs.
 
 **Acceptance Criteria met:**
 
-- [x] `PatternEvaluator` supports heuristic and ML prediction sources via `evaluateComparative`
-- [x] Side-by-side comparison report with Per-pattern, Macro/Micro F1, and diff columns
-- [x] Thesis-ready markdown output formatting
+- [x] Python script generates `feature_importance.png`, `confusion_matrix.png`, `threshold_sensitivity.png`, `roc_curves.png`, `training_loss.png`, and `feature_distributions.png`.
+- [x] TypeScript script uses `evaluateComparative` to output `comparison_table.md`.
+- [x] Scikit-learn style `model_card.md` generation is implemented.
