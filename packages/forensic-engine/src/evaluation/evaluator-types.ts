@@ -226,3 +226,47 @@ export interface SamplePredictions {
   /** All pattern predictions for this sample (may be empty) */
   readonly predictions: readonly PatternPrediction[];
 }
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// Comparative Evaluation (Thesis 1 vs Thesis 2)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * ModelComparison — Head-to-head metrics for a single pattern or average.
+ */
+export interface ModelComparison {
+  /** The pattern ID or 'MACRO_AVERAGE' / 'MICRO_AVERAGE' */
+  readonly patternId: ExploitPatternId | 'MACRO_AVERAGE' | 'MICRO_AVERAGE';
+
+  /** F1 score from the heuristic detectors */
+  readonly heuristicF1: number;
+
+  /** F1 score from the ML model */
+  readonly mlF1: number;
+
+  /** Delta: mlF1 - heuristicF1 */
+  readonly f1Delta: number;
+}
+
+/**
+ * ComparativeEvaluationReport — Complete comparison report (Heuristic vs ML).
+ */
+export interface ComparativeEvaluationReport {
+  /** ISO 8601 timestamp of when the evaluation was run */
+  readonly timestamp: string;
+
+  /** Number of dataset entries evaluated */
+  readonly datasetSize: number;
+
+  /** Full evaluation report using the Heuristic detectors */
+  readonly heuristicReport: EvaluationReport;
+
+  /** Full evaluation report using the ML model */
+  readonly mlReport: EvaluationReport;
+
+  /** Side-by-side comparison of F1 scores */
+  readonly comparisons: readonly ModelComparison[];
+
+  /** True if ML macro F1 > Heuristic macro F1 */
+  readonly overallImprovement: boolean;
+}

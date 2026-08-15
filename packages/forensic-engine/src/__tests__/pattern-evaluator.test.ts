@@ -23,9 +23,16 @@ import {
   analyzeMisclassifications,
   computeThresholdSensitivity,
   evaluate,
+  evaluateComparative,
 } from '../evaluation/pattern-evaluator.js';
-import { buildConfusionMatrix, formatConfusionMatrixMarkdown } from '../evaluation/confusion-matrix.js';
-import { generateEvaluationReport } from '../evaluation/evaluation-report.js';
+import {
+  buildConfusionMatrix,
+  formatConfusionMatrixMarkdown,
+} from '../evaluation/confusion-matrix.js';
+import {
+  generateEvaluationReport,
+  generateComparativeEvaluationReport,
+} from '../evaluation/evaluation-report.js';
 import { type SamplePredictions } from '../evaluation/evaluator-types.js';
 import { type EvaluationEntry } from '../__tests__/fixtures/evaluation-dataset/evaluation-dataset.schema.js';
 
@@ -33,10 +40,7 @@ import { type EvaluationEntry } from '../__tests__/fixtures/evaluation-dataset/e
 // Test Fixtures
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const makeEntry = (
-  id: string,
-  patterns: string[],
-): EvaluationEntry => ({
+const makeEntry = (id: string, patterns: string[]): EvaluationEntry => ({
   id,
   txHash: '0x' + '0'.repeat(64),
   chain: 'ethereum',
@@ -76,17 +80,11 @@ const MINI_DATASET: EvaluationEntry[] = [
 const PERFECT_PREDICTIONS: SamplePredictions[] = [
   makePrediction('EVD-T1', [
     { patternId: 'FLASH_LOAN', confidence: 0.95 },
-    { patternId: 'ORACLE_MANIPULATION', confidence: 0.90 },
+    { patternId: 'ORACLE_MANIPULATION', confidence: 0.9 },
   ]),
-  makePrediction('EVD-T2', [
-    { patternId: 'REENTRANCY', confidence: 0.92 },
-  ]),
-  makePrediction('EVD-T3', [
-    { patternId: 'FLASH_LOAN', confidence: 0.88 },
-  ]),
-  makePrediction('EVD-T4', [
-    { patternId: 'ACCESS_CONTROL', confidence: 0.96 },
-  ]),
+  makePrediction('EVD-T2', [{ patternId: 'REENTRANCY', confidence: 0.92 }]),
+  makePrediction('EVD-T3', [{ patternId: 'FLASH_LOAN', confidence: 0.88 }]),
+  makePrediction('EVD-T4', [{ patternId: 'ACCESS_CONTROL', confidence: 0.96 }]),
   makePrediction('EVD-T5', [
     { patternId: 'REENTRANCY', confidence: 0.85 },
     { patternId: 'FLASH_LOAN', confidence: 0.91 },
@@ -98,17 +96,13 @@ const IMPERFECT_PREDICTIONS: SamplePredictions[] = [
   makePrediction('EVD-T1', [
     { patternId: 'FLASH_LOAN', confidence: 0.95 },
     // Missing ORACLE_MANIPULATION → false negative
-    { patternId: 'REENTRANCY', confidence: 0.60 },  // false positive
+    { patternId: 'REENTRANCY', confidence: 0.6 }, // false positive
   ]),
-  makePrediction('EVD-T2', [
-    { patternId: 'REENTRANCY', confidence: 0.92 },
-  ]),
+  makePrediction('EVD-T2', [{ patternId: 'REENTRANCY', confidence: 0.92 }]),
   makePrediction('EVD-T3', [
-    { patternId: 'FLASH_LOAN', confidence: 0.20 },  // below threshold → false negative
+    { patternId: 'FLASH_LOAN', confidence: 0.2 }, // below threshold → false negative
   ]),
-  makePrediction('EVD-T4', [
-    { patternId: 'ACCESS_CONTROL', confidence: 0.96 },
-  ]),
+  makePrediction('EVD-T4', [{ patternId: 'ACCESS_CONTROL', confidence: 0.96 }]),
   makePrediction('EVD-T5', [
     { patternId: 'REENTRANCY', confidence: 0.85 },
     // Missing FLASH_LOAN → false negative
@@ -125,7 +119,7 @@ describe('PatternEvaluator', () => {
   describe('computePerPatternMetrics', () => {
     it('should compute perfect scores for perfect predictions', () => {
       const map = new Map(PERFECT_PREDICTIONS.map((p) => [p.entryId, p]));
-      const metrics = computePerPatternMetrics(MINI_DATASET, map, 0.30);
+      const metrics = computePerPatternMetrics(MINI_DATASET, map, 0.3);
 
       const flashLoan = metrics.find((m) => m.patternId === 'FLASH_LOAN')!;
       expect(flashLoan.tp).toBe(3);
@@ -138,7 +132,7 @@ describe('PatternEvaluator', () => {
 
     it('should detect false negatives when patterns are missed', () => {
       const map = new Map(IMPERFECT_PREDICTIONS.map((p) => [p.entryId, p]));
-      const metrics = computePerPatternMetrics(MINI_DATASET, map, 0.30);
+      const metrics = computePerPatternMetrics(MINI_DATASET, map, 0.3);
 
       const flashLoan = metrics.find((m) => m.patternId === 'FLASH_LOAN')!;
       // T1 detected, T3 below threshold (FN), T5 missing (FN) → TP=1, FN=2
@@ -149,7 +143,7 @@ describe('PatternEvaluator', () => {
 
     it('should detect false positives when wrong patterns are predicted', () => {
       const map = new Map(IMPERFECT_PREDICTIONS.map((p) => [p.entryId, p]));
-      const metrics = computePerPatternMetrics(MINI_DATASET, map, 0.30);
+      const metrics = computePerPatternMetrics(MINI_DATASET, map, 0.3);
 
       const reentrancy = metrics.find((m) => m.patternId === 'REENTRANCY')!;
       // T2 correct, T5 correct, T1 is FP → TP=2, FP=1
@@ -160,7 +154,7 @@ describe('PatternEvaluator', () => {
 
     it('should return zero metrics for patterns with no ground truth and no predictions', () => {
       const map = new Map(PERFECT_PREDICTIONS.map((p) => [p.entryId, p]));
-      const metrics = computePerPatternMetrics(MINI_DATASET, map, 0.30);
+      const metrics = computePerPatternMetrics(MINI_DATASET, map, 0.3);
 
       const selfDestruct = metrics.find((m) => m.patternId === 'SELF_DESTRUCT')!;
       expect(selfDestruct.tp).toBe(0);
@@ -175,7 +169,7 @@ describe('PatternEvaluator', () => {
 
     it('should return metrics for all 10 pattern categories', () => {
       const map = new Map(PERFECT_PREDICTIONS.map((p) => [p.entryId, p]));
-      const metrics = computePerPatternMetrics(MINI_DATASET, map, 0.30);
+      const metrics = computePerPatternMetrics(MINI_DATASET, map, 0.3);
 
       expect(metrics).toHaveLength(10);
       const ids = metrics.map((m) => m.patternId);
@@ -190,7 +184,7 @@ describe('PatternEvaluator', () => {
   describe('computeMacroAverages', () => {
     it('should compute macro F1 = 1.0 for perfect predictions', () => {
       const map = new Map(PERFECT_PREDICTIONS.map((p) => [p.entryId, p]));
-      const metrics = computePerPatternMetrics(MINI_DATASET, map, 0.30);
+      const metrics = computePerPatternMetrics(MINI_DATASET, map, 0.3);
       const macro = computeMacroAverages(metrics);
 
       // Only 4 patterns have support (FLASH_LOAN, REENTRANCY, ORACLE_MANIPULATION, ACCESS_CONTROL)
@@ -213,7 +207,7 @@ describe('PatternEvaluator', () => {
   describe('computeMicroAverages', () => {
     it('should compute pooled micro metrics', () => {
       const map = new Map(PERFECT_PREDICTIONS.map((p) => [p.entryId, p]));
-      const metrics = computePerPatternMetrics(MINI_DATASET, map, 0.30);
+      const metrics = computePerPatternMetrics(MINI_DATASET, map, 0.3);
       const micro = computeMicroAverages(metrics);
 
       // With perfect predictions, micro precision and recall should be 1.0
@@ -224,7 +218,7 @@ describe('PatternEvaluator', () => {
 
     it('should reflect errors in micro metrics', () => {
       const map = new Map(IMPERFECT_PREDICTIONS.map((p) => [p.entryId, p]));
-      const metrics = computePerPatternMetrics(MINI_DATASET, map, 0.30);
+      const metrics = computePerPatternMetrics(MINI_DATASET, map, 0.3);
       const micro = computeMicroAverages(metrics);
 
       expect(micro.microF1).toBeLessThan(1.0);
@@ -237,7 +231,7 @@ describe('PatternEvaluator', () => {
   describe('buildConfusionMatrix', () => {
     it('should build a 10x10 matrix', () => {
       const map = new Map(PERFECT_PREDICTIONS.map((p) => [p.entryId, p]));
-      const cm = buildConfusionMatrix(MINI_DATASET, map, 0.30);
+      const cm = buildConfusionMatrix(MINI_DATASET, map, 0.3);
 
       expect(cm.labels).toHaveLength(10);
       expect(cm.matrix).toHaveLength(10);
@@ -246,7 +240,7 @@ describe('PatternEvaluator', () => {
 
     it('should have non-zero diagonal for correct predictions', () => {
       const map = new Map(PERFECT_PREDICTIONS.map((p) => [p.entryId, p]));
-      const cm = buildConfusionMatrix(MINI_DATASET, map, 0.30);
+      const cm = buildConfusionMatrix(MINI_DATASET, map, 0.3);
 
       // FLASH_LOAN is index 0, should have 3 on diagonal
       const flashIdx = cm.labels.indexOf('FLASH_LOAN');
@@ -255,7 +249,7 @@ describe('PatternEvaluator', () => {
 
     it('should format as markdown table', () => {
       const map = new Map(PERFECT_PREDICTIONS.map((p) => [p.entryId, p]));
-      const cm = buildConfusionMatrix(MINI_DATASET, map, 0.30);
+      const cm = buildConfusionMatrix(MINI_DATASET, map, 0.3);
       const md = formatConfusionMatrixMarkdown(cm);
 
       expect(md).toContain('Truth \\\\ Pred');
@@ -269,13 +263,13 @@ describe('PatternEvaluator', () => {
   describe('analyzeMisclassifications', () => {
     it('should return no misclassifications for perfect predictions', () => {
       const map = new Map(PERFECT_PREDICTIONS.map((p) => [p.entryId, p]));
-      const misses = analyzeMisclassifications(MINI_DATASET, map, 0.30);
+      const misses = analyzeMisclassifications(MINI_DATASET, map, 0.3);
       expect(misses).toHaveLength(0);
     });
 
     it('should detect false negatives', () => {
       const map = new Map(IMPERFECT_PREDICTIONS.map((p) => [p.entryId, p]));
-      const misses = analyzeMisclassifications(MINI_DATASET, map, 0.30);
+      const misses = analyzeMisclassifications(MINI_DATASET, map, 0.3);
 
       const fns = misses.filter((m) => m.type === 'false_negative');
       expect(fns.length).toBeGreaterThan(0);
@@ -289,17 +283,15 @@ describe('PatternEvaluator', () => {
 
     it('should detect false positives', () => {
       const map = new Map(IMPERFECT_PREDICTIONS.map((p) => [p.entryId, p]));
-      const misses = analyzeMisclassifications(MINI_DATASET, map, 0.30);
+      const misses = analyzeMisclassifications(MINI_DATASET, map, 0.3);
 
       const fps = misses.filter((m) => m.type === 'false_positive');
       expect(fps.length).toBeGreaterThan(0);
 
       // REENTRANCY is falsely predicted for T1
-      const reentrancyFP = fps.find(
-        (f) => f.entryId === 'EVD-T1' && f.patternId === 'REENTRANCY',
-      );
+      const reentrancyFP = fps.find((f) => f.entryId === 'EVD-T1' && f.patternId === 'REENTRANCY');
       expect(reentrancyFP).toBeDefined();
-      expect(reentrancyFP!.confidence).toBe(0.60);
+      expect(reentrancyFP!.confidence).toBe(0.6);
     });
 
     it('should handle missing predictions as false negatives', () => {
@@ -307,7 +299,7 @@ describe('PatternEvaluator', () => {
       // Only provide prediction for T1, rest are missing
       map.set('EVD-T1', PERFECT_PREDICTIONS[0]);
 
-      const misses = analyzeMisclassifications(MINI_DATASET, map, 0.30);
+      const misses = analyzeMisclassifications(MINI_DATASET, map, 0.3);
       const fns = misses.filter((m) => m.type === 'false_negative');
 
       // T2, T3, T4, T5 all have missing predictions
@@ -320,17 +312,17 @@ describe('PatternEvaluator', () => {
   describe('computeThresholdSensitivity', () => {
     it('should produce metrics at each requested threshold', () => {
       const map = new Map(PERFECT_PREDICTIONS.map((p) => [p.entryId, p]));
-      const thresholds = [0.30, 0.50, 0.80, 0.99];
+      const thresholds = [0.3, 0.5, 0.8, 0.99];
       const sensitivity = computeThresholdSensitivity(MINI_DATASET, map, thresholds);
 
       expect(sensitivity).toHaveLength(4);
-      expect(sensitivity[0].threshold).toBe(0.30);
+      expect(sensitivity[0].threshold).toBe(0.3);
       expect(sensitivity[3].threshold).toBe(0.99);
     });
 
     it('should show lower recall at higher thresholds', () => {
       const map = new Map(PERFECT_PREDICTIONS.map((p) => [p.entryId, p]));
-      const sensitivity = computeThresholdSensitivity(MINI_DATASET, map, [0.30, 0.99]);
+      const sensitivity = computeThresholdSensitivity(MINI_DATASET, map, [0.3, 0.99]);
 
       // At threshold 0.99, most predictions will be below threshold → lower recall
       expect(sensitivity[1].macroRecall).toBeLessThanOrEqual(sensitivity[0].macroRecall);
@@ -342,13 +334,13 @@ describe('PatternEvaluator', () => {
   describe('evaluate', () => {
     it('should produce a complete EvaluationReport', () => {
       const report = evaluate(MINI_DATASET, PERFECT_PREDICTIONS, {
-        threshold: 0.30,
+        threshold: 0.3,
         engineVersion: '3.1.0-test',
       });
 
       expect(report.totalSamples).toBe(5);
       expect(report.engineVersion).toBe('3.1.0-test');
-      expect(report.primaryThreshold).toBe(0.30);
+      expect(report.primaryThreshold).toBe(0.3);
       expect(report.perPatternMetrics).toHaveLength(10);
       expect(report.confusionMatrix.labels).toHaveLength(10);
       expect(report.thresholdSensitivity.length).toBeGreaterThan(0);
@@ -356,8 +348,8 @@ describe('PatternEvaluator', () => {
     });
 
     it('should be deterministic given same inputs', () => {
-      const r1 = evaluate(MINI_DATASET, PERFECT_PREDICTIONS, { threshold: 0.30 });
-      const r2 = evaluate(MINI_DATASET, PERFECT_PREDICTIONS, { threshold: 0.30 });
+      const r1 = evaluate(MINI_DATASET, PERFECT_PREDICTIONS, { threshold: 0.3 });
+      const r2 = evaluate(MINI_DATASET, PERFECT_PREDICTIONS, { threshold: 0.3 });
 
       // All numeric metrics should be identical
       expect(r1.macroF1).toBe(r2.macroF1);
@@ -369,7 +361,7 @@ describe('PatternEvaluator', () => {
     it('should detect that perfect predictions miss the target when patterns have no support', () => {
       // Since 6/10 patterns have no support in MINI_DATASET,
       // their F1=0 drags down macro F1 below 0.80
-      const report = evaluate(MINI_DATASET, PERFECT_PREDICTIONS, { threshold: 0.30 });
+      const report = evaluate(MINI_DATASET, PERFECT_PREDICTIONS, { threshold: 0.3 });
       // 4 patterns at F1=1.0, 6 at F1=0.0 → macro F1 = 0.4
       expect(report.macroF1).toBe(0.4);
       expect(report.meetsTarget).toBe(false);
@@ -380,7 +372,7 @@ describe('PatternEvaluator', () => {
 
   describe('generateEvaluationReport', () => {
     it('should produce a valid markdown report', () => {
-      const report = evaluate(MINI_DATASET, PERFECT_PREDICTIONS, { threshold: 0.30 });
+      const report = evaluate(MINI_DATASET, PERFECT_PREDICTIONS, { threshold: 0.3 });
       const markdown = generateEvaluationReport(report);
 
       expect(markdown).toContain('# Exploit Pattern Recognizer — Evaluation Report');
@@ -393,10 +385,61 @@ describe('PatternEvaluator', () => {
     });
 
     it('should include the pass/fail indicator', () => {
-      const report = evaluate(MINI_DATASET, IMPERFECT_PREDICTIONS, { threshold: 0.30 });
+      const report = evaluate(MINI_DATASET, IMPERFECT_PREDICTIONS, { threshold: 0.3 });
       const markdown = generateEvaluationReport(report);
 
       expect(markdown).toContain('❌ FAIL');
+    });
+  });
+
+  // ─── Comparative Evaluation ───────────────────────────────────────────────
+
+  describe('evaluateComparative', () => {
+    it('should calculate F1 deltas correctly between heuristic and ML', () => {
+      const comparativeReport = evaluateComparative(
+        MINI_DATASET,
+        IMPERFECT_PREDICTIONS, // Heuristic
+        PERFECT_PREDICTIONS, // ML
+        { heuristicThreshold: 0.3, mlThreshold: 0.3 },
+      );
+
+      expect(comparativeReport.datasetSize).toBe(5);
+      expect(comparativeReport.overallImprovement).toBe(true);
+
+      const flashLoanDelta = comparativeReport.comparisons.find(
+        (c) => c.patternId === 'FLASH_LOAN',
+      );
+      expect(flashLoanDelta).toBeDefined();
+
+      // Heuristic (IMPERFECT) had F1 < 1.0, ML (PERFECT) had F1 = 1.0
+      // So delta should be positive
+      expect(flashLoanDelta!.f1Delta).toBeGreaterThan(0);
+      expect(flashLoanDelta!.mlF1).toBeGreaterThan(flashLoanDelta!.heuristicF1);
+    });
+  });
+
+  describe('generateComparativeEvaluationReport', () => {
+    it('should render the side-by-side markdown comparison correctly', () => {
+      const comparativeReport = evaluateComparative(
+        MINI_DATASET,
+        IMPERFECT_PREDICTIONS,
+        PERFECT_PREDICTIONS,
+      );
+
+      const markdown = generateComparativeEvaluationReport(comparativeReport);
+
+      // Verify header
+      expect(markdown).toContain('## Exploit Pattern Recognizer — Evaluation Report');
+
+      // Verify Macro table
+      expect(markdown).toContain('### Macro-Averaged F1 Score');
+      expect(markdown).toContain('| Heuristic  |');
+      expect(markdown).toContain('| XGBoost ML |');
+
+      // Verify Per-Pattern table
+      expect(markdown).toContain('### Per-Pattern Breakdown');
+      expect(markdown).toContain('| FLASH_LOAN');
+      expect(markdown).toContain('+'); // Positive delta sign since ML is PERFECT and Heuristic is IMPERFECT
     });
   });
 });

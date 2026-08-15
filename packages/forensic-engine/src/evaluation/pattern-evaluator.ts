@@ -12,19 +12,17 @@
  * @task P5-EVM-012
  */
 
-import { type ExploitPatternId } from '../domain/pattern-types.js';
 import {
   type PatternMetrics,
   type MisclassificationEntry,
   type ThresholdPoint,
   type EvaluationReport,
   type SamplePredictions,
+  type ComparativeEvaluationReport,
+  type ModelComparison,
   ALL_PATTERN_IDS,
 } from './evaluator-types.js';
-import {
-  type EvaluationEntry,
-  type EvaluationDataset,
-} from '../__tests__/fixtures/evaluation-dataset/evaluation-dataset.schema.js';
+import { type EvaluationDataset } from '../__tests__/fixtures/evaluation-dataset/evaluation-dataset.schema.js';
 import { buildConfusionMatrix } from './confusion-matrix.js';
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -32,13 +30,13 @@ import { buildConfusionMatrix } from './confusion-matrix.js';
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /** Default confidence threshold for binary classification */
-const DEFAULT_THRESHOLD = 0.30;
+const DEFAULT_THRESHOLD = 0.3;
 
 /** Target macro F1 score as defined by acceptance criteria */
-const TARGET_MACRO_F1 = 0.80;
+const TARGET_MACRO_F1 = 0.8;
 
 /** Thresholds to evaluate for sensitivity analysis */
-const SENSITIVITY_THRESHOLDS = [0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90];
+const SENSITIVITY_THRESHOLDS = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // Per-Pattern Metric Computation
@@ -106,9 +104,11 @@ export function computePerPatternMetrics(
 /**
  * computeMacroAverages — Computes unweighted averages of per-pattern metrics.
  */
-export function computeMacroAverages(
-  metrics: readonly PatternMetrics[],
-): { macroPrecision: number; macroRecall: number; macroF1: number } {
+export function computeMacroAverages(metrics: readonly PatternMetrics[]): {
+  macroPrecision: number;
+  macroRecall: number;
+  macroF1: number;
+} {
   const n = metrics.length;
   if (n === 0) return { macroPrecision: 0, macroRecall: 0, macroF1: 0 };
 
@@ -126,9 +126,11 @@ export function computeMacroAverages(
 /**
  * computeMicroAverages — Computes pooled TP/FP/FN metrics across all patterns.
  */
-export function computeMicroAverages(
-  metrics: readonly PatternMetrics[],
-): { microPrecision: number; microRecall: number; microF1: number } {
+export function computeMicroAverages(metrics: readonly PatternMetrics[]): {
+  microPrecision: number;
+  microRecall: number;
+  microF1: number;
+} {
   const totalTP = metrics.reduce((s, m) => s + m.tp, 0);
   const totalFP = metrics.reduce((s, m) => s + m.fp, 0);
   const totalFN = metrics.reduce((s, m) => s + m.fn, 0);
@@ -313,4 +315,81 @@ export function evaluate(
 /** Round to 4 decimal places for deterministic output */
 function round4(n: number): number {
   return Math.round(n * 10000) / 10000;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// Comparative Evaluation
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * evaluateComparative — Runs the evaluation pipeline on both heuristic and ML
+ * predictions, generating a side-by-side comparison report.
+ *
+ * @param dataset - The labeled evaluation dataset
+ * @param heuristicPredictions - Predictions from the original heuristic rules
+ * @param mlPredictions - Predictions from the XGBoost OvR model
+ * @param options - Configuration options
+ * @returns ComparativeEvaluationReport
+ */
+export function evaluateComparative(
+  dataset: EvaluationDataset,
+  heuristicPredictions: readonly SamplePredictions[],
+  mlPredictions: readonly SamplePredictions[],
+  options: {
+    heuristicThreshold?: number;
+    mlThreshold?: number;
+    engineVersion?: string;
+  } = {},
+): ComparativeEvaluationReport {
+  const heuristicReport = evaluate(dataset, heuristicPredictions, {
+    threshold: options.heuristicThreshold ?? DEFAULT_THRESHOLD,
+    ...(options.engineVersion !== undefined ? { engineVersion: options.engineVersion } : {}),
+  });
+
+  const mlReport = evaluate(dataset, mlPredictions, {
+    threshold: options.mlThreshold ?? DEFAULT_THRESHOLD,
+    ...(options.engineVersion !== undefined ? { engineVersion: options.engineVersion } : {}),
+  });
+
+  const comparisons: ModelComparison[] = [];
+
+  // Macro-average comparison
+  comparisons.push({
+    patternId: 'MACRO_AVERAGE',
+    heuristicF1: heuristicReport.macroF1,
+    mlF1: mlReport.macroF1,
+    f1Delta: round4(mlReport.macroF1 - heuristicReport.macroF1),
+  });
+
+  // Micro-average comparison
+  comparisons.push({
+    patternId: 'MICRO_AVERAGE',
+    heuristicF1: heuristicReport.microF1,
+    mlF1: mlReport.microF1,
+    f1Delta: round4(mlReport.microF1 - heuristicReport.microF1),
+  });
+
+  // Per-pattern comparisons
+  for (const patternId of ALL_PATTERN_IDS) {
+    const hMetrics = heuristicReport.perPatternMetrics.find((m) => m.patternId === patternId);
+    const mMetrics = mlReport.perPatternMetrics.find((m) => m.patternId === patternId);
+
+    if (hMetrics && mMetrics) {
+      comparisons.push({
+        patternId,
+        heuristicF1: hMetrics.f1,
+        mlF1: mMetrics.f1,
+        f1Delta: round4(mMetrics.f1 - hMetrics.f1),
+      });
+    }
+  }
+
+  return {
+    timestamp: new Date().toISOString(),
+    datasetSize: dataset.length,
+    heuristicReport,
+    mlReport,
+    comparisons,
+    overallImprovement: mlReport.macroF1 > heuristicReport.macroF1,
+  };
 }
