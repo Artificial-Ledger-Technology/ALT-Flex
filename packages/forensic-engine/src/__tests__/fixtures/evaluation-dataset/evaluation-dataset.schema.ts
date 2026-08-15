@@ -84,6 +84,12 @@ export interface EvaluationEntry {
 
   /** Brief human-written attack narrative (1-2 sentences) */
   readonly narrative: string;
+
+  /** Detailed description explaining the attack mechanics (added for P7-ML-006) */
+  readonly description?: string;
+
+  /** Source PoC file path for Foundry replay (added for P7-ML-006) */
+  readonly sourcePocFilePath?: string;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
