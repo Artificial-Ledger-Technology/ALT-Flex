@@ -67,6 +67,9 @@ coverage/
 test-results/
 playwright-report/
 blob-report/
+deploy_test/
+deploy_test_2/
+deploy_test*/
 
 # ── Foundry / Forge (Smart Contract Tooling) ─────────────────────────
 # Foundry build artifacts
