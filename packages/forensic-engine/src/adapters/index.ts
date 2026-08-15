@@ -52,7 +52,7 @@ export {
   StorageSlotDiscoverer,
 } from './storage/index.js';
 
-// ── Pattern Recognition Adapter (P5-EVM-005) ────────────────────────────────
+// ── Pattern Recognition Adapter (P5-EVM-005, P7-ML-003) ─────────────────────
 export {
   ExploitPatternRecognizer,
   PatternConfigLoader,
@@ -67,4 +67,22 @@ export {
   LogicErrorDetector,
   BridgeExploitDetector,
 } from './patterns/index.js';
+export type {
+  RecognizerMode,
+  RecognizerOptions,
+  ExtendedAnalysisMetadata,
+} from './patterns/exploit-pattern-recognizer.js';
+
+// ── ML Adapter (P7-ML-003/004) ──────────────────────────────────────────────
+export {
+  OnnxExploitClassifier,
+  TraceFeatureExtractor,
+  FEATURE_NAMES,
+} from './ml/index.js';
+export type {
+  OnnxClassifierOptions,
+  OnnxModelManifest,
+  FeatureName,
+  ExtractorMetadata,
+} from './ml/index.js';
 
