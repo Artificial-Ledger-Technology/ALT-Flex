@@ -1,4 +1,4 @@
-﻿"""
+"""
 P7-ML-008: ML Pipeline Refactoring -- Feature-Collapse & Imbalance Fix
 =======================================================================
 Resolves three critical failure modes:
