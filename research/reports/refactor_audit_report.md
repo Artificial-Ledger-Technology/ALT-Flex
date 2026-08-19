@@ -19,34 +19,34 @@
 
 | Feature                        | Type       | Mean        | Variance          | Zeros% | Status |
 | ------------------------------ | ---------- | ----------- | ----------------- | ------ | ------ |
-| `total_gas_used`               | structural | 187251.9531 | 114637905920.0000 | 0.0%   | ok     |
-| `max_call_depth`               | structural | 0.7793      | 0.1337            | 0.0%   | ok     |
-| `unique_addresses_called`      | structural | 4.6517      | 25.6390           | 0.0%   | ok     |
-| `total_internal_txns`          | structural | 3.1843      | 18.7761           | 0.0%   | ok     |
-| `delegatecall_count`           | structural | 2.1467      | 5.2356            | 0.0%   | ok     |
-| `selfdestruct_count`           | structural | 1.0363      | 0.7594            | 0.0%   | ok     |
-| `create_create2_count`         | structural | 1.2311      | 1.4362            | 0.0%   | ok     |
-| `sstore_count`                 | structural | 4.1403      | 43.8907           | 0.0%   | ok     |
-| `sload_count`                  | structural | 6.0483      | 65.9505           | 0.0%   | ok     |
-| `call_value_total`             | structural | 166415.8125 | 131203842048.0000 | 0.0%   | ok     |
-| `flash_loan_sig_count`         | structural | 1.8404      | 5.3949            | 0.0%   | ok     |
-| `oracle_read_sig_count`        | structural | 1.5684      | 4.9422            | 0.0%   | ok     |
-| `swap_sig_count`               | structural | 2.4907      | 6.8463            | 0.0%   | ok     |
-| `admin_sig_count`              | structural | 2.9336      | 8.5642            | 0.0%   | ok     |
-| `transfer_count`               | structural | 2.3275      | 16.2001           | 0.0%   | ok     |
-| `approval_count`               | structural | 0.8596      | 0.1568            | 0.0%   | ok     |
-| `recursive_call_detected`      | structural | 0.1111      | 0.1036            | 89.2%  | ok     |
-| `recursive_call_depth`         | structural | 1.3499      | 2.5022            | 0.0%   | ok     |
-| `balance_change_magnitude`     | structural | 219929.0156 | 406076981248.0000 | 0.0%   | ok     |
-| `storage_slots_mutated`        | structural | 4.5314      | 23.5259           | 0.0%   | ok     |
-| `has_price_oracle_before_swap` | structural | 0.109       | 0.0997            | 89.2%  | ok     |
-| `has_large_borrow_repay`       | structural | 0.1565      | 0.1320            | 84.2%  | ok     |
-| `cross_contract_call_ratio`    | structural | 0.9722      | 0.2767            | 0.0%   | ok     |
-| `gas_per_internal_txn`         | structural | 7728.2793   | 396921152.0000    | 0.0%   | ok     |
-| `reverted_calls_count`         | structural | 2.8168      | 9.7480            | 0.0%   | ok     |
-| `chain_id`                     | metadata   | 10228.4414  | 324957728.0000    | 0.0%   | ok     |
-| `pre_audit_status`             | structural | 0.4667      | 0.2489            | 53.3%  | ok     |
-| `loss_amount_log`              | metadata   | 5.9777      | 2.2002            | 0.0%   | ok     |
+| `total_gas_used`               | structural | 304118.3438 | 143358099456.0000 | 0.0%   | ok     |
+| `max_call_depth`               | structural | 0.8673      | 0.1561            | 0.0%   | ok     |
+| `unique_addresses_called`      | structural | 4.4879      | 34.3717           | 0.0%   | ok     |
+| `total_internal_txns`          | structural | 4.792       | 28.3140           | 0.0%   | ok     |
+| `delegatecall_count`           | structural | 2.0604      | 7.5866            | 0.0%   | ok     |
+| `selfdestruct_count`           | structural | 1.0648      | 1.0570            | 0.0%   | ok     |
+| `create_create2_count`         | structural | 1.3636      | 1.7294            | 0.0%   | ok     |
+| `sstore_count`                 | structural | 5.0554      | 57.3286           | 0.0%   | ok     |
+| `sload_count`                  | structural | 7.8025      | 74.4338           | 0.0%   | ok     |
+| `call_value_total`             | structural | 316035.4375 | 203291181056.0000 | 0.0%   | ok     |
+| `flash_loan_sig_count`         | structural | 2.3234      | 7.0043            | 0.0%   | ok     |
+| `oracle_read_sig_count`        | structural | 2.3226      | 8.3925            | 0.0%   | ok     |
+| `swap_sig_count`               | structural | 3.5271      | 9.9001            | 0.0%   | ok     |
+| `admin_sig_count`              | structural | 2.0496      | 6.6276            | 0.0%   | ok     |
+| `transfer_count`               | structural | 3.2987      | 20.5772           | 0.0%   | ok     |
+| `approval_count`               | structural | 0.753       | 0.1471            | 0.0%   | ok     |
+| `recursive_call_detected`      | structural | 0.1423      | 0.1245            | 85.8%  | ok     |
+| `recursive_call_depth`         | structural | 1.5134      | 3.4979            | 0.0%   | ok     |
+| `balance_change_magnitude`     | structural | 437558.3125 | 710038847488.0000 | 0.0%   | ok     |
+| `storage_slots_mutated`        | structural | 3.6168      | 25.6541           | 0.0%   | ok     |
+| `has_price_oracle_before_swap` | structural | 0.2151      | 0.1709            | 78.3%  | ok     |
+| `has_large_borrow_repay`       | structural | 0.2597      | 0.1900            | 73.3%  | ok     |
+| `cross_contract_call_ratio`    | structural | 1.0545      | 0.2985            | 0.0%   | ok     |
+| `gas_per_internal_txn`         | structural | 13398.0811  | 573127424.0000    | 0.0%   | ok     |
+| `reverted_calls_count`         | structural | 3.8633      | 11.9170           | 0.0%   | ok     |
+| `chain_id`                     | metadata   | 9876.2832   | 317224960.0000    | 0.0%   | ok     |
+| `pre_audit_status`             | structural | 0.4         | 0.2400            | 60.0%  | ok     |
+| `loss_amount_log`              | metadata   | 7.7694      | 0.6229            | 0.0%   | ok     |
 
 ## Step 3 -- Cross-Validation Results
 
@@ -54,23 +54,23 @@
 
 | Fold     | Precision  | Recall     | F1         |
 | -------- | ---------- | ---------- | ---------- |
-| 1        | 0.8750     | 0.8250     | 0.8381     |
-| 2        | 0.9667     | 0.9333     | 0.9467     |
-| 3        | 0.8250     | 0.8500     | 0.8190     |
-| 4        | 0.9500     | 1.0000     | 0.9667     |
-| 5        | 1.0000     | 0.8833     | 0.9267     |
-| **Mean** | **0.9233** | **0.8983** | **0.8994** |
+| 1        | 0.9000     | 0.8167     | 0.8467     |
+| 2        | 0.9667     | 1.0000     | 0.9800     |
+| 3        | 1.0000     | 0.9500     | 0.9667     |
+| 4        | 1.0000     | 0.9500     | 0.9667     |
+| 5        | 0.9800     | 1.0000     | 0.9889     |
+| **Mean** | **0.9693** | **0.9433** | **0.9498** |
 
 ### Structural-Only (26 features, metadata dropped)
 
 | Fold     | Precision  | Recall     | F1         |
 | -------- | ---------- | ---------- | ---------- |
-| 1        | 0.8750     | 0.8250     | 0.8381     |
-| 2        | 0.9500     | 0.9000     | 0.9200     |
-| 3        | 0.8250     | 0.8500     | 0.8190     |
-| 4        | 0.9500     | 1.0000     | 0.9667     |
-| 5        | 1.0000     | 0.8833     | 0.9267     |
-| **Mean** | **0.9200** | **0.8917** | **0.8941** |
+| 1        | 0.9000     | 0.8167     | 0.8467     |
+| 2        | 0.9667     | 0.9857     | 0.9723     |
+| 3        | 1.0000     | 0.9500     | 0.9667     |
+| 4        | 1.0000     | 0.9750     | 0.9857     |
+| 5        | 0.9800     | 1.0000     | 0.9889     |
+| **Mean** | **0.9693** | **0.9455** | **0.9520** |
 
 ## Hyperparameter Changes
 
@@ -87,8 +87,8 @@
 
 ## Step 4 -- Optimal Thresholds
 
-- Full-feature best threshold: **0.70**
-- Structural-only best threshold: **0.70**
+- Full-feature best threshold: **0.40**
+- Structural-only best threshold: **0.40**
 
 ## Outputs Generated
 

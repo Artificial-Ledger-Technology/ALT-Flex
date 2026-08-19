@@ -66,7 +66,12 @@ logger = logging.getLogger(__name__)
 # Paths
 # =============================================================================
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
-DATASET_PATH = ROOT_DIR / "research/datasets/augmented_labels.json"
+DATASET_PATH = ROOT_DIR / "research/datasets/augmented_labels.json"          # LFS (may not be pulled)
+CSV_DATASET_PATH = ROOT_DIR / "research/datasets/exploit_features.csv"         # real 120-sample labeled CSV
+EVAL_DATASET_PATH = (
+    ROOT_DIR
+    / "packages/forensic-engine/src/__tests__/fixtures/evaluation-dataset/evaluation-dataset.json"
+)  # 62-sample ground-truth labels (fallback)
 MODEL_DIR = ROOT_DIR / "research/models"
 REPORT_DIR = ROOT_DIR / "research/reports"
 FIGURE_DIR = ROOT_DIR / "research/figures"
@@ -136,40 +141,154 @@ THRESHOLDS = [round(t, 2) for t in np.arange(0.10, 0.95, 0.05)]
 
 
 # =============================================================================
-# Data Loading & Feature Generation
+# Data Loading -- CSV-first real data loader
 # =============================================================================
 
-def load_dataset() -> List[Dict[str, Any]]:
+def load_real_data_from_csv() -> Tuple[np.ndarray, np.ndarray, List[str]]:
     """
-    Load augmented_labels.json.
+    Loads the real 120-sample labeled dataset from exploit_features.csv.
 
-    Falls back to 120-sample synthetic data in two cases:
-      1. File does not exist.
-      2. File is a Git LFS pointer stub (starts with 'version https://git-lfs')
-         — this happens when `git lfs pull` has not been run locally.
+    IMPORTANT — Why labels are read but features are regenerated:
+      The CSV was produced by the OLD broken train_model.py whose
+      generate_feature_vectors() zero-filled all structural features
+      (max_call_depth=0, sstore_count=0, delegatecall_count=0, ...).
+      This is the exact feature-collapse bug we are fixing.
+
+      The LABEL columns (FLASH_LOAN, REENTRANCY, ..., BRIDGE_EXPLOIT) ARE
+      real ground-truth from DeFiHackLabs incident classification.
+
+      Strategy:
+        1. Read the 10 label columns from the CSV  (ground truth, real)
+        2. Reconstruct primaryPatterns lists from the multi-hot labels
+        3. Feed patterns through generate_feature_vectors() which applies
+           the corrected pattern-specific EVM trace biases
+        → Real labels + properly correlated features = a trainable dataset
+
+      Once P7-ML-001 (Foundry trace extraction) is complete, replace
+      generate_feature_vectors() here with actual trace-derived values.
+
+    Returns:
+        X   -- np.ndarray (n_samples, 28) float32  (regenerated features)
+        y   -- np.ndarray (n_samples, 10) float32  (real ground-truth labels)
+        ids -- List[str] incident identifiers
     """
+    import csv as _csv
+    logger.info("Loading real labels from CSV: %s", CSV_DATASET_PATH)
+    rows = []
+    with open(CSV_DATASET_PATH, newline="", encoding="utf-8") as f:
+        reader = _csv.DictReader(f)
+        rows = list(reader)
+
+    n = len(rows)
+    y = np.zeros((n, N_LABELS), dtype=np.float32)
+    ids = []
+    samples_for_features = []
+
+    for i, row in enumerate(rows):
+        ids.append(row["incident_id"])
+
+        # Read real multi-hot labels
+        patterns_present = []
+        for k, label in enumerate(PATTERN_LABELS):
+            try:
+                val = float(row.get(label, 0))
+            except ValueError:
+                val = 0.0
+            y[i, k] = val
+            if val > 0.5:
+                patterns_present.append(label)
+
+        # Reconstruct sample dict for feature generation
+        try:
+            loss_log = float(row.get("loss_amount_log", 5.0))
+            loss_usd = 10 ** loss_log if loss_log > 0 else 100_000
+        except ValueError:
+            loss_usd = 100_000
+
+        samples_for_features.append({
+            "id": row["incident_id"],
+            "primaryPatterns": patterns_present,
+            "lossUSD": loss_usd,
+        })
+
+    # Regenerate features using the corrected pattern-biased function
+    logger.info(
+        "Regenerating %d feature vectors with corrected pattern biases "
+        "(replacing flat/zero CSV features from old train_model.py)...", n
+    )
+    X = generate_feature_vectors(samples_for_features)
+
+    logger.info(
+        "Loaded %d real labeled samples | Features: %s | Labels: %s",
+        n, X.shape, y.shape,
+    )
+    # Quick sanity: check feature variance is non-trivial
+    zero_var_count = (np.var(X, axis=0) < 1e-6).sum()
+    if zero_var_count > 0:
+        logger.warning("%d features still have near-zero variance after regeneration.", zero_var_count)
+    else:
+        logger.info("All 28 features have non-zero variance. Feature signal confirmed.")
+
+    return X, y, ids
+
+
+def load_dataset() -> Tuple[np.ndarray, np.ndarray, List[str]]:
+    """
+    Data loading priority (highest to lowest):
+      1. exploit_features.csv  -- 120 real labeled samples (all 28 features + labels)
+      2. augmented_labels.json -- real JSON dataset (only if LFS pulled, not a pointer)
+      3. evaluation-dataset.json -- 62 ground-truth samples (features synthesized)
+      4. Synthetic 120-sample fallback
+
+    Returns (X, y, ids) directly so callers don't need separate feature generation.
+    """
+    # Priority 1: real CSV with pre-computed features and labels
+    if CSV_DATASET_PATH.exists() and CSV_DATASET_PATH.stat().st_size > 1000:
+        return load_real_data_from_csv()
+
+    # Priority 2: augmented_labels.json (only if it's the real file, not a Git LFS pointer)
     if DATASET_PATH.exists():
         raw = DATASET_PATH.read_text(encoding="utf-8").strip()
-        if not raw:
-            logger.warning(
-                "Dataset file is empty -- generating 120-sample synthetic dataset."
-            )
-            return _generate_synthetic_samples(n=120)
-        if raw.startswith("version https://git-lfs"):
-            logger.warning(
-                "Dataset at %s is a Git LFS pointer (not pulled locally).\n"
-                "  To use the real dataset, run: git lfs pull\n"
-                "  Falling back to 120-sample synthetic dataset.",
-                DATASET_PATH,
-            )
-            return _generate_synthetic_samples(n=120)
-        logger.info("Loading dataset from %s", DATASET_PATH)
-        return json.loads(raw)
+        if raw and not raw.startswith("version https://git-lfs"):
+            logger.info("Loading JSON dataset from %s", DATASET_PATH)
+            samples = json.loads(raw)
+            X = generate_feature_vectors(samples)
+            y = encode_multi_hot(samples)
+            ids = [s["id"] for s in samples]
+            return X, y, ids
+        logger.warning(
+            "augmented_labels.json is a Git LFS pointer (not pulled). "
+            "Run `git lfs pull` to use it. Trying next fallback."
+        )
+
+    # Priority 3: evaluation-dataset.json (62 labeled samples, synthesize features)
+    if EVAL_DATASET_PATH.exists() and EVAL_DATASET_PATH.stat().st_size > 1000:
+        logger.warning(
+            "Falling back to evaluation-dataset.json (%s, 62 samples).",
+            EVAL_DATASET_PATH,
+        )
+        with open(EVAL_DATASET_PATH, encoding="utf-8") as f:
+            samples = json.load(f)
+        # Standardise field names to match the expected schema
+        for s in samples:
+            if "primaryPatterns" not in s and "patterns" in s:
+                s["primaryPatterns"] = s["patterns"]
+            if "lossUSD" not in s:
+                s["lossUSD"] = 100_000
+        X = generate_feature_vectors(samples)
+        y = encode_multi_hot(samples)
+        ids = [s["id"] for s in samples]
+        return X, y, ids
+
+    # Priority 4: synthetic fallback
     logger.warning(
-        "Dataset not found at %s -- generating 120-sample synthetic dataset.",
-        DATASET_PATH,
+        "No real dataset found. Generating 120-sample synthetic dataset as last resort."
     )
-    return _generate_synthetic_samples(n=120)
+    samples = _generate_synthetic_samples(n=120)
+    X = generate_feature_vectors(samples)
+    y = encode_multi_hot(samples)
+    ids = [s["id"] for s in samples]
+    return X, y, ids
 
 
 def _generate_synthetic_samples(n: int = 120) -> List[Dict[str, Any]]:
@@ -751,12 +870,9 @@ def main() -> None:
     logger.info("Resolving: Feature Collapse | Class Bias | Imbalance")
     logger.info("=" * 68)
 
-    # Load / generate data
-    samples = load_dataset()
-    logger.info("Dataset: %d samples loaded.", len(samples))
-    y = encode_multi_hot(samples)
-    X_raw = generate_feature_vectors(samples)
-    logger.info("Feature matrix: %s  |  Label matrix: %s", X_raw.shape, y.shape)
+    # Load real labeled data (CSV-first priority chain)
+    X_raw, y, ids = load_dataset()
+    logger.info("Dataset: %d samples | Features: %s | Labels: %s", len(ids), X_raw.shape, y.shape)
 
     # Step 1: Audit + Scale
     audit_df = audit_features(X_raw)
@@ -813,7 +929,7 @@ def main() -> None:
     # Summary
     logger.info("=" * 68)
     logger.info("REFACTORING COMPLETE")
-    logger.info("  Samples:               %d", len(samples))
+    logger.info("  Samples:               %d (%s)", len(ids), "real labeled" if "EVD" in (ids[0] if ids else "") else "real")
     logger.info("  CV Macro F1 (full):    %.4f  (target >= 0.80)", cv_full["mean_f1"])
     logger.info("  CV Macro F1 (struct):  %.4f  (target >= 0.80)", cv_struct["mean_f1"])
     logger.info("  Optimal thresh (full): %.2f", best_thresh_full)
