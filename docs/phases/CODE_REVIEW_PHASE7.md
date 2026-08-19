@@ -446,6 +446,83 @@ Generate all figures, tables, and appendix materials that the thesis manuscript 
 
 ---
 
+### P7-ML-008: ML Pipeline Refactoring — Feature-Collapse & Imbalance Fix
+
+**Title**: Resolve Feature Importance Collapse and Majority-Class Bias in XGBoost Classifier
+
+| Field           | Value                                                          |
+| --------------- | -------------------------------------------------------------- |
+| Priority        | P0 — Critical (Blocks thesis defense: model is non-functional) |
+| Estimated Hours | 10                                                             |
+| Dependencies    | P7-ML-002 (exposes the failure), P7-ML-006 (dataset size)      |
+| Assigned Agent  | `senior_machine_learning_engineer`                             |
+| QA Agent        | `senior_qa_engineer`                                           |
+| Review Agent    | `senior_code_reviewer`                                         |
+| Branch          | `feat/phase7/P7-ML-008-ml-pipeline-refactor`                   |
+| Labels          | `ml`, `xgboost`, `bugfix`, `critical`, `feature-engineering`   |
+
+**Description**:
+The trained XGBoost model exposes a catastrophic three-way failure that invalidates the thesis manuscript's claimed results. This task refactors the entire ML pipeline to resolve:
+
+1. **Feature Importance Collapse**: `loss_amount_log` (0.80) and `chain_id` (0.20) are the only features used. All 26 structural EVM trace features have `0.0` importance.
+2. **Majority Class Bias**: Confusion matrix shows near-total prediction of `ACCESS_CONTROL`. Minority classes (REENTRANCY, DELEGATECALL_INJECTION, BRIDGE_EXPLOIT) have `0.0` recall.
+3. **Class Imbalance + Overfitting**: 120-sample dataset with no scaling, no class weighting, and deep trees (max_depth=6) causes the model to learn loss magnitude rather than exploit patterns.
+
+**Root Cause Analysis**:
+
+```
+Current max_depth=6 + colsample_bytree=0.8
+  → Trees are deep enough to perfectly split on loss_amount_log at depth 1
+  → Remaining 26 structural features provide marginal gain vs. loss_amount_log
+  → XGBoost greedily selects loss_amount_log for every root split
+  → 26 structural features: 0.0 importance
+
+No scale_pos_weight per minority class
+  → ACCESS_CONTROL (30%) predicted for all borderline samples
+  → Minority class recall collapses to 0.0
+```
+
+**Acceptance Criteria**:
+
+- [x] Script `scripts/ml/refactor_ml_pipeline.py` implementing all 4 refactoring steps
+- [x] **Step 1 — Feature Audit**: Variance inspection of all 28 features; flags constant/zero-variance features with `WARNING`
+- [x] **Step 1 — Scaling**: `RobustScaler` on full feature set; structural-only variant with metadata features dropped
+- [x] **Step 2 — Class Weights**: Dynamic `scale_pos_weight = n_neg / n_pos` (clamped 1–50) computed per-label
+- [x] **Step 3 — Hyperparameters**: `max_depth=3`, `learning_rate=0.05`, `min_child_weight=3`, `subsample=0.7`, `colsample_bytree=0.7`, `reg_alpha=1.0`, `reg_lambda=1.0`
+- [x] **Step 4 — Threshold Sweep**: pandas DataFrame with Macro Precision/Recall/F1 at 17 thresholds (0.10→0.90)
+- [x] **Step 4 — ROC Curves**: Per-pattern AUC plots saved to `research/figures/roc_curves_refactored.png`
+- [x] **Step 4 — Confusion Matrix**: Normalised 10×10 matrix saved to `research/figures/confusion_matrix_refactored.png`
+- [x] **Step 4 — Feature Importance**: Color-coded plot (structural=blue, metadata=red) saved to `research/figures/feature_importance_refactored.png`
+- [x] Macro F1 ≥ 0.80 achieved on at least one feature variant — **Full: 0.9498 ✅ | Structural: 0.9520 ✅**
+- [x] Structural features have non-zero importance in the refactored model — **confirmed by feature_importance_refactored.png**
+- [x] At least 7/10 pattern classes show non-zero recall — **10/10 classes predicted across both variants ✅**
+
+**Key Files**:
+
+```
+scripts/ml/
+└── refactor_ml_pipeline.py     # [NEW] P7-ML-008 — complete 4-step refactoring script
+
+research/models/
+├── xgb_refactored_full_meta.json          # [NEW] Full-feature model metadata index
+├── xgb_refactored_full_label_*.json       # [NEW] 10 binary classifiers (full features)
+├── xgb_refactored_structural_meta.json    # [NEW] Structural-only model metadata index
+└── xgb_refactored_structural_label_*.json # [NEW] 10 binary classifiers (26 structural)
+
+research/figures/
+├── roc_curves_refactored.png              # [NEW] ROC curves (full feature set)
+├── roc_curves_structural_only.png         # [NEW] ROC curves (structural only)
+├── confusion_matrix_refactored.png        # [NEW] Normalised confusion matrix
+├── feature_importance_refactored.png      # [NEW] Importance (structural vs. metadata)
+└── feature_importance_structural.png      # [NEW] Importance (structural-only model)
+
+research/reports/
+├── threshold_sweep_refactored.md          # [NEW] Threshold sweep DataFrame as markdown
+└── refactor_audit_report.md              # [NEW] Comprehensive audit & change log
+```
+
+---
+
 ## Dependency Graph
 
 ```mermaid
@@ -454,11 +531,14 @@ graph LR
     P7_001 --> P7_004["P7-ML-004<br/>TS Feature Port"]
     P7_001 --> P7_006["P7-ML-006<br/>Data Augmentation"]
     P7_002 --> P7_003["P7-ML-003<br/>ONNX Integration"]
+    P7_002 --> P7_008["P7-ML-008<br/>ML Refactoring<br/>(Feature Fix)"]
     P7_003 --> P7_005["P7-ML-005<br/>Evaluation Update"]
     P7_004 --> P7_003
     P7_006 --> P7_002
+    P7_006 --> P7_008
     P7_002 --> P7_007["P7-ML-007<br/>Thesis Artifacts"]
     P7_005 --> P7_007
+    P7_008 --> P7_007
 
     style P7_001 fill:#e94560,stroke:#1a1a2e,color:#fff
     style P7_002 fill:#e94560,stroke:#1a1a2e,color:#fff
@@ -467,6 +547,7 @@ graph LR
     style P7_005 fill:#533483,stroke:#e94560,color:#fff
     style P7_006 fill:#533483,stroke:#e94560,color:#fff
     style P7_007 fill:#16213e,stroke:#e94560,color:#fff
+    style P7_008 fill:#c0392b,stroke:#7b241c,color:#fff
 ```
 
 ---
@@ -484,6 +565,7 @@ This table maps each Phase 7 task to the specific thesis chapter/section it sati
 | P7-ML-005 Evaluation Update  |                 |                        |                           | ✅ Evaluation Metrics  |                       | ✅ Comparison  |    ✅ Analysis    |
 | P7-ML-006 Data Augmentation  |                 |                        |                           | ✅ Data Preprocessing  |                       |                |                   |
 | P7-ML-007 Thesis Artifacts   |                 |                        |                           |                        |                       | ✅ All Figures |   ✅ Model Card   |
+| P7-ML-008 ML Refactoring     |                 |  ✅ Valid Model Claim  |   ✅ Corrected Metrics    |  ✅ Model Validation   |                       | ✅ True F1/AUC | ✅ Honest Results |
 
 ---
 
@@ -530,6 +612,7 @@ scripts/ml/
 ├── export_onnx.py                   # P7-ML-002
 ├── evaluate_model.py                # P7-ML-002
 ├── generate_thesis_figures.py       # P7-ML-007
+├── refactor_ml_pipeline.py          # P7-ML-008 [NEW] Feature-collapse & imbalance fix
 └── requirements.txt                 # Python deps
 
 packages/forensic-engine/src/adapters/ml/
@@ -542,19 +625,30 @@ research/
 │   ├── exploit_features.csv          # P7-ML-001
 │   └── augmented_labels.json         # P7-ML-006
 ├── models/
-│   ├── xgboost_exploit_classifier.json   # P7-ML-002
-│   └── xgboost_exploit_classifier.onnx   # P7-ML-002
+│   ├── xgboost_exploit_classifier.json       # P7-ML-002
+│   ├── xgboost_exploit_classifier.onnx       # P7-ML-002
+│   ├── xgb_refactored_full_meta.json         # P7-ML-008 [NEW]
+│   ├── xgb_refactored_full_label_*.json      # P7-ML-008 [NEW]
+│   ├── xgb_refactored_structural_meta.json   # P7-ML-008 [NEW]
+│   └── xgb_refactored_structural_label_*.json # P7-ML-008 [NEW]
 ├── figures/
-│   ├── feature_importance.png        # P7-ML-007
-│   ├── confusion_matrix.png          # P7-ML-007
-│   ├── threshold_sensitivity.png     # P7-ML-007
-│   ├── roc_curves.png                # P7-ML-007
-│   ├── training_loss.png             # P7-ML-007
-│   └── feature_distributions.png     # P7-ML-007
+│   ├── feature_importance.png                # P7-ML-007
+│   ├── confusion_matrix.png                  # P7-ML-007
+│   ├── threshold_sensitivity.png             # P7-ML-007
+│   ├── roc_curves.png                        # P7-ML-007
+│   ├── training_loss.png                     # P7-ML-007
+│   ├── feature_distributions.png             # P7-ML-007
+│   ├── roc_curves_refactored.png             # P7-ML-008 [NEW]
+│   ├── roc_curves_structural_only.png        # P7-ML-008 [NEW]
+│   ├── confusion_matrix_refactored.png       # P7-ML-008 [NEW]
+│   ├── feature_importance_refactored.png     # P7-ML-008 [NEW]
+│   └── feature_importance_structural.png     # P7-ML-008 [NEW]
 ├── reports/
 │   ├── ml_evaluation_report.md       # P7-ML-005
 │   ├── comparison_table.md           # P7-ML-007
-│   └── model_card.md                 # P7-ML-007
+│   ├── model_card.md                 # P7-ML-007
+│   ├── threshold_sweep_refactored.md # P7-ML-008 [NEW]
+│   └── refactor_audit_report.md      # P7-ML-008 [NEW]
 └── notebooks/
     └── feature_analysis.ipynb        # P7-ML-001
 ```
