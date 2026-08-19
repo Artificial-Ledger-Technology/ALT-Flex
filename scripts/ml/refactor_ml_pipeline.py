@@ -140,12 +140,35 @@ THRESHOLDS = [round(t, 2) for t in np.arange(0.10, 0.95, 0.05)]
 # =============================================================================
 
 def load_dataset() -> List[Dict[str, Any]]:
-    """Load augmented_labels.json. Falls back to 120-sample synthetic data if absent."""
+    """
+    Load augmented_labels.json.
+
+    Falls back to 120-sample synthetic data in two cases:
+      1. File does not exist.
+      2. File is a Git LFS pointer stub (starts with 'version https://git-lfs')
+         — this happens when `git lfs pull` has not been run locally.
+    """
     if DATASET_PATH.exists():
+        raw = DATASET_PATH.read_text(encoding="utf-8").strip()
+        if not raw:
+            logger.warning(
+                "Dataset file is empty -- generating 120-sample synthetic dataset."
+            )
+            return _generate_synthetic_samples(n=120)
+        if raw.startswith("version https://git-lfs"):
+            logger.warning(
+                "Dataset at %s is a Git LFS pointer (not pulled locally).\n"
+                "  To use the real dataset, run: git lfs pull\n"
+                "  Falling back to 120-sample synthetic dataset.",
+                DATASET_PATH,
+            )
+            return _generate_synthetic_samples(n=120)
         logger.info("Loading dataset from %s", DATASET_PATH)
-        with open(DATASET_PATH, "r") as f:
-            return json.load(f)
-    logger.warning("Dataset not found -- generating 120-sample synthetic dataset.")
+        return json.loads(raw)
+    logger.warning(
+        "Dataset not found at %s -- generating 120-sample synthetic dataset.",
+        DATASET_PATH,
+    )
     return _generate_synthetic_samples(n=120)
 
 

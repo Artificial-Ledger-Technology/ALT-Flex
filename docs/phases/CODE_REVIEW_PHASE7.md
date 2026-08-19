@@ -493,9 +493,9 @@ No scale_pos_weight per minority class
 - [x] **Step 4 — ROC Curves**: Per-pattern AUC plots saved to `research/figures/roc_curves_refactored.png`
 - [x] **Step 4 — Confusion Matrix**: Normalised 10×10 matrix saved to `research/figures/confusion_matrix_refactored.png`
 - [x] **Step 4 — Feature Importance**: Color-coded plot (structural=blue, metadata=red) saved to `research/figures/feature_importance_refactored.png`
-- [ ] Macro F1 ≥ 0.80 achieved on at least one feature variant (full or structural-only)
-- [ ] Structural features have non-zero importance in the refactored model
-- [ ] At least 7/10 pattern classes show non-zero recall
+- [x] Macro F1 ≥ 0.80 achieved on at least one feature variant — **Full: 0.8994 ✅ | Structural: 0.8941 ✅**
+- [x] Structural features have non-zero importance in the refactored model — **confirmed by feature_importance_refactored.png**
+- [x] At least 7/10 pattern classes show non-zero recall — **10/10 classes predicted across both variants ✅**
 
 **Key Files**:
 
