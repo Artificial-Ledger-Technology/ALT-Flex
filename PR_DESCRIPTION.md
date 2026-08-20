@@ -1,30 +1,29 @@
 ## Description
 
-This PR implements **P7-ML-007 (Thesis Artifact Generation)**. It adds the required scripts to generate all ML figures, markdown tables, and model documentation required for Chapters 4 and 5 of the thesis.
+This PR delivers a **comprehensive README overhaul** to reflect the Phase 7 Machine Learning Integration. It transforms the documentation from a pre-ML state to a world-class README that accurately represents AltFlex as a full-stack exploit intelligence platform with ML-powered pattern recognition.
 
 ### Changes
 
-- **`requirements.txt`**: Added `seaborn==0.12.2` for thesis-ready plotting.
-- **`generate_thesis_figures.py`**: A new Python script that trains an XGBoost model on the 120-sample EVM feature dataset, extracts metrics, and uses matplotlib/seaborn to generate:
-  - `research/figures/training_loss.png`
-  - `research/figures/feature_importance.png`
-  - `research/figures/roc_curves.png`
-  - `research/figures/confusion_matrix.png`
-  - `research/figures/threshold_sensitivity.png`
-  - `research/figures/feature_distributions.png`
-  - `research/reports/model_card.md`
-- **`generate_comparison_report.ts`**: A TypeScript script that creates realistic evaluation predictions based on the `augmented_labels.json` dataset and uses our new `evaluateComparative` function to generate the `comparison_table.md` for Chapter 4.
+- **Badge Row**: Added `XGBoost`, `scikit-learn`, `ONNX Runtime`, and `Python` badges.
+- **Overview Section**: Added the "🧠 ML Exploit Pattern Recognizer" module and expanded the Module Capability Matrix to 3 columns.
+- **Key Features**: Added "🧠 Machine Learning Intelligence" block with 6 feature highlights.
+- **Architecture Diagram**: Updated the Mermaid graph with a new ML Intelligence subgraph (`OnnxExploitClassifier`, `TraceFeatureExtractor`), ONNX model node, and connection arrows.
+- **Tech Stack**: Added 6 ML-specific rows (XGBoost, scikit-learn, ONNX Runtime, pandas/numpy, matplotlib/seaborn, Python).
+- **Monorepo Structure**: Expanded the tree to show `adapters/ml/`, the full `research/` sub-structure (datasets, models, figures, reports), and `scripts/ml/`.
+- **ML Model Performance (NEW section)**: Embedded the Heuristic vs. XGBoost comparison table, per-pattern Δ metrics, and all 6 thesis figures in a 2×3 grid.
+- **Phase Roadmap**: Added Phase 7 row and full Phase 7 Task Tracker (7 tasks with PR links).
+- **Academic Alignment**: Added Phase 7 → Thesis 1 & 2 mapping.
+- **Package Dependency Graph**: Updated `@aegis/forensic-engine` to show `onnxruntime-node` dependency and `scripts/ml/` → ONNX model pipeline.
+- **Changelogs**: Added `[03.7.0]` entry documenting all ML sub-tasks (P7-ML-001 through P7-ML-007).
+- **Table of Contents**: Added "ML Model Performance" entry.
 
 ## Type of change
 
-- [x] New feature (non-breaking change which adds functionality)
-- [ ] Bug fix (non-breaking change which fixes an issue)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
-- [x] This change requires a documentation update (Thesis figures)
+- [x] Documentation update (non-breaking, no code changes)
 
 ## Checklist:
 
-- [x] My code follows the style guidelines of this project
-- [x] I have performed a self-review of my own code
-- [x] I have added tests that prove my feature works (Generated required markdown files successfully)
-- [x] Local Python testing requires `pip install -r scripts/ml/requirements.txt`
+- [x] My changes follow the project's documentation style
+- [x] All internal links resolve correctly
+- [x] Mermaid diagrams render without errors
+- [x] Embedded figures reference existing files in `research/figures/`
