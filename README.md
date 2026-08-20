@@ -80,13 +80,13 @@ Uses a One-vs-Rest XGBoost classifier trained on 120 labeled DeFi exploit incide
 
 ### Module Capability Matrix
 
-| Dimension          | Exploit Analytics                           | Forensic Simulation                               | ML Pattern Recognizer                                   |
-| ------------------ | ------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------- |
-| **Purpose**        | DeFi exploit aggregation & analytics        | Foundry-based exploit simulation & trace analysis | ML-powered exploit classification from EVM traces       |
-| **Data Source**    | DefiLlama API, DeFiHackLabs                 | EVM RPC providers, Foundry CLI                    | 120 labeled incidents, 28-feature execution traces      |
-| **Primary Entity** | `HackIncident`                              | `ExploitPOC`                                      | `OnnxExploitClassifier` + `TraceFeatureExtractor`       |
-| **Key Port**       | `IHackDataPort`                             | `IChainDataPort` + `ISimulationPort`              | ONNX Runtime Session + Feature Vector Pipeline          |
-| **Output**         | Analytical dashboard + attack vector charts | Trace visualization + call trees                  | Multi-label predictions with confidence + Δ comparison  |
+| Dimension          | Exploit Analytics                           | Forensic Simulation                               | ML Pattern Recognizer                                  |
+| ------------------ | ------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------ |
+| **Purpose**        | DeFi exploit aggregation & analytics        | Foundry-based exploit simulation & trace analysis | ML-powered exploit classification from EVM traces      |
+| **Data Source**    | DefiLlama API, DeFiHackLabs                 | EVM RPC providers, Foundry CLI                    | 120 labeled incidents, 28-feature execution traces     |
+| **Primary Entity** | `HackIncident`                              | `ExploitPOC`                                      | `OnnxExploitClassifier` + `TraceFeatureExtractor`      |
+| **Key Port**       | `IHackDataPort`                             | `IChainDataPort` + `ISimulationPort`              | ONNX Runtime Session + Feature Vector Pipeline         |
+| **Output**         | Analytical dashboard + attack vector charts | Trace visualization + call trees                  | Multi-label predictions with confidence + Δ comparison |
 | **Thesis**         | Thesis 1 — Exploit Analytics                | Thesis 2 — Forensic Simulation                    | Thesis 2 — Chapters 4 & 5 (Results & Discussion)       |
 
 ---
@@ -179,8 +179,6 @@ Uses a One-vs-Rest XGBoost classifier trained on 120 labeled DeFi exploit incide
 </div>
 
 <br>
-
-
 
 ### Landing Page
 
@@ -308,36 +306,36 @@ graph TB
 
 ## Tech Stack
 
-| Layer                   | Technology              | Version   | Purpose                                            |
-| ----------------------- | ----------------------- | --------- | -------------------------------------------------- |
-| **Runtime**             | Node.js                 | ≥ 22.12   | JavaScript runtime with native ESM                 |
-| **Package Manager**     | pnpm                    | 10.32     | Strict dependency isolation, fast installs         |
-| **Build Orchestration** | Turborepo               | 2.x       | Task caching, parallel execution, dependency graph |
-| **Language**            | TypeScript              | 5.4       | Strict mode, full-stack type safety                |
-| **Frontend**            | Next.js + React         | 15 + 19   | App Router, Server Components, streaming SSR       |
-| **API Gateway**         | Fastify                 | 5.x       | High-performance BFF with plugin architecture      |
-| **Schema Validation**   | Zod                     | 3.22      | Runtime validation + TypeScript type inference     |
-| **EVM Client**          | viem                    | 2.8       | Type-safe EVM interactions, ABI encoding           |
-| **Wallet / Signing**    | ethers                  | 6.11      | Wallet utilities, contract interaction             |
-| **Smart Contracts**     | Foundry (forge + cast)  | latest    | Exploit POC execution, transaction tracing         |
-| **Primary Database**    | PostgreSQL              | 16        | Relational hack data, JSONB for skill metadata     |
-| **Cache & Queue**       | Redis + BullMQ          | 7 + 5.x   | ETL job queues, API response caching               |
-| **UI Virtualization**   | @tanstack/react-virtual | 3.x       | 60fps rendering for 1000+ node trace trees         |
-| **Logging**             | Winston                 | 3.11      | Structured logging across all packages             |
-| **Date Utilities**      | date-fns                | 3.3       | Lightweight date operations                        |
-| **Testing**             | Vitest                  | 3.2       | Unit + integration tests, coverage reports         |
-| **Linting**             | ESLint + TS-ESLint      | 8.x + 7.x | Static analysis, type-aware rules                  |
-| **Formatting**          | Prettier                | 3.2       | Consistent code style enforcement                  |
-| **Git Hooks**           | Husky + lint-staged     | 9 + 15    | Block non-conforming commits at gate               |
-| **Commit Linting**      | commitlint              | 19.8      | Conventional commit enforcement                    |
-| **Containers**          | Docker + Compose        | latest    | One-command dev environment bootstrap              |
-| **IaC**                 | Terraform               | —         | Cloud infrastructure (Phase 6)                     |
-| **ML Classifier**       | XGBoost                 | 1.7.6     | Tree-based ensemble for multi-label classification |
-| **ML Pipeline**         | scikit-learn            | 1.3.0     | Preprocessing, evaluation metrics, OvR strategy    |
-| **ML Inference**        | ONNX Runtime (Node.js)  | 1.15.1    | Cross-language model inference in production        |
-| **Data Processing**     | pandas + numpy          | 2.0 + 1.24| Feature extraction and dataset manipulation        |
-| **ML Visualization**    | matplotlib + seaborn    | 3.7 + 0.12| Thesis-quality figures and heatmaps                |
-| **ML Runtime**          | Python                  | 3.10+     | Training pipeline only (not in production)         |
+| Layer                   | Technology              | Version    | Purpose                                            |
+| ----------------------- | ----------------------- | ---------- | -------------------------------------------------- |
+| **Runtime**             | Node.js                 | ≥ 22.12    | JavaScript runtime with native ESM                 |
+| **Package Manager**     | pnpm                    | 10.32      | Strict dependency isolation, fast installs         |
+| **Build Orchestration** | Turborepo               | 2.x        | Task caching, parallel execution, dependency graph |
+| **Language**            | TypeScript              | 5.4        | Strict mode, full-stack type safety                |
+| **Frontend**            | Next.js + React         | 15 + 19    | App Router, Server Components, streaming SSR       |
+| **API Gateway**         | Fastify                 | 5.x        | High-performance BFF with plugin architecture      |
+| **Schema Validation**   | Zod                     | 3.22       | Runtime validation + TypeScript type inference     |
+| **EVM Client**          | viem                    | 2.8        | Type-safe EVM interactions, ABI encoding           |
+| **Wallet / Signing**    | ethers                  | 6.11       | Wallet utilities, contract interaction             |
+| **Smart Contracts**     | Foundry (forge + cast)  | latest     | Exploit POC execution, transaction tracing         |
+| **Primary Database**    | PostgreSQL              | 16         | Relational hack data, JSONB for skill metadata     |
+| **Cache & Queue**       | Redis + BullMQ          | 7 + 5.x    | ETL job queues, API response caching               |
+| **UI Virtualization**   | @tanstack/react-virtual | 3.x        | 60fps rendering for 1000+ node trace trees         |
+| **Logging**             | Winston                 | 3.11       | Structured logging across all packages             |
+| **Date Utilities**      | date-fns                | 3.3        | Lightweight date operations                        |
+| **Testing**             | Vitest                  | 3.2        | Unit + integration tests, coverage reports         |
+| **Linting**             | ESLint + TS-ESLint      | 8.x + 7.x  | Static analysis, type-aware rules                  |
+| **Formatting**          | Prettier                | 3.2        | Consistent code style enforcement                  |
+| **Git Hooks**           | Husky + lint-staged     | 9 + 15     | Block non-conforming commits at gate               |
+| **Commit Linting**      | commitlint              | 19.8       | Conventional commit enforcement                    |
+| **Containers**          | Docker + Compose        | latest     | One-command dev environment bootstrap              |
+| **IaC**                 | Terraform               | —          | Cloud infrastructure (Phase 6)                     |
+| **ML Classifier**       | XGBoost                 | 1.7.6      | Tree-based ensemble for multi-label classification |
+| **ML Pipeline**         | scikit-learn            | 1.3.0      | Preprocessing, evaluation metrics, OvR strategy    |
+| **ML Inference**        | ONNX Runtime (Node.js)  | 1.15.1     | Cross-language model inference in production       |
+| **Data Processing**     | pandas + numpy          | 2.0 + 1.24 | Feature extraction and dataset manipulation        |
+| **ML Visualization**    | matplotlib + seaborn    | 3.7 + 0.12 | Thesis-quality figures and heatmaps                |
+| **ML Runtime**          | Python                  | 3.10+      | Training pipeline only (not in production)         |
 
 ---
 
@@ -552,7 +550,6 @@ interface IChainDataPort {
   isContract(address: string): Promise<boolean>;
   getBalance(address: string, blockNumber?: number): Promise<string>;
 }
-
 ```
 
 ---
@@ -649,18 +646,18 @@ The comparative evaluation (P7-ML-005) demonstrates consistent ML improvement ac
 | XGBoost ML | 0.7105    | 0.8963 | 0.7885 |
 | **Target** | —         | —      | ≥ 0.80 |
 
-| Pattern                 | Heuristic F1 | XGBoost F1 | Δ      |
-| ----------------------- | ------------ | ---------- | ------ |
-| FLASH_LOAN              | 0.72         | 0.90       | +0.19  |
-| REENTRANCY              | 0.52         | 0.81       | +0.29  |
-| ORACLE_MANIPULATION     | 0.62         | 0.84       | +0.22  |
-| ACCESS_CONTROL          | 0.61         | 0.85       | +0.24  |
-| ARITHMETIC_OVERFLOW     | 0.47         | 0.75       | +0.28  |
-| FRONT_RUNNING           | 0.60         | 0.83       | +0.23  |
-| DELEGATE_CALL_INJECTION | 0.50         | 0.72       | +0.22  |
-| SELF_DESTRUCT           | 0.33         | 0.60       | +0.27  |
-| LOGIC_ERROR             | 0.63         | 0.88       | +0.25  |
-| BRIDGE_EXPLOIT          | 0.32         | 0.70       | +0.38  |
+| Pattern                 | Heuristic F1 | XGBoost F1 | Δ     |
+| ----------------------- | ------------ | ---------- | ----- |
+| FLASH_LOAN              | 0.72         | 0.90       | +0.19 |
+| REENTRANCY              | 0.52         | 0.81       | +0.29 |
+| ORACLE_MANIPULATION     | 0.62         | 0.84       | +0.22 |
+| ACCESS_CONTROL          | 0.61         | 0.85       | +0.24 |
+| ARITHMETIC_OVERFLOW     | 0.47         | 0.75       | +0.28 |
+| FRONT_RUNNING           | 0.60         | 0.83       | +0.23 |
+| DELEGATE_CALL_INJECTION | 0.50         | 0.72       | +0.22 |
+| SELF_DESTRUCT           | 0.33         | 0.60       | +0.27 |
+| LOGIC_ERROR             | 0.63         | 0.88       | +0.25 |
+| BRIDGE_EXPLOIT          | 0.32         | 0.70       | +0.38 |
 
 > Source: [`research/reports/comparison_table.md`](./research/reports/comparison_table.md) — Generated by AEGIS Comparative Evaluator (P7-ML-005).
 
@@ -668,16 +665,16 @@ The comparative evaluation (P7-ML-005) demonstrates consistent ML improvement ac
 
 <div align="center">
 
-| Confusion Matrix | ROC Curves |
-| :-: | :-: |
-| ![Confusion Matrix](research/figures/confusion_matrix.png) | ![ROC Curves](research/figures/roc_curves.png) |
+|                           Confusion Matrix                            |                        ROC Curves                         |
+| :-------------------------------------------------------------------: | :-------------------------------------------------------: |
+| ![Confusion Matrix](research/figures/confusion_matrix_refactored.png) | ![ROC Curves](research/figures/roc_curves_refactored.png) |
 
-| Feature Importance | Training Loss |
-| :-: | :-: |
-| ![Feature Importance](research/figures/feature_importance.png) | ![Training Loss](research/figures/training_loss.png) |
+|                            Feature Importance                             |                    Training Loss                     |
+| :-----------------------------------------------------------------------: | :--------------------------------------------------: |
+| ![Feature Importance](research/figures/feature_importance_refactored.png) | ![Training Loss](research/figures/training_loss.png) |
 
-| Threshold Sensitivity | Feature Distributions |
-| :-: | :-: |
+|                        Threshold Sensitivity                         |                        Feature Distributions                         |
+| :------------------------------------------------------------------: | :------------------------------------------------------------------: |
 | ![Threshold Sensitivity](research/figures/threshold_sensitivity.png) | ![Feature Distributions](research/figures/feature_distributions.png) |
 
 </div>
@@ -919,7 +916,7 @@ If you prefer to run the Node.js services locally on your host machine (using Do
 | **Phase 4 — Frontend**       | Week 17–22 | ✅ **Done** | Hacks Dashboard · Forensic trace viewer · Design system                                              |
 | **Phase 5 — EVM Forensics**  | Week 23–32 | ✅ **Done** | Foundry POC integration · Trace visualization · Root-cause mapping **(Thesis 2 core)**               |
 | **Phase 6 — Production**     | Week 33–40 | ⏳ Planned  | Terraform · CI/CD · Production deployment · Performance evaluation                                   |
-| **Phase 7 — ML Integration** | Week 35–40 | ✅ **Done** | XGBoost training · ONNX export · TS feature port · Comparative evaluation · Thesis artifacts          |
+| **Phase 7 — ML Integration** | Week 35–40 | ✅ **Done** | XGBoost training · ONNX export · TS feature port · Comparative evaluation · Thesis artifacts         |
 
 ### Phase 1 Task Tracker
 
@@ -954,26 +951,26 @@ If you prefer to run the Node.js services locally on your host machine (using Do
 
 ### Phase 7 Task Tracker
 
-| Task ID    | Title                                       | Status      | PR    | Assignee                    |
-| ---------- | ------------------------------------------- | ----------- | ----- | --------------------------- |
-| P7-ML-001  | Python Feature Extraction Pipeline          | ✅ Complete | #231  | Sr. ML Engineer             |
-| P7-ML-002  | XGBoost Multi-Label Training Pipeline       | ✅ Complete | #232  | Sr. ML Engineer             |
-| P7-ML-003  | ONNX Runtime Integration                    | ✅ Complete | #234  | Sr. ML Engineer             |
-| P7-ML-004  | Feature Extractor TypeScript Port           | ✅ Complete | #233  | Sr. ML Engineer             |
-| P7-ML-005  | Evaluation Framework Update                 | ✅ Complete | #235  | Sr. ML Engineer             |
-| P7-ML-006  | Data Augmentation & Stratified Splitting    | ✅ Complete | #231  | Sr. ML Engineer             |
-| P7-ML-007  | Thesis Artifact Generation                  | ✅ Complete | #236  | Sr. ML Engineer             |
+| Task ID   | Title                                    | Status      | PR   | Assignee        |
+| --------- | ---------------------------------------- | ----------- | ---- | --------------- |
+| P7-ML-001 | Python Feature Extraction Pipeline       | ✅ Complete | #231 | Sr. ML Engineer |
+| P7-ML-002 | XGBoost Multi-Label Training Pipeline    | ✅ Complete | #232 | Sr. ML Engineer |
+| P7-ML-003 | ONNX Runtime Integration                 | ✅ Complete | #234 | Sr. ML Engineer |
+| P7-ML-004 | Feature Extractor TypeScript Port        | ✅ Complete | #233 | Sr. ML Engineer |
+| P7-ML-005 | Evaluation Framework Update              | ✅ Complete | #235 | Sr. ML Engineer |
+| P7-ML-006 | Data Augmentation & Stratified Splitting | ✅ Complete | #231 | Sr. ML Engineer |
+| P7-ML-007 | Thesis Artifact Generation               | ✅ Complete | #236 | Sr. ML Engineer |
 
 ---
 
 ## Academic Alignment
 
-| Phase         | Thesis              | Title & Contribution                                                                       |
-| ------------- | ------------------- | ------------------------------------------------------------------------------------------ |
-| Phase 0–2     | Methods of Research | Architecture docs · ETL design · DeFi exploit taxonomy literature review                   |
-| **Phase 3**   | **Thesis 1**        | _"AltFlex: A Real-Time Multi-Chain Web3 Exploit Intelligence Platform"_                    |
-| **Phase 5–6** | **Thesis 2**        | _"AltFlex: A Real-Time Multi-Chain Web3 Exploit Intelligence Platform"_                    |
-| **Phase 7**   | **Thesis 1 & 2**    | ML model training · Evaluation figures · Model card · Chapters 4 & 5 artifacts              |
+| Phase         | Thesis              | Title & Contribution                                                           |
+| ------------- | ------------------- | ------------------------------------------------------------------------------ |
+| Phase 0–2     | Methods of Research | Architecture docs · ETL design · DeFi exploit taxonomy literature review       |
+| **Phase 3**   | **Thesis 1**        | _"AltFlex: A Real-Time Multi-Chain Web3 Exploit Intelligence Platform"_        |
+| **Phase 5–6** | **Thesis 2**        | _"AltFlex: A Real-Time Multi-Chain Web3 Exploit Intelligence Platform"_        |
+| **Phase 7**   | **Thesis 1 & 2**    | ML model training · Evaluation figures · Model card · Chapters 4 & 5 artifacts |
 
 ---
 
@@ -1070,14 +1067,15 @@ git push origin feature/P1-ARCH-001-hex-diagrams
 
 ## Team
 
-| Avatar | Name | GitHub | Role |
-| :---: | ---- | ------ | ---- |
-| <img src="https://github.com/flexycode.png?size=40" width="40" style="border-radius: 50%;"/> | **Jay Arre Talosig** | [@flexycode](https://github.com/flexycode) | Blockchain Architect · Blockchain Protocol Engineer · Product Manager (Web3) |
-| <img src="https://github.com/Noah-dev2217.png?size=40" width="40" style="border-radius: 50%;"/> | **Rinoah Venedict Dela Rama** | [@Noah-dev2217](https://github.com/Noah-dev2217) | Blockchain Developer · Smart Contract Engineer · Community Manager / Developer Relations (DevRel) |
-| <img src="https://github.com/nicknicndin.png?size=40" width="40" style="border-radius: 50%;"/> | **Nicko Nehcterg Dalida** | [@nicknicndin](https://github.com/nicknicndin) | Blockchain Developer · DeFi Researcher · Smart Contract Auditor · Security Auditor |
-| <img src="https://github.com/jncln.png?size=40" width="40" style="border-radius: 50%;"/> | **Jannah Cleine Glodo** | [@jncln](https://github.com/jncln) | Blockchain Engineer · Frontend/Web3 Developer · UI / UX Designer · Machine Learning Engineer |
-| <img src="https://github.com/Leirk04.png?size=40" width="40" style="border-radius: 50%;"/> | **Anthonee Buno** | [@Leirk04](https://github.com/Leirk04) | Blockchain Engineer · Full Stack Web3 Developer · Data / Analytics Engineer |
-| <img src="https://github.com/scarfer14.png?size=40" width="40" style="border-radius: 50%;"/> | **Brian Carlo De Vera** _(Collab)_ | [@scarfer14](https://github.com/scarfer14) | QA Engineer · Cybersecurity Engineer · Network Engineer |
+|                                                                                      Avatar                                                                                      | Name                               | GitHub                                                                          | Role                                                                                              |
+| :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | ---------------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| <img src="https://scholar.googleusercontent.com/citations?view_op=medium_photo&user=KkUV3CoAAAAJ" width="40" style="border-radius: 50%; object-fit: cover; aspect-ratio: 1/1;"/> | **Dr. Armida P. Salazar**          | [Google Scholar](https://scholar.google.com/citations?user=KkUV3CoAAAAJ&hl=fil) | Author · Thesis Adviser                                                                           |
+|                                           <img src="https://github.com/flexycode.png?size=40" width="40" style="border-radius: 50%;"/>                                           | **Jay Arre Talosig**               | [@flexycode](https://github.com/flexycode)                                      | Blockchain Architect · Blockchain Protocol Engineer · Product Manager (Web3)                      |
+|                                         <img src="https://github.com/Noah-dev2217.png?size=40" width="40" style="border-radius: 50%;"/>                                          | **Rinoah Venedict Dela Rama**      | [@Noah-dev2217](https://github.com/Noah-dev2217)                                | Blockchain Developer · Smart Contract Engineer · Community Manager / Developer Relations (DevRel) |
+|                                          <img src="https://github.com/nicknicndin.png?size=40" width="40" style="border-radius: 50%;"/>                                          | **Nicko Nehcterg Dalida**          | [@nicknicndin](https://github.com/nicknicndin)                                  | Blockchain Developer · DeFi Researcher · Smart Contract Auditor · Security Auditor                |
+|                                             <img src="https://github.com/jncln.png?size=40" width="40" style="border-radius: 50%;"/>                                             | **Jannah Cleine Glodo**            | [@jncln](https://github.com/jncln)                                              | Blockchain Engineer · Frontend/Web3 Developer · UI / UX Designer · Machine Learning Engineer      |
+|                                            <img src="https://github.com/Leirk04.png?size=40" width="40" style="border-radius: 50%;"/>                                            | **Anthonee Buno**                  | [@Leirk04](https://github.com/Leirk04)                                          | Blockchain Engineer · Full Stack Web3 Developer · Data / Analytics Engineer                       |
+|                                           <img src="https://github.com/scarfer14.png?size=40" width="40" style="border-radius: 50%;"/>                                           | **Brian Carlo De Vera** _(Collab)_ | [@scarfer14](https://github.com/scarfer14)                                      | QA Engineer · Cybersecurity Engineer · Network Engineer                                           |
 
 ---
 
