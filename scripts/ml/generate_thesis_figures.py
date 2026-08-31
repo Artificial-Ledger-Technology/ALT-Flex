@@ -39,9 +39,9 @@ REPORT_DIR.mkdir(parents=True, exist_ok=True)
 XGB_PARAMS = {
     "objective": "binary:logistic",
     "eval_metric": "logloss",
-    "max_depth": 6,
+    "max_depth": 3,
     "learning_rate": 0.1,
-    "n_estimators": 200,
+    "n_estimators": 300,
     "subsample": 0.8,
     "colsample_bytree": 0.8,
     "random_state": 42,
