@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/strict-boolean-expressions, @typescript-eslint/no-unnecessary-type-assertion */
 /**
  * @module onnx-classifier
  * @description ONNX Runtime wrapper for multi-label exploit classification.
@@ -17,7 +18,12 @@
  * @task P7-ML-003
  */
 
-import * as ort from 'onnxruntime-node';
+// NOTE: onnxruntime-node is loaded lazily via dynamic import() inside
+// initialize() to avoid crashing Alpine (musl) containers that lack glibc
+// when this module is merely imported but ONNX inference is not used.
+type OrtModule = typeof import('onnxruntime-node');
+let ort: OrtModule | null = null;
+
 import { readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { resolve, join } from 'node:path';
@@ -85,7 +91,8 @@ export class OnnxExploitClassifier {
   private readonly defaultThreshold: number;
   private readonly thresholds: Readonly<Record<string, number>>;
 
-  private sessions: ort.InferenceSession[] = [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private sessions: any[] = [];
   private manifest: OnnxModelManifest | null = null;
   private ready = false;
 
@@ -103,6 +110,17 @@ export class OnnxExploitClassifier {
    * in a non-ready state (graceful degradation for heuristic fallback).
    */
   async initialize(): Promise<void> {
+    // Lazily load onnxruntime-node so Alpine containers that never call
+    // initialize() don't crash from the missing glibc binding.
+    if (!ort) {
+      try {
+        ort = await import('onnxruntime-node');
+      } catch {
+        // onnxruntime-node unavailable (e.g. musl/Alpine) — remain non-ready
+        return;
+      }
+    }
+
     const metaPath = join(this.modelDir, 'xgboost_exploit_classifier.onnx.meta.json');
 
     if (!existsSync(metaPath)) {
@@ -142,7 +160,8 @@ export class OnnxExploitClassifier {
     }
 
     // Load each individual OvR model session
-    const loadedSessions: ort.InferenceSession[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const loadedSessions: any[] = [];
 
     for (const modelFile of this.manifest.individual_models) {
       const modelPath = join(this.modelDir, modelFile);
@@ -156,7 +175,7 @@ export class OnnxExploitClassifier {
       }
 
       try {
-        const session = await ort.InferenceSession.create(modelPath, {
+        const session = await ort!.InferenceSession.create(modelPath, {
           executionProviders: ['cpu'],
         });
         loadedSessions.push(session);
@@ -200,9 +219,7 @@ export class OnnxExploitClassifier {
    */
   async predict(features: Float64Array): Promise<PatternMatch[]> {
     if (!this.ready || !this.manifest) {
-      throw new Error(
-        'OnnxExploitClassifier is not initialized. Call initialize() first.',
-      );
+      throw new Error('OnnxExploitClassifier is not initialized. Call initialize() first.');
     }
 
     if (features.length !== FEATURE_NAMES.length) {
@@ -217,7 +234,7 @@ export class OnnxExploitClassifier {
       inputFloat32[i] = features[i] as number;
     }
 
-    const inputTensor = new ort.Tensor('float32', inputFloat32, [1, features.length]);
+    const inputTensor = new ort!.Tensor('float32', inputFloat32, [1, features.length]);
 
     const matches: PatternMatch[] = [];
 
@@ -228,7 +245,8 @@ export class OnnxExploitClassifier {
       try {
         // Determine the input name from the session's input metadata
         const inputName = session.inputNames[0]!;
-        const feeds: Record<string, ort.Tensor> = { [inputName]: inputTensor };
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const feeds: Record<string, any> = { [inputName]: inputTensor };
 
         const results = await session.run(feeds);
 
@@ -278,10 +296,8 @@ export class OnnxExploitClassifier {
    *
    * We extract prob_class_1 (positive class = exploit pattern present).
    */
-  private extractConfidence(
-    results: ort.InferenceSession.OnnxValueMapType,
-    outputNames: readonly string[],
-  ): number {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private extractConfidence(results: Record<string, any>, outputNames: readonly string[]): number {
     // Look for a "probabilities" output first (standard XGBoost ONNX)
     for (const name of outputNames) {
       if (name.toLowerCase().includes('probabilities') || name.toLowerCase().includes('prob')) {

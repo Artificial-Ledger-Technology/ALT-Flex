@@ -15,7 +15,28 @@
  * @hexagonal Infrastructure Layer — Configuration Adapter
  */
 
+import fs from 'node:fs';
+import path from 'node:path';
 import { validateEnv, GatewayEnvSchema } from '@aegis/core';
+
+// Ensure .env is loaded if not already provided by host environment
+const currentDir = typeof __dirname !== 'undefined' ? __dirname : process.cwd();
+const candidates = [
+  path.resolve(process.cwd(), '.env'),
+  path.resolve(process.cwd(), '../../.env'),
+  path.resolve(currentDir, '../../../../.env'),
+];
+
+for (const envPath of candidates) {
+  if (fs.existsSync(envPath)) {
+    try {
+      process.loadEnvFile(envPath);
+      break;
+    } catch {
+      // Continue to next candidate
+    }
+  }
+}
 
 /**
  * Validated, frozen environment configuration singleton.

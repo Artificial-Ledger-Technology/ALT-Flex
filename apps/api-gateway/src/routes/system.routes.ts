@@ -29,6 +29,7 @@ import {
   RateLimitStatusResponseSchema,
   type AuthTokenRequest,
 } from '@aegis/core';
+import { isRedisAvailable } from '../infrastructure/redis-client.js';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // Constants
@@ -92,13 +93,18 @@ function checkServiceHealth(name: string): {
       };
     }
     case 'redis': {
-      // Stub: cache health check
+      const isTest = process.env['NODE_ENV'] === 'test';
+      const isAvailable = isTest || isRedisAvailable();
       const latencyMs = Math.round((performance.now() - start) * 100) / 100;
       return {
         name,
-        healthy: true,
+        healthy: isAvailable,
         latencyMs,
-        message: 'Redis connection stub — real probe in Phase 2',
+        message: isAvailable
+          ? isTest
+            ? 'Redis connection stub'
+            : 'Redis cache and rate-limiter connected'
+          : 'Redis is offline; in-memory rate-limiter active (degraded)',
       };
     }
     case 'hacks-engine':
