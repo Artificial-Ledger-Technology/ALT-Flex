@@ -56,7 +56,7 @@ export function createQueueConnection(config: QueueConnectionConfig = {}): IORed
     port,
     db,
     maxRetriesPerRequest: null, // Required by BullMQ
-    enableReadyCheck: false,    // Avoids startup delays
+    enableReadyCheck: false, // Avoids startup delays
     retryStrategy: (times: number): number => Math.min(times * 200, 5000),
     ...config.redisOptions,
   };
@@ -66,5 +66,11 @@ export function createQueueConnection(config: QueueConnectionConfig = {}): IORed
     baseOptions.password = password;
   }
 
-  return new IORedis(baseOptions);
+  const client = new IORedis(baseOptions);
+  // Suppress unhandled error event crashes when Redis is offline during local dev
+  client.on('error', () => {
+    // Handled silently to prevent Node unhandled exception crashes
+  });
+
+  return client;
 }

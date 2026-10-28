@@ -34,10 +34,10 @@ import {
   type ForensicTraceRequest,
   type ForensicTraceJobParams,
   type Chain,
+  createQueueConnection,
 } from '@aegis/core';
-import Redis from 'ioredis';
 import { createForensicsQueue, PostgresForensicReportRepository } from '@aegis/forensic-engine';
-import { getRedisUrl, getDatabaseUrl } from '../config/env.js';
+import { getDatabaseUrl } from '../config/env.js';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // Constants
@@ -79,7 +79,7 @@ function notImplemented(
  */
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin registration requires async; actual awaits added in Phase 5
 export async function forensicsRoutes(server: FastifyInstance): Promise<void> {
-  const redis = new Redis(getRedisUrl(), { maxRetriesPerRequest: null });
+  const redis = createQueueConnection();
   const forensicsQueue = createForensicsQueue(redis);
   const reportRepo = new PostgresForensicReportRepository(getDatabaseUrl());
 

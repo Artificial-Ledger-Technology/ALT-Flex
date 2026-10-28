@@ -25,8 +25,7 @@ import { createPinoLogger } from '@aegis/core';
 import cors from '@fastify/cors';
 import rateLimit from '@fastify/rate-limit';
 import helmet from '@fastify/helmet';
-import Redis from 'ioredis';
-import { getRedisUrl } from './config/env.js';
+import { initRedisClient, closeRedisClient } from './infrastructure/redis-client.js';
 
 // ── Cross-Cutting Middleware ─────────────────────────────────────────────────
 import { correlationIdMiddleware } from './middleware/correlation-id.middleware.js';
@@ -93,12 +92,12 @@ async function registerPlugins(): Promise<void> {
     credentials: true,
   });
 
-  // 3. Rate limiting
-  const redis = new Redis(getRedisUrl(), { maxRetriesPerRequest: null });
+  // 3. Rate limiting (P8-DX-001: Graceful fallback to in-memory store if Redis is unavailable)
+  const redisClient = await initRedisClient(server.log);
   await server.register(rateLimit, {
     max: parseInt(process.env['API_RATE_LIMIT_MAX'] ?? '100', 10),
     timeWindow: parseInt(process.env['API_RATE_LIMIT_WINDOW_MS'] ?? '60000', 10),
-    redis,
+    ...(redisClient ? { redis: redisClient } : {}),
   });
 
   // 4. Swagger/OpenAPI
@@ -152,6 +151,7 @@ function registerShutdownHandlers(): void {
   const shutdown = async (signal: string): Promise<void> => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     server.log.info({ signal }, 'Received shutdown signal, closing gracefully...');
+    await closeRedisClient(server.log);
     await server.close();
     process.exit(0);
   };

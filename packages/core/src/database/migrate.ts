@@ -24,6 +24,22 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+// Ensure .env is loaded
+for (const envPath of [
+  path.resolve(process.cwd(), '.env'),
+  path.resolve(__dirname, '../../../../.env'),
+  path.resolve(__dirname, '../../../.env'),
+]) {
+  if (fs.existsSync(envPath)) {
+    try {
+      process.loadEnvFile(envPath);
+      break;
+    } catch {
+      // Continue
+    }
+  }
+}
+
 /* eslint-disable no-console */
 
 import pg from 'pg';

@@ -22,6 +22,25 @@
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import fs from 'node:fs';
+import path from 'node:path';
+
+// Ensure .env is loaded
+for (const envPath of [
+  path.resolve(process.cwd(), '.env'),
+  path.resolve(__dirname, '../../../../.env'),
+  path.resolve(__dirname, '../../../.env'),
+]) {
+  if (fs.existsSync(envPath)) {
+    try {
+      process.loadEnvFile(envPath);
+      break;
+    } catch {
+      // Continue
+    }
+  }
+}
+
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 
 import pg from 'pg';
@@ -62,11 +81,7 @@ async function cleanTables(client: pg.Client): Promise<void> {
   console.log('🧹 Cleaning tables (--clean flag detected)...\n');
 
   // Order matters: FK dependencies (children first)
-  const tables = [
-    'safety_scan_results',
-    'ai_skill_files',
-    'hack_incidents',
-  ];
+  const tables = ['safety_scan_results', 'ai_skill_files', 'hack_incidents'];
 
   for (const table of tables) {
     await client.query(`TRUNCATE TABLE ${table} CASCADE`);
@@ -123,11 +138,24 @@ async function seedHackIncidents(client: pg.Client): Promise<void> {
           updated_at = NOW()
         RETURNING (xmax = 0) AS is_insert`,
         [
-          h.id, h.protocol_name, h.protocol_slug, h.date, h.chain, h.attack_vector,
-          JSON.stringify(h.secondary_vectors), h.loss_usd, h.funds_returned,
-          JSON.stringify(h.tx_hashes), JSON.stringify(h.sources), h.description,
-          h.has_foundry_poc, h.foundry_test_path, JSON.stringify(h.target_contracts),
-          h.protocol_category, h.was_audited, JSON.stringify(h.audit_firms),
+          h.id,
+          h.protocol_name,
+          h.protocol_slug,
+          h.date,
+          h.chain,
+          h.attack_vector,
+          JSON.stringify(h.secondary_vectors),
+          h.loss_usd,
+          h.funds_returned,
+          JSON.stringify(h.tx_hashes),
+          JSON.stringify(h.sources),
+          h.description,
+          h.has_foundry_poc,
+          h.foundry_test_path,
+          JSON.stringify(h.target_contracts),
+          h.protocol_category,
+          h.was_audited,
+          JSON.stringify(h.audit_firms),
           h.data_source,
         ],
       );
@@ -143,7 +171,9 @@ async function seedHackIncidents(client: pg.Client): Promise<void> {
     }
   }
 
-  console.log(`   ✅ Inserted: ${stat.inserted}  |  🔄 Updated: ${stat.updated}  |  ❌ Failed: ${stat.failed}\n`);
+  console.log(
+    `   ✅ Inserted: ${stat.inserted}  |  🔄 Updated: ${stat.updated}  |  ❌ Failed: ${stat.failed}\n`,
+  );
   stats.push(stat);
 }
 
@@ -200,11 +230,29 @@ async function seedAISkillFiles(client: pg.Client): Promise<void> {
           updated_at = NOW()
         RETURNING (xmax = 0) AS is_insert`,
         [
-          s.id, s.name, s.description, s.category, JSON.stringify(s.tags), s.version,
-          s.source_repo, s.file_path, s.raw_url, s.commit_sha, s.license,
-          s.platform, s.language, s.content, s.format, s.content_hash,
-          s.content_size_bytes, s.safety_label, s.author, s.author_url,
-          s.copy_count, s.star_count, s.view_count,
+          s.id,
+          s.name,
+          s.description,
+          s.category,
+          JSON.stringify(s.tags),
+          s.version,
+          s.source_repo,
+          s.file_path,
+          s.raw_url,
+          s.commit_sha,
+          s.license,
+          s.platform,
+          s.language,
+          s.content,
+          s.format,
+          s.content_hash,
+          s.content_size_bytes,
+          s.safety_label,
+          s.author,
+          s.author_url,
+          s.copy_count,
+          s.star_count,
+          s.view_count,
         ],
       );
 
@@ -219,7 +267,9 @@ async function seedAISkillFiles(client: pg.Client): Promise<void> {
     }
   }
 
-  console.log(`   ✅ Inserted: ${stat.inserted}  |  🔄 Updated: ${stat.updated}  |  ❌ Failed: ${stat.failed}\n`);
+  console.log(
+    `   ✅ Inserted: ${stat.inserted}  |  🔄 Updated: ${stat.updated}  |  ❌ Failed: ${stat.failed}\n`,
+  );
   stats.push(stat);
 }
 
@@ -266,11 +316,22 @@ async function seedSafetyScanResults(client: pg.Client): Promise<void> {
           content_hash_at_scan = EXCLUDED.content_hash_at_scan
         RETURNING (xmax = 0) AS is_insert`,
         [
-          r.id, r.skill_file_id, r.scan_duration_ms, r.scanner_version,
-          r.total_rules_evaluated, r.final_label, JSON.stringify(r.findings),
-          JSON.stringify(r.rule_matches), r.critical_count, r.high_count,
-          r.medium_count, r.low_count, r.info_count,
-          r.manual_review_status, r.reviewed_by, r.review_notes,
+          r.id,
+          r.skill_file_id,
+          r.scan_duration_ms,
+          r.scanner_version,
+          r.total_rules_evaluated,
+          r.final_label,
+          JSON.stringify(r.findings),
+          JSON.stringify(r.rule_matches),
+          r.critical_count,
+          r.high_count,
+          r.medium_count,
+          r.low_count,
+          r.info_count,
+          r.manual_review_status,
+          r.reviewed_by,
+          r.review_notes,
           r.content_hash_at_scan,
         ],
       );
@@ -286,7 +347,9 @@ async function seedSafetyScanResults(client: pg.Client): Promise<void> {
     }
   }
 
-  console.log(`   ✅ Inserted: ${stat.inserted}  |  🔄 Updated: ${stat.updated}  |  ❌ Failed: ${stat.failed}\n`);
+  console.log(
+    `   ✅ Inserted: ${stat.inserted}  |  🔄 Updated: ${stat.updated}  |  ❌ Failed: ${stat.failed}\n`,
+  );
   stats.push(stat);
 }
 
@@ -308,14 +371,18 @@ function printSummary(): void {
 
   for (const s of stats) {
     const name = s.table.padEnd(25);
-    console.log(`  ${name}${String(s.inserted).padStart(6)}  ${String(s.updated).padStart(7)}  ${String(s.failed).padStart(6)}`);
+    console.log(
+      `  ${name}${String(s.inserted).padStart(6)}  ${String(s.updated).padStart(7)}  ${String(s.failed).padStart(6)}`,
+    );
     totalInserted += s.inserted;
     totalUpdated += s.updated;
     totalFailed += s.failed;
   }
 
   console.log('  ─────────────────────────────────────────────────────');
-  console.log(`  ${'TOTAL'.padEnd(25)}${String(totalInserted).padStart(6)}  ${String(totalUpdated).padStart(7)}  ${String(totalFailed).padStart(6)}`);
+  console.log(
+    `  ${'TOTAL'.padEnd(25)}${String(totalInserted).padStart(6)}  ${String(totalUpdated).padStart(7)}  ${String(totalFailed).padStart(6)}`,
+  );
   console.log('');
 
   if (totalFailed > 0) {

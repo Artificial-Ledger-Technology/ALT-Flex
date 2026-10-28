@@ -34,7 +34,6 @@ function createMockTrace(
     from: '0xattacker',
     to: '0xtarget',
     value: 0n,
-    gas: 1000000n,
     gasUsed: 500000n,
     input: '0x',
     output: '0x',
@@ -178,9 +177,9 @@ describe('ExploitPatternRecognizer — Dual-Mode', () => {
     it('should throw if ML classifier is not provided', async () => {
       const recognizer = new ExploitPatternRecognizer({ mode: 'ml' });
 
-      await expect(
-        recognizer.analyzeWithMl(trace, diffs, defaultMetadata),
-      ).rejects.toThrow('ML classifier is not available');
+      await expect(recognizer.analyzeWithMl(trace, diffs, defaultMetadata)).rejects.toThrow(
+        'ML classifier is not available',
+      );
     });
 
     it('should throw if ML classifier is not ready', async () => {
@@ -190,9 +189,9 @@ describe('ExploitPatternRecognizer — Dual-Mode', () => {
         mlClassifier: classifier,
       });
 
-      await expect(
-        recognizer.analyzeWithMl(trace, diffs, defaultMetadata),
-      ).rejects.toThrow('ML classifier is not available');
+      await expect(recognizer.analyzeWithMl(trace, diffs, defaultMetadata)).rejects.toThrow(
+        'ML classifier is not available',
+      );
     });
   });
 
